@@ -1,0 +1,22 @@
+// ---------------------------------------------------------------------
+//
+// Copyright (C) 2022 - 2023 by the ideal.II authors
+//
+// This file is part of the ideal.II library.
+//
+// The ideal.II library is free software; you can use it, redistribute
+// it, and/or modify it under the terms of the GNU Lesser General
+// Public License as published by the Free Software Foundation; either
+// version 3.0 of the License, or (at your option) any later version.
+// The full text of the license can be found in the file LICENSE.md at
+// the top level directory of ideal.II.
+//
+// ---------------------------------------------------------------------
+
+// CMake will replace all keys between @...@ by the value
+
+// these exist as CMake variables
+#define IDEAL_II_VERSION_MAJOR @PROJECT_VERSION_MAJOR@
+#define IDEAL_II_VERSION_MINOR @PROJECT_VERSION_MINOR@
+#define IDEAL_II_VERSION_PATCH @PROJECT_VERSION_PATCH@
+#define IDEAL_II_VERSION @PROJECT_VERSION@

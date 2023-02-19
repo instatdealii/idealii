@@ -1,0 +1,38 @@
+## ---------------------------------------------------------------------
+##
+## Copyright (C) 2022 - 2023 by the ideal.II authors
+##
+## This file is part of the ideal.II library.
+##
+## The ideal.II library is free software; you can use it, redistribute
+## it, and/or modify it under the terms of the GNU Lesser General
+## Public License as published by the Free Software Foundation; either
+## version 3.0 of the License, or (at your option) any later version.
+## The full text of the license can be found in the file LICENSE.md at
+## the top level directory of ideal.II.
+##
+## ---------------------------------------------------------------------
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+set(deallib_FOUND TRUE)
+
+include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@_Exports.cmake")
+find_dependency(deal.II 9.3 REQUIRED QUIET HINTS @DEAL_II_PATH@ @deal.II_DIR@)
+if(NOT deal.II_FOUND)
+  set(ideal.II_FOUND FALSE)
+  message(FATAL ERROR "deal.II not found!")
+endif()
+
+DEAL_II_INITIALIZE_CACHED_VARIABLES()
+include(${DEAL_II_TARGET_CONFIG})
+add_library(@PROJECT_NAME@::@PROJECT_NAME@ INTERFACE IMPORTED)
+target_include_directories(@PROJECT_NAME@::@PROJECT_NAME@ INTERFACE ${DEAL_II_INCLUDE_DIRS})
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    target_link_libraries(@PROJECT_NAME@::@PROJECT_NAME@ INTERFACE @PROJECT_NAME@::@PROJECT_NAME@_release)
+  else()
+    target_link_libraries(@PROJECT_NAME@::@PROJECT_NAME@ INTERFACE @PROJECT_NAME@::@PROJECT_NAME@_debug)
+endif()
+
+check_required_components("@PROJECT_NAME@")
+
