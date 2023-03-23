@@ -13,47 +13,49 @@
 //
 // ---------------------------------------------------------------------
 
-
 #include <ideal.II/grid/fixed_tria.hh>
 
-namespace idealii{
-namespace spacetime{
-namespace fixed{
-	template<int dim>
-	Triangulation<dim>::
-	Triangulation()
-	:spacetime::Triangulation<dim>()
-	{}
+namespace idealii::spacetime::fixed
+{
+    template<int dim>
+    Triangulation<dim>::Triangulation ()
+    :
+    spacetime::Triangulation<dim> ()
+    {
+    }
 
-	template<int dim>
-	void
-	Triangulation<dim>::
-	generate(std::shared_ptr<dealii::Triangulation<dim>> space_tria,
-			 unsigned int M, double t0,	double T){
-		Assert(space_tria.use_count(),dealii::ExcNotInitialized());
-		double t=t0;
-		double k=(T-t0)/M;
-		for (unsigned int i = 0; i < M ; i++ ){
-			this->trias.push_back(idealii::slab::Triangulation<dim>(space_tria,t,t+k));
-			t+=k;
-		}
-	}
+    template<int dim>
+    void Triangulation<dim>::generate (
+            std::shared_ptr<dealii::Triangulation<dim>> space_tria ,
+            unsigned int M , double t0 , double T )
+    {
+        Assert( space_tria.use_count () , dealii::ExcNotInitialized () );
+        double t = t0;
+        double k = ( T - t0 ) / M;
+        for ( unsigned int i = 0 ; i < M ; i++ )
+        {
+            this->trias.push_back (
+                    idealii::slab::Triangulation<dim> ( space_tria , t ,
+                                                        t + k ) );
+            t += k;
+        }
+    }
 
+    template<int dim>
+    void Triangulation<dim>::refine_global (
+            const unsigned int times_space , const unsigned int times_time )
+    {
 
-	template<int dim>
-	void
-	Triangulation<dim>::refine_global(const unsigned int times_space,
-									  const unsigned int times_time){
+        //do refinement
+        slab::TriaIterator<dim> slab_tria = this->begin ();
+        slab_tria->spatial ()->refine_global ( times_space );
+        for ( ; slab_tria != this->end () ; ++slab_tria )
+        {
+            slab_tria->temporal ()->refine_global ( times_time );
+        }
 
-		//do refinement
-		slab::TriaIterator<dim> slab_tria = this->begin();
-		slab_tria->spatial()->refine_global(times_space);
-		for (; slab_tria != this->end() ; ++slab_tria ){
-			slab_tria->temporal()->refine_global(times_time);
-		}
-
-	}
-}}}
+    }
+}
 
 #include "fixed_tria.inst"
 

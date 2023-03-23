@@ -19,16 +19,17 @@
 #include <fstream>
 #include <iostream>
 
-namespace idealii{
-  
-  void print_version_info(){
-    std::cout << "This is ideal.II in version v"
-      << IDEAL_II_VERSION_MAJOR << "."
-      << IDEAL_II_VERSION_MINOR << "."
-      << IDEAL_II_VERSION_PATCH;
+namespace idealii
+{
+
+    void print_version_info ()
+    {
+        std::cout << "This is ideal.II in version v" << IDEAL_II_VERSION_MAJOR
+                << "." << IDEAL_II_VERSION_MINOR << "."
+                << IDEAL_II_VERSION_PATCH;
 #ifdef DEBUG
-      std::cout << " in DEBUG mode";
+        std::cout << " in DEBUG mode";
 #endif
-    std::cout << std::endl;
-  }
-}//namespace deallib
+        std::cout << std::endl;
+    }
+} //namespace deallib

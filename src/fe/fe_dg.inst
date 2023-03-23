@@ -13,14 +13,13 @@
 //
 // ---------------------------------------------------------------------
 
-
 #ifndef __IDEAL_II_FE_FE_DG_inst
 #define __IDEAL_II_FE_FE_DG_inst
 
-namespace idealii{
-namespace spacetime{
-	template class DG_FiniteElement<2>;
-	template class DG_FiniteElement<3>;
-}}
+namespace idealii::spacetime
+{
+    template class DG_FiniteElement<2> ;
+    template class DG_FiniteElement<3> ;
+}
 
 #endif

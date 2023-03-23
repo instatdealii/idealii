@@ -13,35 +13,34 @@
 //
 // ---------------------------------------------------------------------
 
-
 #include <ideal.II/grid/spacetime_tria.hh>
 
-namespace idealii{
-namespace spacetime{
-	template<int dim>
-	Triangulation<dim>::
-	Triangulation(){
-		trias=std::list<idealii::slab::Triangulation<dim>>();
-	}
+namespace idealii::spacetime
+{
+    template<int dim>
+        Triangulation<dim>::Triangulation ()
+        {
+            trias = std::list<idealii::slab::Triangulation<dim>> ();
+        }
 
-	template<int dim>
-	unsigned int
-	Triangulation<dim>::M(){
-		return trias.size();
-	}
+    template<int dim>
+        unsigned int Triangulation<dim>::M ()
+        {
+            return trias.size ();
+        }
 
-	template<int dim>
-	slab::TriaIterator<dim>
-	Triangulation<dim>::begin(){
-		return trias.begin();
-	}
+    template<int dim>
+        slab::TriaIterator<dim> Triangulation<dim>::begin ()
+        {
+            return trias.begin ();
+        }
 
-	template<int dim>
-	slab::TriaIterator<dim>
-	Triangulation<dim>::end(){
-		return trias.end();
-	}
+    template<int dim>
+        slab::TriaIterator<dim> Triangulation<dim>::end ()
+        {
+            return trias.end ();
+        }
 
-}}
+}
 
 #include "spacetime_tria.inst"

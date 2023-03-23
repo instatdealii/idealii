@@ -13,14 +13,13 @@
 //
 // ---------------------------------------------------------------------
 
-
 #ifndef __IDEAL_II_DOFS_SPACETIME_VECTOR_inst
 #define __IDEAL_II_DOFS_SPACETIME_VECTOR_inst
 
-namespace idealii{
-namespace spacetime{
-template class Vector<float>;
-template class Vector<double>;
-}}
+namespace idealii::spacetime
+{
+    template class Vector<float> ;
+    template class Vector<double> ;
+}
 
 #endif

@@ -20,67 +20,68 @@
 #include <memory>
 #include <list>
 
-namespace idealii{
-namespace slab{
-	/**
-	 * @brief Actual Triangulation for a specific slab.
-	 *
-	 * This Triangulation handles a spatial and temporal dealii::Triangulation object internally.
-	 *
-	 */
+namespace idealii::slab
+{
+    /**
+     * @brief Actual Triangulation for a specific slab.
+     *
+     * This Triangulation handles a spatial and temporal dealii::Triangulation object internally.
+     *
+     */
     template<int dim>
-	class Triangulation{
-	public:
+    class Triangulation
+    {
+    public:
 
-    	/**
-    	 * @brief Construct an object with a given spatial triangulation and a single
-    	 * element in time.
-    	 *
-    	 * @param space_tria The spatial triangulation to be used.
-    	 * @param startpoint The startpoint of the temporal triangulation.
-    	 * @param endpoint The endpoint of the temporal triangulation.
-    	 */
-    	Triangulation(std::shared_ptr<dealii::Triangulation<dim>> space_tria,
-    				      double startpoint,
-						  double endpoint);
+        /**
+         * @brief Construct an object with a given spatial triangulation and a single
+         * element in time.
+         *
+         * @param space_tria The spatial triangulation to be used.
+         * @param startpoint The startpoint of the temporal triangulation.
+         * @param endpoint The endpoint of the temporal triangulation.
+         */
+        Triangulation (
+                std::shared_ptr<dealii::Triangulation<dim>> space_tria ,
+                double startpoint , double endpoint );
 
-    	/**
-		 * @brief (shallow) copy constructor. Only the values for the start- and endpoint
-		 * are actually copied. The underlying pointers will point to the same
-		 * dealii::Triangulation objects as other.
-		 *
-		 * @param other The Triangulation to shallow copy.
-		 *
-		 * @warning This method is mainly needed for adding the Triangulations to the spacetime
-		 * lists and should be used with utmost caution anywhere else.
-		 *
-		 *
-		 */
-    	Triangulation(const Triangulation& other);
-    	/**
-    	 * @brief The underlying spatial triangulation.
-    	 */
-    	std::shared_ptr<dealii::Triangulation<dim>> spatial();
+        /**
+         * @brief (shallow) copy constructor. Only the values for the start- and endpoint
+         * are actually copied. The underlying pointers will point to the same
+         * dealii::Triangulation objects as other.
+         *
+         * @param other The Triangulation to shallow copy.
+         *
+         * @warning This method is mainly needed for adding the Triangulations to the spacetime
+         * lists and should be used with utmost caution anywhere else.
+         *
+         *
+         */
+        Triangulation ( const Triangulation &other );
+        /**
+         * @brief The underlying spatial triangulation.
+         */
+        std::shared_ptr<dealii::Triangulation<dim>> spatial ();
 
-    	/**
-    	 * @brief The underlying temporal triangulation.
-    	 */
-    	std::shared_ptr<dealii::Triangulation<1>> temporal();
+        /**
+         * @brief The underlying temporal triangulation.
+         */
+        std::shared_ptr<dealii::Triangulation<1>> temporal ();
 
-    	/**
-    	 * @brief The startpoint of the temporal triangulation.
-    	 */
-    	double startpoint();
+        /**
+         * @brief The startpoint of the temporal triangulation.
+         */
+        double startpoint ();
 
-    	/**
-    	 * @brief The endpoint of the temporal triangulation.
-    	 */
-    	double endpoint();
-	private:
-    	std::shared_ptr<dealii::Triangulation<dim>> _spatial_tria;
-    	std::shared_ptr<dealii::Triangulation<1>> _temporal_tria;
-    	double _startpoint;
-    	double _endpoint;
+        /**
+         * @brief The endpoint of the temporal triangulation.
+         */
+        double endpoint ();
+    private:
+        std::shared_ptr<dealii::Triangulation<dim>> _spatial_tria;
+        std::shared_ptr<dealii::Triangulation<1>> _temporal_tria;
+        double _startpoint;
+        double _endpoint;
     };
 
     /**
@@ -88,6 +89,6 @@ namespace slab{
      */
     template<int dim>
     using TriaIterator = typename std::list<Triangulation<dim>>::iterator;
-}}
+}
 
 #endif /* INCLUDE_IDEAL_II_GRID_SLAB_TRIA_HH_ */

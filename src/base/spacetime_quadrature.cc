@@ -13,34 +13,34 @@
 //
 // ---------------------------------------------------------------------
 
-
 #include <ideal.II/base/spacetime_quadrature.hh>
 
-namespace idealii{
-namespace spacetime{
+namespace idealii::spacetime
+{
 
-	template <int dim>
-	Quadrature<dim>::Quadrature(std::shared_ptr<dealii::Quadrature<dim>> quad_space,
-								std::shared_ptr<dealii::Quadrature<1>> quad_time){
-		Assert(quad_space.use_count(), dealii::ExcNotImplemented());
-		Assert(quad_time.use_count(), dealii::ExcNotImplemented());
-		_quad_space = quad_space;
-		_quad_time = quad_time;
-	}
+    template<int dim>
+    Quadrature<dim>::Quadrature (
+            std::shared_ptr<dealii::Quadrature<dim>> quad_space ,
+            std::shared_ptr<dealii::Quadrature<1>> quad_time )
+    {
+        Assert( quad_space.use_count () , dealii::ExcNotImplemented () );
+        Assert( quad_time.use_count () , dealii::ExcNotImplemented () );
+        _quad_space = quad_space;
+        _quad_time = quad_time;
+    }
 
-	template <int dim>
-	std::shared_ptr<dealii::Quadrature<dim>>
-	Quadrature<dim>::spatial(){
-		return _quad_space;
-	}
+    template<int dim>
+    std::shared_ptr<dealii::Quadrature<dim>> Quadrature<dim>::spatial ()
+    {
+        return _quad_space;
+    }
 
-	template <int dim>
-	std::shared_ptr<dealii::Quadrature<1>>
-	Quadrature<dim>::temporal(){
-		return _quad_time;
-	}
-}}
-
+    template<int dim>
+    std::shared_ptr<dealii::Quadrature<1>> Quadrature<dim>::temporal ()
+    {
+        return _quad_time;
+    }
+}
 
 #include "spacetime_quadrature.inst"
 

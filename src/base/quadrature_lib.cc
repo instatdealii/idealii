@@ -13,42 +13,60 @@
 //
 // ---------------------------------------------------------------------
 
-
 #include <ideal.II/base/quadrature_lib.hh>
 #include <deal.II/base/quadrature_lib.h>
-namespace idealii{
-	QRightBox::QRightBox():
-		dealii::Quadrature<1>(1){
-		this->quadrature_points[0] = dealii::Point<1>(1.0);
-		this->weights[0] = 1.0;
-	}
+namespace idealii
+{
+    QRightBox::QRightBox ()
+                    :
+                    dealii::Quadrature<1> ( 1 )
+                    {
+        this->quadrature_points[0] = dealii::Point<1> ( 1.0 );
+        this->weights[0] = 1.0;
+                    }
 
-	QLeftBox::QLeftBox():
-		dealii::Quadrature<1>(1){
-		this->quadrature_points[0] = dealii::Point<1>(0.0);
-		this->weights[0] = 1.0;
-	}
+    QLeftBox::QLeftBox ()
+    :
+                    dealii::Quadrature<1> ( 1 )
+                    {
+        this->quadrature_points[0] = dealii::Point<1> ( 0.0 );
+        this->weights[0] = 1.0;
+                    }
 
-namespace spacetime{
-	template <int dim>
-	QGauss<dim>::QGauss(unsigned int n_spatial, unsigned int n_temporal):
-		Quadrature<dim>(std::make_shared<dealii::QGauss<dim>>(n_spatial),
-									   std::make_shared<dealii::QGauss<1>>(n_temporal))
-	{}
+    namespace spacetime
+    {
+        template<int dim>
+        QGauss<dim>::QGauss ( unsigned int n_spatial ,
+                              unsigned int n_temporal )
+        :
+                              Quadrature<dim> (
+                                      std::make_shared<dealii::QGauss<dim>> (
+                                              n_spatial ) ,
+                                              std::make_shared<dealii::QGauss<1>> ( n_temporal ) )
+                                              {
+                                              }
 
-	template <int dim>
-	QGaussRightBox<dim>::QGaussRightBox(unsigned int n_spatial):
-		Quadrature<dim>(std::make_shared<dealii::QGauss<dim>>(n_spatial),
-		   								    std::make_shared<QRightBox>())
-	{}
+        template<int dim>
+        QGaussRightBox<dim>::QGaussRightBox ( unsigned int n_spatial )
+        :
+        Quadrature<dim> (
+                std::make_shared<dealii::QGauss<dim>> (
+                        n_spatial ) ,
+                        std::make_shared<QRightBox> () )
+                        {
+                        }
 
-	template <int dim>
-	QGaussLeftBox<dim>::QGaussLeftBox(unsigned int n_spatial):
-		Quadrature<dim>(std::make_shared<dealii::QGauss<dim>>(n_spatial),
-		   								    std::make_shared<QLeftBox>())
-	{}
-}}
-
+        template<int dim>
+        QGaussLeftBox<dim>::QGaussLeftBox ( unsigned int n_spatial )
+        :
+        Quadrature<dim> (
+                std::make_shared<dealii::QGauss<dim>> (
+                        n_spatial ) ,
+                        std::make_shared<QLeftBox> () )
+                        {
+                        }
+    }
+}
 
 #include "quadrature_lib.inst"
 

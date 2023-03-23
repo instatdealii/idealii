@@ -13,7 +13,6 @@
 //
 // ---------------------------------------------------------------------
 
-
 #ifndef INCLUDE_IDEAL_II_DISTRIBUTED_SLAB_TRIA_HH_
 #define INCLUDE_IDEAL_II_DISTRIBUTED_SLAB_TRIA_HH_
 
@@ -24,70 +23,67 @@
 #include <memory>
 #include <list>
 
-namespace idealii{
-namespace slab{
-namespace parallel{
-namespace distributed{
-	/**
-	 * @brief Actual Triangulation for a specific slab with an MPI distributed spatial mesh.
-	 *
-	 * This Triangulation handles a spatial dealii::parallel::distributed and
-	 * a temporal dealii::Triangulation object internally.
-	 *
-	 */
+namespace idealii::slab::parallel::distributed{
+    /**
+     * @brief Actual Triangulation for a specific slab with an MPI distributed spatial mesh.
+     *
+     * This Triangulation handles a spatial dealii::parallel::distributed and
+     * a temporal dealii::Triangulation object internally.
+     *
+     */
     template<int dim>
-	class Triangulation{
-	public:
+    class Triangulation{
+    public:
 
-    	/**
-    	 * @brief Construct an object with a given spatial triangulation and a single
-    	 * element in time.
-    	 *
-    	 * @param space_tria The spatial triangulation to be used.
-    	 * @param startpoint The startpoint of the temporal triangulation.
-    	 * @param endpoint The endpoint of the temporal triangulation.
-    	 */
-    	Triangulation(std::shared_ptr<dealii::parallel::distributed::Triangulation<dim>> space_tria,
-    				      double startpoint,
-						  double endpoint);
+        /**
+         * @brief Construct an object with a given spatial triangulation and a single
+         * element in time.
+         *
+         * @param space_tria The spatial triangulation to be used.
+         * @param startpoint The startpoint of the temporal triangulation.
+         * @param endpoint The endpoint of the temporal triangulation.
+         */
+        Triangulation(std::shared_ptr<dealii::parallel::distributed::Triangulation<dim>> space_tria,
+                      double startpoint,
+                      double endpoint);
 
-    	/**
-    	 * @brief (shallow) copy constructor. Only the values for the start- and endpoint
-    	 * are actually copied. The underlying pointers will point to the same
-    	 * dealii::Triangulation objects as other.
-    	 *
-    	 * @param other The Triangulation to shallow copy.
-    	 *
-    	 * @warning This method is mainly needed for adding the Triangulations to the spacetime
-    	 * lists and should be used with utmost caution anywhere else.
-    	 *
-    	 *
-    	 */
-    	Triangulation(const Triangulation& other);
-    	/**
-    	 * @brief The underlying spatial triangulation.
-    	 */
-    	std::shared_ptr<dealii::parallel::distributed::Triangulation<dim>> spatial();
+        /**
+         * @brief (shallow) copy constructor. Only the values for the start- and endpoint
+         * are actually copied. The underlying pointers will point to the same
+         * dealii::Triangulation objects as other.
+         *
+         * @param other The Triangulation to shallow copy.
+         *
+         * @warning This method is mainly needed for adding the Triangulations to the spacetime
+         * lists and should be used with utmost caution anywhere else.
+         *
+         *
+         */
+        Triangulation(const Triangulation& other);
+        /**
+         * @brief The underlying spatial triangulation.
+         */
+        std::shared_ptr<dealii::parallel::distributed::Triangulation<dim>> spatial();
 
-    	/**
-    	 * @brief The underlying temporal triangulation.
-    	 */
-    	std::shared_ptr<dealii::Triangulation<1>> temporal();
+        /**
+         * @brief The underlying temporal triangulation.
+         */
+        std::shared_ptr<dealii::Triangulation<1>> temporal();
 
-    	/**
-    	 * @brief The startpoint of the temporal triangulation.
-    	 */
-    	double startpoint();
+        /**
+         * @brief The startpoint of the temporal triangulation.
+         */
+        double startpoint();
 
-    	/**
-    	 * @brief The endpoint of the temporal triangulation.
-    	 */
-    	double endpoint();
-	private:
-    	std::shared_ptr<dealii::parallel::distributed::Triangulation<dim>> _spatial_tria;
-    	std::shared_ptr<dealii::Triangulation<1>> _temporal_tria;
-    	double _startpoint;
-    	double _endpoint;
+        /**
+         * @brief The endpoint of the temporal triangulation.
+         */
+        double endpoint();
+    private:
+        std::shared_ptr<dealii::parallel::distributed::Triangulation<dim>> _spatial_tria;
+        std::shared_ptr<dealii::Triangulation<1>> _temporal_tria;
+        double _startpoint;
+        double _endpoint;
     };
 
     /**
@@ -95,6 +91,6 @@ namespace distributed{
      */
     template<int dim>
     using TriaIterator = typename std::list<Triangulation<dim>>::iterator;
-}}}}
+}
 #endif
 #endif /* INCLUDE_IDEAL_II_DISTRIBUTED_SLAB_TRIA_HH_ */
