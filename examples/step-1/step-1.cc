@@ -343,8 +343,8 @@ void Step1::assemble_system_on_slab ()
 {
 
     // Similar to the stationary case we start with a quadrature and FEValues objects
-    idealii::spacetime::QGauss < 2 > quad ( fe.spatial ()->degree + 1 ,
-                                            fe.temporal ()->degree + 1 );
+    idealii::spacetime::QGauss < 2 > quad ( fe.spatial ()->degree + 2 ,
+                                            fe.temporal ()->degree + 2 );
 
     idealii::spacetime::FEValues < 2 > fe_values_spacetime (
             fe ,
