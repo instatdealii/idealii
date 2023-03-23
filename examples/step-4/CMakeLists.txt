@@ -22,7 +22,7 @@ endif()
 
 project(${TARGET} CXX)
 include(CMakePrintHelpers)
-find_package(ideal.II 0.8.0 
+find_package(ideal.II 0.9.0 
   HINTS ${ideal.II_DIR} ${IDEAL_II_DIR} ../ ../../ $ENV{IDEAL_II_DIR}
 )
  
