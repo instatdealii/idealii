@@ -334,7 +334,7 @@ void Step2::setup_system_on_slab ()
 void Step2::assemble_system_on_slab ()
 {
     idealii::spacetime::QGauss < 2 > quad ( fe.spatial ()->degree + 3 ,
-                                            fe.temporal ()->degree + 1 );
+                                            fe.temporal ()->degree + 2 );
 
     idealii::spacetime::FEValues < 2 > fe_values_spacetime (
             fe ,

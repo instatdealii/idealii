@@ -407,8 +407,8 @@ void Step4::assemble_system_on_slab ()
 {
 
     slab_system_matrix = 0;
-    idealii::spacetime::QGauss < 2 > quad ( fe.spatial ()->degree + 1 ,
-                                            fe.temporal ()->degree + 1 );
+    idealii::spacetime::QGauss < 2 > quad ( fe.spatial ()->degree + 3 ,
+                                            fe.temporal ()->degree + 2 );
 
     idealii::spacetime::FEValues < 2 > fe_values_spacetime (
             fe ,
@@ -605,8 +605,8 @@ void Step4::assemble_system_on_slab ()
 void Step4::assemble_residual_on_slab ()
 {
     slab_system_rhs = 0;
-    idealii::spacetime::QGauss < 2 > quad ( fe.spatial ()->degree + 1 ,
-                                            fe.temporal ()->degree + 1 );
+    idealii::spacetime::QGauss < 2 > quad ( fe.spatial ()->degree + 3 ,
+                                            fe.temporal ()->degree + 2 );
 
     idealii::spacetime::FEValues < 2 > fe_values_spacetime (
             fe ,
