@@ -13,18 +13,14 @@
 //
 // ---------------------------------------------------------------------
 
-
 #ifndef __IDEAL_II_DISTRIBUTED_SLAB_TRIA_inst_in
 #define __IDEAL_II_DISTRIBUTED_SLAB_TRIA_inst_in
 
-namespace idealii{
-namespace slab{
-namespace parallel{
-namespace distributed{
-	template class Triangulation<2>;
-	template class Triangulation<3>;
-	
-}}}} //namespaces
+namespace idealii::slab::parallel::distributed
+{
+    template class Triangulation<2> ;
+    template class Triangulation<3> ;
 
+} //namespaces
 
 #endif

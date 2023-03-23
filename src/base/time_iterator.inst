@@ -16,10 +16,11 @@
 #ifndef __IDEAL_II_BASE_TIME_ITERATOR_inst
 #define __IDEAL_II_BASE_TIME_ITERATOR_inst
 
-namespace idealii{
+namespace idealii
+{
 
-template class TimeIteratorCollection<2>;
-template class TimeIteratorCollection<3>;
+    template class TimeIteratorCollection<2> ;
+    template class TimeIteratorCollection<3> ;
 }
 
 #endif

@@ -13,17 +13,14 @@
 //
 // ---------------------------------------------------------------------
 
-
 #ifndef __IDEAL_II_GRID_FIXED_TRIA_inst
 #define __IDEAL_II_GRID_FIXED_TRIA_inst
 
-namespace idealii{
-namespace spacetime{
-namespace fixed{
-	template class Triangulation<2>;
-	template class Triangulation<3>;
-	
-}}} //namespaces
+namespace idealii::spacetime::fixed
+{
+    template class Triangulation<2> ;
+    template class Triangulation<3> ;
 
+} //namespaces
 
 #endif
