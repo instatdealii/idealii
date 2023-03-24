@@ -28,7 +28,7 @@ namespace idealii::spacetime
 #ifdef DEAL_II_WITH_MPI
     template<int dim>
     DoFHandler<dim>::DoFHandler (
-            spacetime::parallel::distributed::Triangulation<dim> *tria )
+      spacetime::parallel::distributed::Triangulation<dim> *tria )
     {
         _tria = nullptr;
         _par_dist_tria = tria;
@@ -50,20 +50,16 @@ namespace idealii::spacetime
             slab::TriaIterator<dim> tria_end = this->_tria->end ();
             for ( ; tria_it != tria_end ; ++tria_it )
             {
-                this->_dof_handlers.push_back (
-                        idealii::slab::DoFHandler<dim> ( *tria_it ) );
+                this->_dof_handlers.push_back ( idealii::slab::DoFHandler<dim> ( *tria_it ) );
             }
         }
         else if ( _par_dist_tria != nullptr )
         {
-            slab::parallel::distributed::TriaIterator<dim> tria_it =
-                    this->_par_dist_tria->begin ();
-            slab::parallel::distributed::TriaIterator<dim> tria_end =
-                    this->_par_dist_tria->end ();
+            slab::parallel::distributed::TriaIterator<dim> tria_it = this->_par_dist_tria->begin ();
+            slab::parallel::distributed::TriaIterator<dim> tria_end = this->_par_dist_tria->end ();
             for ( ; tria_it != tria_end ; ++tria_it )
             {
-                this->_dof_handlers.push_back (
-                        idealii::slab::DoFHandler<dim> ( *tria_it ) );
+                this->_dof_handlers.push_back ( idealii::slab::DoFHandler<dim> ( *tria_it ) );
             }
         }
         else
@@ -73,16 +69,16 @@ namespace idealii::spacetime
     }
 
     template<int dim>
-    slab::DoFHandlerIterator<dim> DoFHandler<dim>::begin ()
-    {
-        return _dof_handlers.begin ();
-    }
+        slab::DoFHandlerIterator<dim> DoFHandler<dim>::begin ()
+        {
+            return _dof_handlers.begin ();
+        }
 
     template<int dim>
-    slab::DoFHandlerIterator<dim> DoFHandler<dim>::end ()
-    {
-        return _dof_handlers.end ();
-    }
+        slab::DoFHandlerIterator<dim> DoFHandler<dim>::end ()
+        {
+            return _dof_handlers.end ();
+        }
 }
 
 #include "spacetime_dof_handler.inst"

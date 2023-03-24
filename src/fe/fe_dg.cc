@@ -20,23 +20,22 @@ namespace idealii::spacetime
 {
     template<int dim>
     DG_FiniteElement<dim>::DG_FiniteElement (
-            std::shared_ptr<dealii::FiniteElement<dim>> fe_space ,
-            const unsigned int r , support_type type )
+        std::shared_ptr<dealii::FiniteElement<dim>> fe_space ,
+        const unsigned int r , support_type type )
     :
-            dofs_per_cell ( fe_space->dofs_per_cell * ( r + 1 ) ), _fe_space (
-                    fe_space ), _type ( type )
+        dofs_per_cell ( fe_space->dofs_per_cell * ( r + 1 ) ),
+        _fe_space (fe_space ),
+        _type ( type )
     {
         if ( type == support_type::Legendre || r == 0 )
         {
             _fe_time =
-                    std::make_shared<dealii::FE_DGQArbitraryNodes<1>> (
-                            dealii::QGauss<1> ( r + 1 ) );
+                std::make_shared<dealii::FE_DGQArbitraryNodes<1>> (dealii::QGauss<1> ( r + 1 ) );
         }
         else
         {
             _fe_time =
-                    std::make_shared<dealii::FE_DGQArbitraryNodes<1>> (
-                            dealii::QGaussLobatto<1> ( r + 1 ) );
+                std::make_shared<dealii::FE_DGQArbitraryNodes<1>> (dealii::QGaussLobatto<1> ( r + 1 ) );
         }
     }
 

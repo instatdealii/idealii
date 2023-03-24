@@ -22,9 +22,7 @@ namespace idealii::spacetime::parallel::distributed
     Triangulation<dim>::Triangulation ()
     {
         trias =
-                std::list<
-                idealii::slab::parallel::distributed::Triangulation<
-                dim>> ();
+            std::list<idealii::slab::parallel::distributed::Triangulation<dim>> ();
     }
 
     template<int dim>

@@ -26,24 +26,28 @@ namespace idealii::spacetime::fixed
 
     template<int dim>
     void Triangulation<dim>::generate (
-            std::shared_ptr<dealii::Triangulation<dim>> space_tria ,
-            unsigned int M , double t0 , double T )
+        std::shared_ptr<dealii::Triangulation<dim>> space_tria ,
+        unsigned int M ,
+        double t0 ,
+        double T )
     {
         Assert( space_tria.use_count () , dealii::ExcNotInitialized () );
         double t = t0;
         double k = ( T - t0 ) / M;
         for ( unsigned int i = 0 ; i < M ; i++ )
         {
-            this->trias.push_back (
-                    idealii::slab::Triangulation<dim> ( space_tria , t ,
-                                                        t + k ) );
+            this->trias.push_back ( idealii::slab::Triangulation<dim> (
+                                        space_tria ,
+                                        t ,
+                                        t + k ) );
             t += k;
         }
     }
 
     template<int dim>
     void Triangulation<dim>::refine_global (
-            const unsigned int times_space , const unsigned int times_time )
+        const unsigned int times_space ,
+        const unsigned int times_time )
     {
 
         //do refinement

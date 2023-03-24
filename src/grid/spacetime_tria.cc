@@ -18,28 +18,28 @@
 namespace idealii::spacetime
 {
     template<int dim>
-        Triangulation<dim>::Triangulation ()
-        {
-            trias = std::list<idealii::slab::Triangulation<dim>> ();
-        }
+    Triangulation<dim>::Triangulation ()
+    {
+        trias = std::list<idealii::slab::Triangulation<dim>> ();
+    }
 
     template<int dim>
-        unsigned int Triangulation<dim>::M ()
-        {
-            return trias.size ();
-        }
+    unsigned int Triangulation<dim>::M ()
+    {
+        return trias.size ();
+    }
 
     template<int dim>
-        slab::TriaIterator<dim> Triangulation<dim>::begin ()
-        {
-            return trias.begin ();
-        }
+    slab::TriaIterator<dim> Triangulation<dim>::begin ()
+    {
+        return trias.begin ();
+    }
 
     template<int dim>
-        slab::TriaIterator<dim> Triangulation<dim>::end ()
-        {
-            return trias.end ();
-        }
+    slab::TriaIterator<dim> Triangulation<dim>::end ()
+    {
+        return trias.end ();
+    }
 
 }
 
