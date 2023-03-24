@@ -50,12 +50,11 @@ namespace idealii::slab::VectorTools
      */
     template<int dim,typename Number>
     void interpolate_boundary_values (
-            idealii::slab::DoFHandler<dim> &dof_handler ,
-            const dealii::types::boundary_id boundary_component ,
-            dealii::Function<dim,Number> &boundary_function ,
-            std::shared_ptr<dealii::AffineConstraints<Number>> spacetime_constraints ,
-            const dealii::ComponentMask &component_mask =
-                    dealii::ComponentMask () );
+        idealii::slab::DoFHandler<dim> &dof_handler ,
+        const dealii::types::boundary_id boundary_component ,
+        dealii::Function<dim,Number> &boundary_function ,
+        std::shared_ptr<dealii::AffineConstraints<Number>> spacetime_constraints ,
+        const dealii::ComponentMask &component_mask = dealii::ComponentMask () );
 
     /**
      * @brief Compute space-time constraints on the solution corresponding to
@@ -76,22 +75,21 @@ namespace idealii::slab::VectorTools
      */
     template<int dim,typename Number = double>
     void interpolate_boundary_values (
-            dealii::IndexSet space_relevant_dofs ,
-            idealii::slab::DoFHandler<dim> &dof_handler ,
-            const dealii::types::boundary_id boundary_component ,
-            dealii::Function<dim,Number> &boundary_function ,
-            std::shared_ptr<dealii::AffineConstraints<Number>> spacetime_constraints ,
-            const dealii::ComponentMask &component_mask =
-                    dealii::ComponentMask () )
+        dealii::IndexSet space_relevant_dofs ,
+        idealii::slab::DoFHandler<dim> &dof_handler ,
+        const dealii::types::boundary_id boundary_component ,
+        dealii::Function<dim,Number> &boundary_function ,
+        std::shared_ptr<dealii::AffineConstraints<Number>> spacetime_constraints ,
+        const dealii::ComponentMask &component_mask = dealii::ComponentMask () )
     {
         auto space_constraints = std::make_shared<
                 dealii::AffineConstraints<Number>> ();
         space_constraints->reinit ( space_relevant_dofs );
-        dealii::Quadrature < 1 > quad_time (
-                dof_handler.temporal ()->get_fe ( 0 ).get_unit_support_points () );
+        dealii::Quadrature < 1 > quad_time ( dof_handler.temporal ()->get_fe (0).get_unit_support_points () );
         dealii::FEValues < 1 > fev (
-                dof_handler.temporal ()->get_fe ( 0 ) , quad_time ,
-                dealii::update_quadrature_points );
+            dof_handler.temporal ()->get_fe ( 0 ) ,
+            quad_time ,
+            dealii::update_quadrature_points );
 
         unsigned int n_space_dofs = dof_handler.n_dofs_space ();
         unsigned int time_dof = 0;
@@ -107,27 +105,22 @@ namespace idealii::slab::VectorTools
             {
                 space_constraints->clear ();
                 time_dof = local_indices[q];
-                boundary_function.set_time (
-                        fev.quadrature_point ( q )[0] );
+                boundary_function.set_time ( fev.quadrature_point ( q )[0] );
                 dealii::VectorTools::interpolate_boundary_values (
-                        *dof_handler.spatial () ,
-                        boundary_component , boundary_function ,
-                        *space_constraints , component_mask );
-                //				space_constraints->print(std::cout);
-                for ( auto id = space_relevant_dofs.begin () ;
-                        id != space_relevant_dofs.end () ; id++ )
+                    *dof_handler.spatial () ,
+                    boundary_component ,
+                    boundary_function ,
+                    *space_constraints ,
+                    component_mask );
+
+                for ( auto id = space_relevant_dofs.begin () ; id != space_relevant_dofs.end () ; id++ )
                 {
                     //check if this is a constrained dof
                     if ( space_constraints->is_constrained ( *id ) )
                     {
-                        const std::vector<
-                        std::pair<
-                        dealii::types::global_dof_index,
-                        double>> *entries =
-                                space_constraints->get_constraint_entries (
-                                        *id );
-                        spacetime_constraints->add_line (
-                                *id + time_dof * n_space_dofs );
+                        const std::vector<std::pair<dealii::types::global_dof_index, double>> *entries
+                        = space_constraints->get_constraint_entries ( *id );
+                        spacetime_constraints->add_line ( *id + time_dof * n_space_dofs );
                         //non Dirichlet constraint
                         if ( entries->size () > 0 )
                         {
@@ -136,18 +129,17 @@ namespace idealii::slab::VectorTools
                                 std::cout << entry.first << ","
                                         << entry.second << std::endl;
                                 spacetime_constraints->add_entry (
-                                        *id + time_dof * n_space_dofs ,
-                                        entry.first + time_dof
-                                        * n_space_dofs ,
-                                        entry.second );
+                                    *id + time_dof * n_space_dofs ,
+                                    entry.first + time_dof * n_space_dofs ,
+                                    entry.second
+                                );
                             }
                         }
                         else
                         {
                             spacetime_constraints->set_inhomogeneity (
-                                    *id + time_dof * n_space_dofs ,
-                                    space_constraints->get_inhomogeneity (
-                                            *id ) );
+                                *id + time_dof * n_space_dofs ,
+                                space_constraints->get_inhomogeneity ( *id ) );
                         }
                     }
                 }
@@ -174,11 +166,11 @@ namespace idealii::slab::VectorTools
     template<int dim,typename Number>
     void
     project_boundary_values_curl_conforming_l2 (
-            idealii::slab::DoFHandler<dim> &dof_handler ,
-            unsigned int first_vector_component ,
-            dealii::Function<dim,Number> &boundary_function ,
-            const dealii::types::boundary_id boundary_component ,
-            std::shared_ptr<dealii::AffineConstraints<Number>> spacetime_constraints );
+        idealii::slab::DoFHandler<dim> &dof_handler ,
+        unsigned int first_vector_component ,
+        dealii::Function<dim,Number> &boundary_function ,
+        const dealii::types::boundary_id boundary_component ,
+        std::shared_ptr<dealii::AffineConstraints<Number>> spacetime_constraints );
 
     /**
      * @brief Get the spatial subvector of a specific temporal dof of the corresponding slab.
@@ -195,8 +187,7 @@ namespace idealii::slab::VectorTools
         unsigned int n_dofs_space = space_vector.size ();
         for ( unsigned int i = 0 ; i < n_dofs_space ; i++ )
         {
-            space_vector[i] = spacetime_vector[i
-                                               + dof_index * n_dofs_space];
+            space_vector[i] = spacetime_vector[i + dof_index * n_dofs_space];
         }
     }
 
@@ -208,16 +199,14 @@ namespace idealii::slab::VectorTools
      * @param dof_index The index of the DoF to be extracted.
      */
     void extract_subvector_at_time_dof (
-            const dealii::TrilinosWrappers::MPI::Vector &spacetime_vector ,
-            dealii::TrilinosWrappers::MPI::Vector &space_vector ,
-            unsigned int dof_index )
+        const dealii::TrilinosWrappers::MPI::Vector &spacetime_vector ,
+        dealii::TrilinosWrappers::MPI::Vector &space_vector ,
+        unsigned int dof_index )
     {
-        dealii::IndexSet space_owned =
-                space_vector.locally_owned_elements ();
+        dealii::IndexSet space_owned =  space_vector.locally_owned_elements ();
         unsigned int n_dofs_space = space_vector.size ();
         dealii::TrilinosWrappers::MPI::Vector tmp;
-        tmp.reinit ( space_owned ,
-                     space_vector.get_mpi_communicator () );
+        tmp.reinit ( space_owned ,  space_vector.get_mpi_communicator () );
         for ( auto id = space_owned.begin () ;
                 id != space_owned.end () ; id++ )
         {
@@ -238,9 +227,10 @@ namespace idealii::slab::VectorTools
      */
     template<int dim>
     void extract_subvector_at_time_point (
-            slab::DoFHandler<dim> &dof_handler ,
-            const dealii::Vector<double> &spacetime_vector ,
-            dealii::Vector<double> &space_vector , const double t )
+        slab::DoFHandler<dim> &dof_handler ,
+        const dealii::Vector<double> &spacetime_vector ,
+        dealii::Vector<double> &space_vector ,
+        const double t )
     {
         space_vector = 0;
         unsigned int n_dofs_space = space_vector.size ();
@@ -258,21 +248,19 @@ namespace idealii::slab::VectorTools
             dealii::Point < 1 > qpoint ( _t );
             const dealii::Quadrature<1> time_qf ( qpoint );
             dealii::FEValues < 1 > time_values (
-                    dof_handler.temporal ()->get_fe () , time_qf ,
-                    dealii::update_values );
+                dof_handler.temporal ()->get_fe () ,
+                time_qf ,
+                dealii::update_values );
             time_values.reinit ( cell );
             unsigned int offset = cell->index ()
-                                                * dof_handler.dofs_per_cell_time ()
-                                                * n_dofs_space;
-            for ( unsigned int ii = 0 ;
-                    ii < dof_handler.dofs_per_cell_time () ; ii++ )
+                                * dof_handler.dofs_per_cell_time ()
+                                * n_dofs_space;
+            for ( unsigned int ii = 0 ;  ii < dof_handler.dofs_per_cell_time () ; ii++ )
             {
                 double factor = time_values.shape_value ( ii , 0 );
                 for ( unsigned int i = 0 ; i < n_dofs_space ; i++ )
                 {
-                    space_vector[i] += spacetime_vector[i
-                                                        + ii * n_dofs_space + offset]
-                                                        * factor;
+                    space_vector[i] += spacetime_vector[i + ii * n_dofs_space + offset] * factor;
                 }
             }
         }
@@ -311,11 +299,11 @@ namespace idealii::slab::VectorTools
             dealii::Point < 1 > qpoint ( _t );
             const dealii::Quadrature<1> time_qf ( qpoint );
             dealii::FEValues < 1 > time_values (
-                    dof_handler.temporal ()->get_fe () , time_qf ,
-                    dealii::update_values );
+                dof_handler.temporal ()->get_fe () ,
+                time_qf ,
+                dealii::update_values );
             time_values.reinit ( cell );
-            dealii::IndexSet space_owned =
-                    space_vector.locally_owned_elements ();
+            dealii::IndexSet space_owned =  space_vector.locally_owned_elements ();
             unsigned int n_dofs_space = space_vector.size ();
             dealii::TrilinosWrappers::MPI::Vector tmp;
             tmp.reinit ( space_owned ,
@@ -328,9 +316,7 @@ namespace idealii::slab::VectorTools
                 for ( auto id = space_owned.begin () ;
                         id != space_owned.end () ; id++ )
                 {
-                    tmp[*id] += spacetime_vector[*id
-                                                 + ii * n_dofs_space]
-                                                 * factor;
+                    tmp[*id] += spacetime_vector[*id + ii * n_dofs_space] * factor;
                 }
                 space_vector = tmp;
             }

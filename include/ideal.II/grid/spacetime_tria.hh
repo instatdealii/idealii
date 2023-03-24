@@ -50,8 +50,8 @@ namespace idealii::spacetime
          * @param T The temporal endpoint. Defaults to 1.
          */
         virtual void generate (
-                std::shared_ptr<dealii::Triangulation<dim>> space_tria ,
-                unsigned int M , double t0 = 0. , double T = 1. )=0;
+            std::shared_ptr<dealii::Triangulation<dim>> space_tria ,
+            unsigned int M , double t0 = 0. , double T = 1. )=0;
 
         /**
          * @brief Return the number of slabs in the triangulation.
@@ -72,8 +72,8 @@ namespace idealii::spacetime
          * @param times_time Number of times the temporal meshes are refined.
          */
         virtual void refine_global (
-                const unsigned int times_space = 1 ,
-                const unsigned int times_time = 1 )=0;
+            const unsigned int times_space = 1 ,
+            const unsigned int times_time = 1 )=0;
 
     protected:
         std::list<slab::Triangulation<dim>> trias;
