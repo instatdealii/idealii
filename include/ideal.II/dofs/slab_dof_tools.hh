@@ -88,11 +88,11 @@ namespace idealii::slab::DoFTools
      */
     template<int dim>
     void make_upwind_sparsity_pattern (
-            DoFHandler<dim> &dof ,
-            dealii::DynamicSparsityPattern &st_dsp ,
-            std::shared_ptr<dealii::AffineConstraints<double>> space_constraints =
-                    std::make_shared<dealii::AffineConstraints<double>> () ,
-                    const bool keep_constrained_dofs = true )
+        DoFHandler<dim> &dof ,
+        dealii::DynamicSparsityPattern &st_dsp ,
+        std::shared_ptr<dealii::AffineConstraints<double>> space_constraints =
+            std::make_shared<dealii::AffineConstraints<double>> () ,
+        const bool keep_constrained_dofs = true )
     {
         dealii::DynamicSparsityPattern space_dsp ( dof.n_dofs_space () );
         dealii::DoFTools::make_sparsity_pattern ( *dof.spatial () ,
@@ -108,8 +108,8 @@ namespace idealii::slab::DoFTools
             for ( auto &time_entry : time_dsp )
             {
                 st_dsp.add (
-                        time_entry.row () * dof.n_dofs_space () + space_entry.row () ,//test function
-                        time_entry.column () * dof.n_dofs_space () + space_entry.column ()// trial function
+                    time_entry.row () * dof.n_dofs_space () + space_entry.row () ,//test function
+                    time_entry.column () * dof.n_dofs_space () + space_entry.column ()// trial function
                 );
             }
         }
@@ -132,8 +132,8 @@ namespace idealii::slab::DoFTools
             const dealii::Table<2,dealii::DoFTools::Coupling> &space_couplings ,
             dealii::DynamicSparsityPattern &st_dsp ,
             std::shared_ptr<dealii::AffineConstraints<double>> space_constraints =
-                    std::make_shared<dealii::AffineConstraints<double>> () ,
-                    const bool keep_constrained_dofs = true )
+                std::make_shared<dealii::AffineConstraints<double>> () ,
+            const bool keep_constrained_dofs = true )
     {
         dealii::DynamicSparsityPattern space_dsp ( dof.n_dofs_space () );
         dealii::DoFTools::make_sparsity_pattern ( *dof.spatial () ,
@@ -174,42 +174,38 @@ namespace idealii::slab::DoFTools
             idealii::slab::DoFHandler<dim> &dof_handler ,
             std::shared_ptr<dealii::AffineConstraints<Number>> spacetime_constraints )
     {
-        auto space_constraints = std::make_shared<
-                dealii::AffineConstraints<Number>> ();
+        auto space_constraints = std::make_shared<dealii::AffineConstraints<Number>> ();
         dealii::DoFTools::make_hanging_node_constraints (
-                *dof_handler.spatial () , *space_constraints );
+            *dof_handler.spatial () ,
+            *space_constraints );
 
         unsigned int n_space_dofs = dof_handler.n_dofs_space ();
-        for ( unsigned int time_dof = 0 ;
-                time_dof < dof_handler.n_dofs_time () ; time_dof++ )
+        for ( unsigned int time_dof = 0 ; time_dof < dof_handler.n_dofs_time () ; time_dof++ )
         {
 
             for ( unsigned int i = 0 ; i < n_space_dofs ; i++ )
             {
                 if ( space_constraints->is_constrained ( i ) )
                 {
-                    const std::vector<
-                    std::pair<dealii::types::global_dof_index,double>> *entries =
-                            space_constraints->get_constraint_entries ( i );
-                    spacetime_constraints->add_line (
-                            i + time_dof * n_space_dofs );
+                    const std::vector<std::pair<dealii::types::global_dof_index,double>> *entries =
+                        space_constraints->get_constraint_entries ( i );
+                    spacetime_constraints->add_line ( i + time_dof * n_space_dofs );
                     //non Dirichlet constraint
                     if ( entries->size () > 0 )
                     {
                         for ( auto entry : *entries )
                         {
                             spacetime_constraints->add_entry (
-                                    i + time_dof * n_space_dofs ,
-                                    entry.first + time_dof * n_space_dofs ,
-                                    entry.second );
+                                i + time_dof * n_space_dofs ,
+                                entry.first + time_dof * n_space_dofs ,
+                                entry.second );
                         }
                     }
                     else
                     {
                         spacetime_constraints->set_inhomogeneity (
-                                i + time_dof * n_space_dofs ,
-                                space_constraints->get_inhomogeneity (
-                                        i ) );
+                            i + time_dof * n_space_dofs ,
+                            space_constraints->get_inhomogeneity ( i ) );
                     }
                 }
             }
@@ -231,16 +227,16 @@ namespace idealii::slab::DoFTools
      */
     template<int dim,typename Number>
     void make_hanging_node_constraints (
-            dealii::IndexSet &space_relevant_dofs ,
-            idealii::slab::DoFHandler<dim> &dof_handler ,
-            std::shared_ptr<dealii::AffineConstraints<Number>> spacetime_constraints )
+        dealii::IndexSet &space_relevant_dofs ,
+        idealii::slab::DoFHandler<dim> &dof_handler ,
+        std::shared_ptr<dealii::AffineConstraints<Number>> spacetime_constraints )
     {
 
-        auto space_constraints = std::make_shared<
-                dealii::AffineConstraints<Number>> ();
+        auto space_constraints = std::make_shared<dealii::AffineConstraints<Number>> ();
         space_constraints->reinit ( space_relevant_dofs );
         dealii::DoFTools::make_hanging_node_constraints (
-                *dof_handler.spatial () , *space_constraints );
+            *dof_handler.spatial () ,
+            *space_constraints );
 
         unsigned int n_space_dofs = dof_handler.n_dofs_space ();
         for ( unsigned int time_dof = 0 ;
@@ -251,29 +247,26 @@ namespace idealii::slab::DoFTools
             {
                 if ( space_constraints->is_constrained ( *id ) )
                 {
-                    const std::vector<
-                    std::pair<dealii::types::global_dof_index,double>> *entries =
-                            space_constraints->get_constraint_entries (
-                                    *id );
-                    spacetime_constraints->add_line (
-                            *id + time_dof * n_space_dofs );
+                    const std::vector<std::pair<dealii::types::global_dof_index,double>> *entries =
+                        space_constraints->get_constraint_entries ( *id );
+
+                    spacetime_constraints->add_line ( *id + time_dof * n_space_dofs );
                     //non Dirichlet constraint
                     if ( entries->size () > 0 )
                     {
                         for ( auto entry : *entries )
                         {
                             spacetime_constraints->add_entry (
-                                    *id + time_dof * n_space_dofs ,
-                                    entry.first + time_dof * n_space_dofs ,
-                                    entry.second );
+                                *id + time_dof * n_space_dofs ,
+                                entry.first + time_dof * n_space_dofs ,
+                                entry.second );
                         }
                     }
                     else
                     {
                         spacetime_constraints->set_inhomogeneity (
-                                *id + time_dof * n_space_dofs ,
-                                space_constraints->get_inhomogeneity (
-                                        *id ) );
+                            *id + time_dof * n_space_dofs ,
+                            space_constraints->get_inhomogeneity ( *id ) );
                     }
                 }
             }
@@ -289,23 +282,23 @@ namespace idealii::slab::DoFTools
      * owned cell.s
      */
     template<int dim>
-    dealii::IndexSet extract_locally_relevant_dofs (
-            slab::DoFHandler<dim> &dof_handler )
+    dealii::IndexSet extract_locally_relevant_dofs ( slab::DoFHandler<dim> &dof_handler )
     {
         dealii::IndexSet space_relevant_dofs;
         dealii::DoFTools::extract_locally_relevant_dofs (
-                *dof_handler.spatial () , space_relevant_dofs );
+                *dof_handler.spatial () ,
+                space_relevant_dofs );
 
-        dealii::IndexSet spacetime_relevant_dofs (
-                space_relevant_dofs.size () * dof_handler.n_dofs_time () );
+        dealii::IndexSet spacetime_relevant_dofs ( space_relevant_dofs.size ()
+                                                 * dof_handler.n_dofs_time () );
 
-        for ( dealii::types::global_dof_index time_dof_index
-                { 0 } ; time_dof_index < dof_handler.n_dofs_time () ;
-                time_dof_index++ )
+        for ( dealii::types::global_dof_index time_dof_index = 0 ;
+              time_dof_index < dof_handler.n_dofs_time () ;
+              time_dof_index++ )
         {
             spacetime_relevant_dofs.add_indices (
-                    space_relevant_dofs ,
-                    time_dof_index * dof_handler.n_dofs_space ()//offset
+                space_relevant_dofs ,
+                time_dof_index * dof_handler.n_dofs_space ()//offset
             );
         }
 

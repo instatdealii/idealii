@@ -53,28 +53,24 @@ namespace idealii::spacetime
          * This function iterates over all slab::Triangulation objects in the
          * underlying triangulation and constructs one slab::DoFHandler for each.
          */
-        void
-        generate ();
+        void generate ();
 
         /**
          * @brief The number of slabs.
          * @return The size of the underlying list.
          */
-        unsigned int
-        M ();
+        unsigned int M ();
 
         /**
          * @brief An iterator pointing to the first slab::DoFHandler.
          * @return The result of the begin() call to the underlying list.
          */
-        slab::DoFHandlerIterator<dim>
-        begin ();
+        slab::DoFHandlerIterator<dim>  begin ();
         /**
          * @brief An iterator pointing behind the last slab::DoFHandler.
          * @return The result of the end() call to the underlying list.
          */
-        slab::DoFHandlerIterator<dim>
-        end ();
+        slab::DoFHandlerIterator<dim> end ();
 
     protected:
         Triangulation<dim> *_tria;

@@ -79,6 +79,7 @@ namespace idealii::slab::parallel::distributed{
          * @brief The endpoint of the temporal triangulation.
          */
         double endpoint();
+
     private:
         std::shared_ptr<dealii::parallel::distributed::Triangulation<dim>> _spatial_tria;
         std::shared_ptr<dealii::Triangulation<1>> _temporal_tria;

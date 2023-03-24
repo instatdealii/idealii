@@ -20,40 +20,29 @@ namespace idealii::slab
     template<int dim>
     DoFHandler<dim>::DoFHandler ( Triangulation<dim> &tria )
     {
-        Assert( tria.spatial ().use_count () ,
-                dealii::ExcNotInitialized () );
-        Assert( tria.temporal ().use_count () ,
-                dealii::ExcNotInitialized () );
-        _spatial_dof = std::make_shared<dealii::DoFHandler<dim>> (
-                *tria.spatial () );
-        _temporal_dof = std::make_shared<dealii::DoFHandler<1>> (
-                *tria.temporal () );
+        Assert( tria.spatial ().use_count () , dealii::ExcNotInitialized () );
+        Assert( tria.temporal ().use_count () , dealii::ExcNotInitialized () );
+        _spatial_dof = std::make_shared<dealii::DoFHandler<dim>> ( *tria.spatial () );
+        _temporal_dof = std::make_shared<dealii::DoFHandler<1>> ( *tria.temporal () );
         _locally_owned_dofs = dealii::IndexSet ();
     }
 
     template<int dim>
-    DoFHandler<dim>::DoFHandler (
-            slab::parallel::distributed::Triangulation<dim> &tria )
+    DoFHandler<dim>::DoFHandler ( slab::parallel::distributed::Triangulation<dim> &tria )
     {
-        Assert( tria.spatial ().use_count () ,
-                dealii::ExcNotInitialized () );
-        Assert( tria.temporal ().use_count () ,
-                dealii::ExcNotInitialized () );
-        _spatial_dof = std::make_shared<dealii::DoFHandler<dim>> (
-                *tria.spatial () );
-        _temporal_dof = std::make_shared<dealii::DoFHandler<1>> (
-                *tria.temporal () );
+        Assert( tria.spatial ().use_count () , dealii::ExcNotInitialized () );
+        Assert( tria.temporal ().use_count () , dealii::ExcNotInitialized () );
+        _spatial_dof = std::make_shared<dealii::DoFHandler<dim>> ( *tria.spatial () );
+        _temporal_dof = std::make_shared<dealii::DoFHandler<1>> ( *tria.temporal () );
         _locally_owned_dofs = dealii::IndexSet ();
     }
 
     template<int dim>
     DoFHandler<dim>::DoFHandler ( const DoFHandler<dim> &other )
     {
-        Assert( other._spatial_dof.use_count () ,
-                dealii::ExcNotInitialized () );
+        Assert( other._spatial_dof.use_count () , dealii::ExcNotInitialized () );
         _spatial_dof = other._spatial_dof;
-        Assert( other._temporal_dof.use_count () ,
-                dealii::ExcNotInitialized () );
+        Assert( other._temporal_dof.use_count () , dealii::ExcNotInitialized () );
         _temporal_dof = other._temporal_dof;
         _locally_owned_dofs = other._locally_owned_dofs;
         _fe_support_type = other._fe_support_type;
@@ -73,25 +62,23 @@ namespace idealii::slab
 
     template<int dim>
     void DoFHandler<dim>::distribute_dofs (
-            spacetime::DG_FiniteElement<dim> fe )
+        spacetime::DG_FiniteElement<dim> fe )
     {
         _fe_support_type = fe.type ();
         _spatial_dof->distribute_dofs ( *fe.spatial () );
         _temporal_dof->distribute_dofs ( *fe.temporal () );
-        dealii::IndexSet space_owned_dofs =
-                _spatial_dof->locally_owned_dofs ();
+        dealii::IndexSet space_owned_dofs = _spatial_dof->locally_owned_dofs ();
 
         _locally_owned_dofs.clear ();
-        _locally_owned_dofs.set_size (
-                space_owned_dofs.size () * _temporal_dof->n_dofs () );
+        _locally_owned_dofs.set_size ( space_owned_dofs.size () * _temporal_dof->n_dofs () );
 
-        for ( dealii::types::global_dof_index time_dof_index
-                { 0 } ; time_dof_index < _temporal_dof->n_dofs () ;
-                time_dof_index++ )
+        for ( dealii::types::global_dof_index time_dof_index = 0 ;
+              time_dof_index < _temporal_dof->n_dofs () ;
+              time_dof_index++ )
         {
             _locally_owned_dofs.add_indices (
-                    space_owned_dofs ,
-                    time_dof_index * _spatial_dof->n_dofs () // offset
+                space_owned_dofs ,
+                time_dof_index * _spatial_dof->n_dofs () // offset
             );
         }
     }

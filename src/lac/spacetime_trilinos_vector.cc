@@ -34,8 +34,7 @@ namespace idealii::spacetime
         this->_vectors.clear ();
         for ( unsigned int i = 0 ; i < M ; i++ )
         {
-            this->_vectors.push_back (
-                    dealii::TrilinosWrappers::MPI::Vector () );
+            this->_vectors.push_back (dealii::TrilinosWrappers::MPI::Vector () );
         }
     }
 
