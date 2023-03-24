@@ -84,10 +84,10 @@ class PoisseuilleInflow : public dealii::Function<2>
 {
 public:
     PoisseuilleInflow ( double max_inflow_velocity = 1.5 , double channel_height = 0.41 )
-            :
-            Function<2> ( 3 ),
-            max_inflow_velocity ( max_inflow_velocity ),
-            H ( channel_height )
+        :
+        Function<2> ( 3 ),
+        max_inflow_velocity ( max_inflow_velocity ),
+        H ( channel_height )
     {
     }
 
@@ -197,15 +197,15 @@ private:
 };
 
 Step4::Step4 ( unsigned int temporal_degree )
-        :
-        mpi_comm ( MPI_COMM_WORLD ),
-        pout ( std::cout , dealii::Utilities::MPI::this_mpi_process ( mpi_comm ) == 0 ),
-        triangulation (),
-        dof_handler ( &triangulation ),
-        fe ( std::make_shared < dealii::FESystem< 2 >>
-                 ( dealii::FE_Q < 2 > ( 2 ) , 2 , dealii::FE_Q < 2 > ( 1 ) , 1 ) ,
-             temporal_degree ),
-        slab ( 0 )
+    :
+    mpi_comm ( MPI_COMM_WORLD ),
+    pout ( std::cout , dealii::Utilities::MPI::this_mpi_process ( mpi_comm ) == 0 ),
+    triangulation (),
+    dof_handler ( &triangulation ),
+    fe ( std::make_shared < dealii::FESystem< 2 >>
+             ( dealii::FE_Q < 2 > ( 2 ) , 2 , dealii::FE_Q < 2 > ( 1 ) , 1 ) ,
+         temporal_degree ),
+    slab ( 0 )
 {
 }
 

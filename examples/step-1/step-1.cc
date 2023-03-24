@@ -90,24 +90,22 @@ class ExactSolution : public dealii::Function<2,double>
 {
 public:
     ExactSolution ()
-    :
+        :
         dealii::Function<2,double> ()
-        {
-        }
+    {
+    }
     double
     value ( const dealii::Point<2> &p ,
             const unsigned int component = 0 ) const;
 };
 
-double ExactSolution::value (
-        const dealii::Point<2> &p ,
-        [[maybe_unused]] const unsigned int component ) const
+double ExactSolution::value ( const dealii::Point<2> &p ,
+                              [[maybe_unused]] const unsigned int component ) const
 {
     double t = get_time ();
     double x = p ( 0 );
     double y = p ( 1 );
-    double return_value = ( x * x - x ) * ( y * y - y ) * t * 0.25;
-    return return_value;
+    return ( x * x - x ) * ( y * y - y ) * t * 0.25;
 }
 
 /**
@@ -210,20 +208,20 @@ private:
 
 // constructor
 Step1::Step1 ( unsigned int spatial_degree , unsigned int temporal_degree )
-:
-                // space-time triangulation
-                triangulation (),
-                // DoFHandler has to get pointer to space-time tria
-                // as different types (e.g. MPI parallel triangulations) can't be derived
-                // from a common base class due to lists of shared pointers.
-                dof_handler ( &triangulation ),
-                // space-time finite element with
-                // * continuous Lagrangian FE_Q finite element in space of order spatial_degree
-                // * discontinuous Lagrangian FE_DGQ finite element in time of order temporal_degree
-                fe ( std::make_shared < dealii::FE_Q < 2 >> ( spatial_degree ) ,
-                     temporal_degree ),
-                     // initialize current slab number to 0
-                     slab ( 0 )
+        :
+        // space-time triangulation
+        triangulation (),
+        // DoFHandler has to get pointer to space-time tria
+        // as different types (e.g. MPI parallel triangulations) can't be derived
+        // from a common base class due to lists of shared pointers.
+        dof_handler ( &triangulation ),
+        // space-time finite element with
+        // * continuous Lagrangian FE_Q finite element in space of order spatial_degree
+        // * discontinuous Lagrangian FE_DGQ finite element in time of order temporal_degree
+        fe ( std::make_shared < dealii::FE_Q < 2 >> ( spatial_degree ) ,
+             temporal_degree ),
+        // initialize current slab number to 0
+        slab ( 0 )
 {
 }
 
@@ -277,7 +275,8 @@ void Step1::time_marching ()
     for ( ; !tic.at_end () ; tic.increment () )
     {
         std::cout << "Starting time-step (" << slab_its.tria->startpoint ()
-                << "," << slab_its.tria->endpoint () << "]" << std::endl;
+        << ","
+        << slab_its.tria->endpoint () << "]" << std::endl;
 
         // this is the "typical" FE-code loop without the make_grid function
         setup_system_on_slab ();
@@ -299,9 +298,10 @@ void Step1::setup_system_on_slab ()
     // Distribute spatial and temporal dofs
     slab_its.dof->distribute_dofs ( fe );
     std::cout << "Number of degrees of freedom: \n\t"
-            << slab_its.dof->n_dofs_space () << " (space) * "
-            << slab_its.dof->n_dofs_time () << " (time) = "
-            << slab_its.dof->n_dofs_spacetime () << std::endl;
+              << slab_its.dof->n_dofs_space () << " (space) * "
+              << slab_its.dof->n_dofs_time () << " (time) = "
+              << slab_its.dof->n_dofs_spacetime ()
+              << std::endl;
 
     // On the first slab the initial value vector has to be set to the correct (spatial) size.
     if ( slab == 0 )
@@ -317,8 +317,10 @@ void Step1::setup_system_on_slab ()
     // The Dirichlet boundary condition for the ExactSolution is homogeneous
     auto zero = dealii::Functions::ZeroFunction<2> ();
     // Add Dirichlet boundary values to the constraint object.
-    idealii::slab::VectorTools::interpolate_boundary_values (
-            *slab_its.dof , 0 , zero , slab_constraints );
+    idealii::slab::VectorTools::interpolate_boundary_values ( *slab_its.dof ,
+                                                              0 ,
+                                                              zero ,
+                                                              slab_constraints );
 
     slab_constraints->close ();
 
@@ -327,8 +329,7 @@ void Step1::setup_system_on_slab ()
     // construct the space-time sparsity pattern
     // Upwind means we solve forward in time and need information for
     // internal jump terms for slabs with more than one temporal element.
-    idealii::slab::DoFTools::make_upwind_sparsity_pattern ( *slab_its.dof ,
-                                                            dsp );
+    idealii::slab::DoFTools::make_upwind_sparsity_pattern ( *slab_its.dof , dsp );
 
     // as in deal.II
     slab_sparsity_pattern.copy_from ( dsp );
@@ -346,19 +347,21 @@ void Step1::assemble_system_on_slab ()
     idealii::spacetime::QGauss < 2 > quad ( fe.spatial ()->degree + 2 ,
                                             fe.temporal ()->degree + 2 );
 
-    idealii::spacetime::FEValues < 2 > fe_values_spacetime (
-            fe ,
-            quad ,
-            dealii::update_values | dealii::update_gradients
-            | dealii::update_quadrature_points | dealii::update_JxW_values );
+    idealii::spacetime::FEValues < 2 > fe_values_spacetime ( fe ,
+                                                             quad ,
+                                                             dealii::update_values |
+                                                             dealii::update_gradients|
+                                                             dealii::update_quadrature_points|
+                                                             dealii::update_JxW_values );
 
     // To account for jump values we use the FEJumpValues object which is somewhat similar
     // to FEFaceValues objects.
-    idealii::spacetime::FEJumpValues < 2 > fe_jump_values_spacetime (
-            fe ,
-            quad ,
-            dealii::update_values | dealii::update_gradients
-            | dealii::update_quadrature_points | dealii::update_JxW_values );
+    idealii::spacetime::FEJumpValues < 2 > fe_jump_values_spacetime ( fe ,
+                                                                      quad ,
+                                                                      dealii::update_values |
+                                                                      dealii::update_gradients |
+                                                                      dealii::update_quadrature_points |
+                                                                      dealii::update_JxW_values );
 
     RightHandSide right_hand_side;
 
@@ -373,10 +376,10 @@ void Step1::assemble_system_on_slab ()
     // temporal elements but just the information of a single spatial element
     dealii::FullMatrix<double> cell_matrix ( N * dofs_per_spacetime_cell ,
                                              N * dofs_per_spacetime_cell );
+
     dealii::Vector<double> cell_rhs ( N * dofs_per_spacetime_cell );
 
-    std::vector < dealii::types::global_dof_index > local_spacetime_dof_index (
-            N * dofs_per_spacetime_cell );
+    std::vector < dealii::types::global_dof_index > local_spacetime_dof_index ( N * dofs_per_spacetime_cell );
 
     // index of the current temporal element to calculate index offset
     unsigned int n;
@@ -392,10 +395,9 @@ void Step1::assemble_system_on_slab ()
         fe_jump_values_spacetime.reinit_space ( cell_space );
 
         // get local contribution of the slab_initial_value vector
-        std::vector<double> initial_values (
-                fe_values_spacetime.spatial ()->n_quadrature_points );
-        fe_values_spacetime.spatial ()->get_function_values (
-                slab_initial_value , initial_values );
+        std::vector<double> initial_values ( fe_values_spacetime.spatial ()->n_quadrature_points );
+        fe_values_spacetime.spatial ()->get_function_values ( slab_initial_value ,
+                                                              initial_values );
 
         // Reset local contributions to 0
         cell_matrix = 0;
@@ -413,8 +415,7 @@ void Step1::assemble_system_on_slab ()
             fe_jump_values_spacetime.reinit_time ( cell_time );
             // get local space-time dof indices for the current
             // cell_space x cell_time tensor product cell
-            fe_values_spacetime.get_local_dof_indices (
-                    local_spacetime_dof_index );
+            fe_values_spacetime.get_local_dof_indices ( local_spacetime_dof_index );
 
             // Iterate over space-time quadrature points for
             // all contributions except for jump terms
@@ -422,11 +423,10 @@ void Step1::assemble_system_on_slab ()
             {
 
                 // set the time of the right hand side to the time current quadrature point
-                right_hand_side.set_time (
-                        fe_values_spacetime.time_quadrature_point ( q ) );
+                right_hand_side.set_time ( fe_values_spacetime.time_quadrature_point ( q ) );
                 // get the spatial location of the current quadrature point
                 const auto &x_q = fe_values_spacetime.space_quadrature_point (
-                        q );
+                                                                               q );
                 // iterate over all space-time dofs of the current element
                 // and calculate contributions at current quadrature point
                 for ( unsigned int i = 0 ; i < dofs_per_spacetime_cell ; ++i )
@@ -444,25 +444,27 @@ void Step1::assemble_system_on_slab ()
 
                         // (dt u, v)
                         cell_matrix ( i + n * dofs_per_spacetime_cell ,
-                                      j + n * dofs_per_spacetime_cell ) +=
-                                              fe_values_spacetime.shape_value ( i , q ) * fe_values_spacetime.shape_dt (
-                                                      j , q )
-                                                      * fe_values_spacetime.JxW ( q );
+                                      j + n * dofs_per_spacetime_cell )
+                        += fe_values_spacetime.shape_value ( i , q )
+                         * fe_values_spacetime.shape_dt ( j , q )
+                         * fe_values_spacetime.JxW ( q );
 
                         // (grad u, grad v)
                         cell_matrix ( i + n * dofs_per_spacetime_cell ,
-                                      j + n * dofs_per_spacetime_cell ) +=
-                                              fe_values_spacetime.shape_space_grad ( i , q ) * fe_values_spacetime.shape_space_grad (
-                                                      j , q )
-                                                      * fe_values_spacetime.JxW ( q );
+                                      j + n * dofs_per_spacetime_cell )
+                        += fe_values_spacetime.shape_space_grad ( i , q )
+                         * fe_values_spacetime.shape_space_grad ( j , q )
+                         * fe_values_spacetime.JxW ( q );
+
                     } //dofs j
-                    // Calculate local contribution of the right hand side function.
-                    // Note that the correct time was set above so it still is an evaluation
-                    // f(t,x)
-                    cell_rhs ( i + n * dofs_per_spacetime_cell ) +=
-                            fe_values_spacetime.shape_value ( i , q ) * right_hand_side.value (
-                                    x_q )
-                                    * fe_values_spacetime.JxW ( q );
+                      // Calculate local contribution of the right hand side function.
+                      // Note that the correct time was set above so it still is an evaluation
+                      // f(t,x)
+                    cell_rhs ( i + n * dofs_per_spacetime_cell )
+                    += fe_values_spacetime.shape_value ( i , q )
+                     * right_hand_side.value ( x_q )
+                     * fe_values_spacetime.JxW ( q );
+
                 } //dofs i
             } //quad
 
@@ -480,12 +482,10 @@ void Step1::assemble_system_on_slab ()
                     {
                         // (v^+, u^+)
                         cell_matrix ( i + n * dofs_per_spacetime_cell ,
-                                      j + n * dofs_per_spacetime_cell ) +=
-                                              fe_jump_values_spacetime.shape_value_plus ( i ,
-                                                                                          q )
-                                                                                          * fe_jump_values_spacetime.shape_value_plus (
-                                                                                                  j , q )
-                                                                                                  * fe_jump_values_spacetime.JxW ( q );
+                                      j + n * dofs_per_spacetime_cell )
+                        += fe_jump_values_spacetime.shape_value_plus ( i , q )
+                         * fe_jump_values_spacetime.shape_value_plus ( j , q )
+                         * fe_jump_values_spacetime.JxW ( q );
 
                         // -(v^+, u^-)
                         // If we have more than a single element per slab
@@ -493,36 +493,33 @@ void Step1::assemble_system_on_slab ()
                         // Therefore the column index is offset by one temporal element
                         if ( n > 0 )
                         {
-                            cell_matrix (
-                                    i + n * dofs_per_spacetime_cell ,
-                                    j + ( n - 1 ) * dofs_per_spacetime_cell ) -=
-                                            fe_jump_values_spacetime.shape_value_plus (
-                                                    i , q )
-                                                    * fe_jump_values_spacetime.shape_value_minus (
-                                                            j , q )
-                                                            * fe_jump_values_spacetime.JxW ( q );
+                            cell_matrix ( i + n * dofs_per_spacetime_cell ,
+                                          j + ( n - 1 ) * dofs_per_spacetime_cell )
+                            -= fe_jump_values_spacetime.shape_value_plus ( i , q )
+                             * fe_jump_values_spacetime.shape_value_minus ( j , q )
+                             * fe_jump_values_spacetime.JxW ( q );
                         }
                     } //dofs j
-                    // The first temporal element has to account for the jump to the previous
-                    // slab or the initial value in the right hand side.
+                      // The first temporal element has to account for the jump to the previous
+                      // slab or the initial value in the right hand side.
                     if ( n == 0 )
                     {
-                        cell_rhs ( i ) +=
-                                fe_jump_values_spacetime.shape_value_plus ( i ,
-                                                                            q )
-                                                                            * initial_values[q] *
-                                                                            //value of previous solution at t0
-                                                                            fe_jump_values_spacetime.JxW ( q );
+                        cell_rhs ( i )
+                        += fe_jump_values_spacetime.shape_value_plus ( i , q )
+                         * initial_values[q] //value of previous solution at t0
+                         * fe_jump_values_spacetime.JxW ( q );
                     }
-                }					//dofs i
+                } //dofs i
             }
 
         } //cell time
-        // after contributions for all temporal elements are calculated,
-        // write this information into the slab system matrix and rhs
-        slab_constraints->distribute_local_to_global (
-                cell_matrix , cell_rhs , local_spacetime_dof_index ,
-                slab_system_matrix , slab_system_rhs );
+          // after contributions for all temporal elements are calculated,
+          // write this information into the slab system matrix and rhs
+        slab_constraints->distribute_local_to_global ( cell_matrix ,
+                                                       cell_rhs ,
+                                                       local_spacetime_dof_index ,
+                                                       slab_system_matrix ,
+                                                       slab_system_rhs );
     } //cell space
 }
 
@@ -552,8 +549,8 @@ void Step1::output_results_on_slab ()
         // extract the spatial solution at the current temporal dof
         dealii::Vector<double> local_solution;
         local_solution.reinit ( slab_its.dof->n_dofs_space () );
-        idealii::slab::VectorTools::extract_subvector_at_time_dof (
-                *slab_its.solution , local_solution , i );
+        idealii::slab::VectorTools::extract_subvector_at_time_dof ( *slab_its.solution ,
+                                                                    local_solution , i );
 
         // add this vector to the DataOut object
         data_out.add_data_vector ( local_solution , "Solution" );
@@ -564,7 +561,8 @@ void Step1::output_results_on_slab ()
         // Later slabs are just offset
         std::ostringstream filename;
         filename << "solution_split_dG(" << fe.temporal ()->degree << ")_t_"
-                << slab * n_dofs + i << ".vtk";
+        << slab * n_dofs + i
+        << ".vtk";
 
         std::ofstream output ( filename.str () );
         data_out.write_vtk ( output );
