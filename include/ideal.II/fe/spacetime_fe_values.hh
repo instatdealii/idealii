@@ -89,6 +89,37 @@ namespace idealii::spacetime
                                                      unsigned int point_no );
 
             /**
+             * @brief Function values of a given vector at all quadrature points
+             * @in fe_function
+             * @out values
+             */
+            template<class InputVector>
+            void get_function_values(const InputVector& fe_function,
+                                     std::vector<dealii::Vector<typename InputVector::value_type>>& values)
+            const;
+
+            /**
+             * @brief Function values of a given vector at all quadrature points
+             * @in fe_function
+             * @out values
+             */
+            template<class InputVector>
+            void get_function_dt(const InputVector& fe_function,
+                                 std::vector<dealii::Vector<typename InputVector::value_type>>& values)
+            const;
+
+            /**
+             * @brief Spatial function gradients of a given vector at all quadrature points
+             * @in fe_function
+             * @out values
+             */
+            template<class InputVector>
+            void get_function_space_gradients(const InputVector& fe_function,
+                                              std::vector<std::vector<dealii::Tensor<1,dim,typename InputVector::value_type>>>& gradients)
+            const;
+
+
+            /**
              * @brief Value of the space-time shape function of a scalar finite element component.
              *
              * This function passes the extractor to the underlying spatial FEValues object
