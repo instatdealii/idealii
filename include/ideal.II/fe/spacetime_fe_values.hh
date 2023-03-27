@@ -89,6 +89,37 @@ namespace idealii::spacetime
                                                      unsigned int point_no );
 
             /**
+             * @brief Function values of a given vector at all quadrature points
+             * @in fe_function
+             * @out values
+             */
+            template<class InputVector>
+            void get_function_values(const InputVector& fe_function,
+                                     std::vector<dealii::Vector<typename InputVector::value_type>>& values)
+            const;
+
+            /**
+             * @brief Function values of a given vector at all quadrature points
+             * @in fe_function
+             * @out values
+             */
+            template<class InputVector>
+            void get_function_dt(const InputVector& fe_function,
+                                 std::vector<dealii::Vector<typename InputVector::value_type>>& values)
+            const;
+
+            /**
+             * @brief Spatial function gradients of a given vector at all quadrature points
+             * @in fe_function
+             * @out values
+             */
+            template<class InputVector>
+            void get_function_space_gradients(const InputVector& fe_function,
+                                              std::vector<std::vector<dealii::Tensor<1,dim,typename InputVector::value_type>>>& gradients)
+            const;
+
+
+            /**
              * @brief Value of the space-time shape function of a scalar finite element component.
              *
              * This function passes the extractor to the underlying spatial FEValues object
@@ -310,6 +341,26 @@ namespace idealii::spacetime
                                        unsigned int point_no );
 
             /**
+             * @brief Left temporal limit from below of function values of a given vector at all space quadrature points
+             * @in fe_function
+             * @out values
+             */
+            template<class InputVector>
+            void get_function_values_minus(const InputVector& fe_function,
+                                     std::vector<dealii::Vector<typename InputVector::value_type>>& values)
+            const;
+
+            /**
+             * @brief Left temporal limit from above of function values of a given vector at all space quadrature points
+             * @in fe_function
+             * @out values
+             */
+            template<class InputVector>
+            void get_function_values_plus(const InputVector& fe_function,
+                                     std::vector<dealii::Vector<typename InputVector::value_type>>& values)
+            const;
+
+            /**
              * @brief Value of the limit from above of the space-time shape function of a scalar finite element component.
              *
              * The temporal value is evaluated at the left point of the unit element i.e. 0.
@@ -372,10 +423,11 @@ namespace idealii::spacetime
             double JxW ( const unsigned int quadrature_point );
 
             /**
-             * @brief Number of spactial quadrature points per element.
+             * @brief Number of spatial quadrature points per element.
              */
             unsigned int n_quadrature_points;
             private:
+            unsigned int n_dofs_space;
             DG_FiniteElement<dim> &_fe;
             Quadrature<dim> &_quad;
 
