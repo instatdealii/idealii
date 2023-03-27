@@ -15,12 +15,9 @@
 
 ////////////////////////////////////////////////////////////////////////
 // WORK IN PROGRESS!
-// The key feature of evaluating derivatives of an FE function described
-// by a space-time vector is not yet implemented and done by hand.
-// This is needed for the Newton residual and by hand only the
-// values and spatial derivatives can be computed easily with
-// extract_subector_at_time_dof
-// This limits the example to dG(0) for now.
+// There is some problem with building the matrix or rhs for multi-element
+// slabs. Until this works, the example is limited to single element slabs
+// i.e. time-stepping style
 ////////////////////////////////////////////////////////////////////////
 
 // number of thread parallel threads, not used so far
@@ -436,8 +433,6 @@ void Step4::assemble_system_on_slab ()
     dealii::FEValuesExtractors::Scalar pressure ( 2 );
     // set the kinematic viscosity
     double nu_f = 1.0e-3;
-    dealii::TrilinosWrappers::MPI::Vector solution_extract;
-    solution_extract.reinit ( space_locally_owned_dofs , space_locally_relevant_dofs , mpi_comm );
 
     std::vector<dealii::Vector<double>> old_solution_values ( n_quad_spacetime , dealii::Vector<double> ( 3 ) );
 
@@ -451,9 +446,6 @@ void Step4::assemble_system_on_slab ()
         {
             fe_values_spacetime.reinit_space ( cell_space );
             fe_jump_values_spacetime.reinit_space ( cell_space );
-            std::vector<dealii::Tensor<1,2>> initial_values ( fe_values_spacetime.spatial ()->n_quadrature_points );
-            fe_values_spacetime.spatial ()->operator[] ( velocity ).get_function_values ( slab_initial_value ,
-                                                                                          initial_values );
 
             cell_matrix = 0;
             for ( const auto &cell_time : slab_its.dof->temporal ()->active_cell_iterators () )
@@ -600,8 +592,6 @@ void Step4::assemble_residual_on_slab ()
     dealii::FEValuesExtractors::Scalar pressure ( 2 );
     // set the kinematic viscosity
     double nu_f = 1.0e-3;
-    dealii::TrilinosWrappers::MPI::Vector solution_extract;
-    solution_extract.reinit ( space_locally_owned_dofs , space_locally_relevant_dofs , mpi_comm );
 
     std::vector<dealii::Vector<double>> old_solution_values ( n_quad_spacetime , dealii::Vector<double> ( 3 ) );
 
@@ -613,6 +603,10 @@ void Step4::assemble_residual_on_slab ()
     std::vector<dealii::Tensor<1,2>> solution_minus ( n_quad_space );
 
     std::vector<dealii::Tensor<1,2>> solution_plus ( n_quad_space );
+
+    std::vector<dealii::Vector<double>> old_solution_plus ( n_quad_space , dealii::Vector<double> ( 3 ) );
+
+    std::vector<dealii::Vector<double>> old_solution_minus ( n_quad_space , dealii::Vector<double> ( 3 ) );
 
     for ( const auto &cell_space : slab_its.dof->spatial ()->active_cell_iterators () )
     {
@@ -632,8 +626,8 @@ void Step4::assemble_residual_on_slab ()
 
                 if ( n == 0 )
                 {
-                    fe_values_spacetime.spatial ()->operator[] ( velocity ).get_function_values ( slab_initial_value ,
-                                                                                                  solution_minus );
+                    fe_values_spacetime.spatial ()->get_function_values ( slab_initial_value ,
+                                                                          old_solution_minus );
                 }
 
                 fe_values_spacetime.get_function_values( *slab_its.solution, old_solution_values );
@@ -697,41 +691,35 @@ void Step4::assemble_residual_on_slab ()
                     } //dofs i
                 } //quad
 
-                //TODO: add FEJumpValues function for the following two calls
+                fe_jump_values_spacetime.get_function_values_plus(*slab_its.solution , old_solution_plus);
 
-                // solution at left element edge i.e. u_{m-1}^+
-                idealii::slab::VectorTools::extract_subvector_at_time_point ( *slab_its.dof , *slab_its.solution ,
-                                                                              solution_extract ,
-                                                                              cell_time->face ( 0 )->center ()[0] );
-
-                fe_values_spacetime.spatial ()->operator[] ( velocity ).get_function_values ( solution_extract ,
-                                                                                              solution_plus );
+                dealii::Tensor<1,2> v_plus;
+                dealii::Tensor<1,2> v_minus;
 
                 for ( unsigned int q = 0 ; q < n_quad_space ; ++q )
                 {
+                    for ( unsigned int c = 0 ; c < 2 ; ++c){
+                        v_plus[c] = old_solution_plus[q](c);
+                        v_minus[c] = old_solution_minus[q](c);
+                    }
+
                     for ( unsigned int i = 0 ; i < dofs_per_spacetime_cell ; ++i )
                     {
                         // (v^+, u^+)
                         cell_rhs ( i + n * dofs_per_spacetime_cell )
                             -= fe_jump_values_spacetime.vector_value_plus ( velocity , i , q )
-                             * solution_plus[q] * fe_jump_values_spacetime.JxW ( q );
+                             * v_plus * fe_jump_values_spacetime.JxW ( q );
 
                         // -(v^-, u^+)
                         cell_rhs ( i + n * dofs_per_spacetime_cell )
                             += fe_jump_values_spacetime.vector_value_plus ( velocity , i , q )
-                             * solution_minus[q] * fe_jump_values_spacetime.JxW ( q );
+                             * v_minus * fe_jump_values_spacetime.JxW ( q );
 
                     } //dofs i
                 } // quad_space
                 if ( n < N - 1 )
                 {
-                    idealii::slab::VectorTools::extract_subvector_at_time_point ( *slab_its.dof ,
-                                                                                  *slab_its.solution ,
-                                                                                  solution_extract ,
-                                                                                  cell_time->face ( 1 )->center ()[0] );
-
-                    fe_values_spacetime.spatial ()->operator[] ( velocity ).get_function_values ( solution_extract ,
-                                                                                                  solution_minus );
+                    fe_jump_values_spacetime.get_function_values_minus(*slab_its.solution,old_solution_minus);
                 }
             } //cell time
             slab_zero_constraints->distribute_local_to_global ( cell_rhs , local_spacetime_dof_index ,

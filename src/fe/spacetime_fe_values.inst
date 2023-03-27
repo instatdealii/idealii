@@ -39,6 +39,7 @@ namespace idealii::spacetime
 
     template void FEValues<3>::get_function_space_gradients(const dealii::Vector<double> &,
                                                    std::vector<std::vector<dealii::Tensor<1,3,double>>>&) const;
+
     #ifdef DEAL_II_WITH_TRILINOS
     #ifdef DEAL_II_WITH_MPI
     template void FEValues<2>::get_function_values(const dealii::TrilinosWrappers::MPI::Vector&,
@@ -69,6 +70,37 @@ namespace idealii::spacetime
 
     template class FEJumpValues<2> ;
     template class FEJumpValues<3> ;
+
+
+    template void FEJumpValues<2>::get_function_values_plus(const dealii::Vector<double>&,
+                                                        std::vector<dealii::Vector<double>>&) const;
+
+    template void FEJumpValues<2>::get_function_values_minus(const dealii::Vector<double>&,
+                                                         std::vector<dealii::Vector<double>>&) const;
+
+    template void FEJumpValues<3>::get_function_values_plus(const dealii::Vector<double> &,
+                                                        std::vector<dealii::Vector<double>> &) const;
+
+    template void FEJumpValues<3>::get_function_values_minus(const dealii::Vector<double> &,
+                                                         std::vector<dealii::Vector<double>> &) const;
+
+#ifdef DEAL_II_WITH_TRILINOS
+#ifdef DEAL_II_WITH_MPI
+    template void FEJumpValues<2>::get_function_values_plus(const dealii::TrilinosWrappers::MPI::Vector&,
+                                                        std::vector<dealii::Vector<dealii::TrilinosScalar>>&) const;
+
+    template void FEJumpValues<2>::get_function_values_minus(const dealii::TrilinosWrappers::MPI::Vector&,
+                                                         std::vector<dealii::Vector<dealii::TrilinosScalar>>&) const;
+
+    template void FEJumpValues<3>::get_function_values_plus(const dealii::TrilinosWrappers::MPI::Vector&,
+                                                        std::vector<dealii::Vector<dealii::TrilinosScalar>>&) const;
+
+    template void FEJumpValues<3>::get_function_values_minus(const dealii::TrilinosWrappers::MPI::Vector&,
+                                                         std::vector<dealii::Vector<dealii::TrilinosScalar>>&) const;
+
+
+#endif
+#endif
 
     template class FEFaceValues<2> ;
     template class FEFaceValues<3> ;
