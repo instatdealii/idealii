@@ -13,7 +13,7 @@ the top level directory of ideal.II.
 ---------------------------------------------------------------------
 --->
 
-# ideal.II an extension to deal.II for tensor-product space-time finit elements
+# ideal.II an extension to deal.II for tensor-product space-time finite elements
 This library provides classes and functions to solve instationary partial differential equations by 
 using space-time finite elements i.e. finite elements in both time and space. 
 It heavily builds on the 1 to 3d finite element capabilities of [deal.II](www.dealii.org) 
