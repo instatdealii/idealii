@@ -567,13 +567,14 @@ namespace idealii::spacetime
     FEFaceValues<dim>::FEFaceValues (
         DG_FiniteElement<dim> &fe ,
         Quadrature<dim - 1> &quad ,
-        const dealii::UpdateFlags uflags )
+        const dealii::UpdateFlags uflags,
+        const dealii::UpdateFlags additional_flags )
         :
         _fe ( fe ),
         _quad ( quad ),
         _fev_space ( std::make_shared<dealii::FEFaceValues<dim>> ( *fe.spatial () ,
                                                                    *quad.spatial () ,
-                                                                   uflags )
+                                                                   uflags | additional_flags )
         ),
         _fev_time ( std::make_shared<dealii::FEValues<1>> ( *fe.temporal () ,
                                                             *quad.temporal () ,
