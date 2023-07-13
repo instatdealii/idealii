@@ -458,10 +458,13 @@ namespace idealii::spacetime
              * @param fe: The underlying space-time finite element description class.
              * @param quad: The space-time quadrature formula to be used.
              * @param uflags: The update flags to be used during the reinit calls.
+             * @param additional_flags: Additional update flags that are only appended 
+             *                          to the FEFace Object (e.g.: update_normal_vectors)
              */
             FEFaceValues ( DG_FiniteElement<dim> &fe ,
                            Quadrature<dim - 1> &quad ,
-                           const dealii::UpdateFlags uflags );
+                           const dealii::UpdateFlags uflags ,
+                           const dealii::UpdateFlags additional_flags );
 
             /**
              * @brief Reinitialize all objects of the underlying spatial FEValues object.
