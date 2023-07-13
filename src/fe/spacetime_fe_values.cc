@@ -574,7 +574,7 @@ namespace idealii::spacetime
         _quad ( quad ),
         _fev_space ( std::make_shared<dealii::FEFaceValues<dim>> ( *fe.spatial () ,
                                                                    *quad.spatial () ,
-                                                                   uflags | additonal_flags )
+                                                                   uflags | additional_flags )
         ),
         _fev_time ( std::make_shared<dealii::FEValues<1>> ( *fe.temporal () ,
                                                             *quad.temporal () ,
