@@ -37,8 +37,9 @@ namespace idealii::spacetime::parallel::distributed{
     public:
         /**
          * @brief Constructor that initializes the underlying list object.
+         * @param max_N_intervals_per_slab. When to split a slab into two. (default 0 = never)
          */
-        Triangulation();
+        Triangulation ( dealii::types::global_cell_index max_N_intervals_per_slab=0);
 
         /**
          * @brief Generate a list of M slab triangulations with matching temporal meshes and space_tria.
@@ -74,6 +75,7 @@ namespace idealii::spacetime::parallel::distributed{
         virtual void refine_global(const unsigned int times_space = 1, const unsigned int times_time = 1)=0;
 
     protected:
+        dealii::types::global_cell_index max_N_intervals_per_slab;
         std::list<slab::parallel::distributed::Triangulation<dim>> trias;
     };
 }

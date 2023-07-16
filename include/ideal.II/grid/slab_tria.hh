@@ -37,12 +37,26 @@ namespace idealii::slab
          * @brief Construct an object with a given spatial triangulation and a single
          * element in time.
          *
-         * @param space_tria The spatial triangulation to be used.
-         * @param startpoint The startpoint of the temporal triangulation.
-         * @param endpoint The endpoint of the temporal triangulation.
+         * @param space_tria. The spatial triangulation to be used.
+         * @param startpoint. The startpoint of the temporal triangulation.
+         * @param endpoint. The endpoint of the temporal triangulation.
          */
         Triangulation (
                 std::shared_ptr<dealii::Triangulation<dim>> space_tria ,
+                double startpoint , double endpoint );
+
+        /**
+         * @brief Construct an object with a given spatial triangulation and a given
+         * division of elements in time.
+         *
+         * @param space_tria. The spatial triangulation to be used.
+         * @param step_sizes. The sizes of the temporal elements
+         * @param startpoint. The startpoint of the temporal triangulation.
+         * @param endpoint. The endpoint of the temporal triangulation.
+         */
+        Triangulation (
+                std::shared_ptr<dealii::Triangulation<dim>> space_tria ,
+                std::vector<double> step_sizes,
                 double startpoint , double endpoint );
 
         /**
@@ -77,6 +91,21 @@ namespace idealii::slab
          * @brief The endpoint of the temporal triangulation.
          */
         double endpoint ();
+
+        /**
+         * @brief Change the temporal triangulation to the given division
+         *
+         * @param step_sizes. The sizes of the temporal elements
+         * @param startpoint. The startpoint of the temporal triangulation.
+         * @param endpoint. The endpoint of the temporal triangulation.
+         *
+         * @warning Due to a call to clear() of the temporal triangulation no subscriptions can exist to it, such as DoFHandler.
+         */
+        void update_temporal_triangulation(
+                std::vector<double> step_sizes,
+                double startpoint,
+                double endpoint);
+
     private:
         std::shared_ptr<dealii::Triangulation<dim>> _spatial_tria;
         std::shared_ptr<dealii::Triangulation<1>> _temporal_tria;

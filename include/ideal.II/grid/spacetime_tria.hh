@@ -38,8 +38,9 @@ namespace idealii::spacetime
     public:
         /**
          * @brief Constructor that initializes the underlying list object.
+         * @param max_N_intervals_per_slab. When to split a slab into two. (default 0 = never)
          */
-        Triangulation ();
+        Triangulation ( dealii::types::global_cell_index max_N_intervals_per_slab=0);
 
         /**
          * @brief Generate a list of M slab triangulations with matching temporal meshes and space_tria.
@@ -51,7 +52,7 @@ namespace idealii::spacetime
          */
         virtual void generate (
             std::shared_ptr<dealii::Triangulation<dim>> space_tria ,
-            unsigned int M , double t0 = 0. , double T = 1. )=0;
+            unsigned int M , double t0 = 0. , double T = 1.)=0;
 
         /**
          * @brief Return the number of slabs in the triangulation.
@@ -76,6 +77,7 @@ namespace idealii::spacetime
             const unsigned int times_time = 1 )=0;
 
     protected:
+        dealii::types::global_cell_index max_N_intervals_per_slab;
         std::list<slab::Triangulation<dim>> trias;
     };
 }

@@ -19,7 +19,8 @@
 namespace idealii::spacetime::parallel::distributed
 {
     template<int dim>
-    Triangulation<dim>::Triangulation ()
+    Triangulation<dim>::Triangulation (dealii::types::global_cell_index max_N_intervals_per_slab)
+    :max_N_intervals_per_slab(max_N_intervals_per_slab)
     {
         trias =
             std::list<idealii::slab::parallel::distributed::Triangulation<dim>> ();

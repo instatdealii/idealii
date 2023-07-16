@@ -43,9 +43,25 @@ namespace idealii::slab::parallel::distributed{
          * @param startpoint The startpoint of the temporal triangulation.
          * @param endpoint The endpoint of the temporal triangulation.
          */
-        Triangulation(std::shared_ptr<dealii::parallel::distributed::Triangulation<dim>> space_tria,
-                      double startpoint,
-                      double endpoint);
+        Triangulation(
+                std::shared_ptr<dealii::parallel::distributed::Triangulation<dim>> space_tria,
+                double startpoint,
+                double endpoint);
+
+
+        /**
+         * @brief Construct an object with a given spatial triangulation and a given
+         * division of elements in time.
+         *
+         * @param space_tria. The spatial triangulation to be used.
+         * @param step_sizes. The sizes of the temporal elements
+         * @param startpoint. The startpoint of the temporal triangulation.
+         * @param endpoint. The endpoint of the temporal triangulation.
+         */
+        Triangulation (
+                std::shared_ptr<dealii::parallel::distributed::Triangulation<dim>> space_tria,
+                std::vector<double> step_sizes,
+                double startpoint , double endpoint );
 
         /**
          * @brief (shallow) copy constructor. Only the values for the start- and endpoint
@@ -80,6 +96,19 @@ namespace idealii::slab::parallel::distributed{
          */
         double endpoint();
 
+        /**
+         * @brief Change the temporal triangulation to the given division
+         *
+         * @param step_sizes. The sizes of the temporal elements
+         * @param startpoint. The startpoint of the temporal triangulation.
+         * @param endpoint. The endpoint of the temporal triangulation.
+         *
+         * @warning Due to a call to clear() of the temporal triangulation no subscriptions can exist to it, such as DoFHandler.
+         */
+        void update_temporal_triangulation(
+                std::vector<double> step_sizes,
+                double startpoint,
+                double endpoint);
     private:
         std::shared_ptr<dealii::parallel::distributed::Triangulation<dim>> _spatial_tria;
         std::shared_ptr<dealii::Triangulation<1>> _temporal_tria;

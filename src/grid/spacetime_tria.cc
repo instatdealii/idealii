@@ -18,10 +18,12 @@
 namespace idealii::spacetime
 {
     template<int dim>
-    Triangulation<dim>::Triangulation ()
+    Triangulation<dim>::Triangulation (dealii::types::global_cell_index max_N_intervals_per_slab)
+    :max_N_intervals_per_slab(max_N_intervals_per_slab)
     {
         trias = std::list<idealii::slab::Triangulation<dim>> ();
     }
+
 
     template<int dim>
     unsigned int Triangulation<dim>::M ()
