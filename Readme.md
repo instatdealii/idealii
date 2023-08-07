@@ -1,5 +1,4 @@
 <!---
----------------------------------------------------------------------
 Copyright (C) 2022 - 2023 by the ideal.II authors
 
 This file is part of the ideal.II library.
@@ -10,7 +9,6 @@ Public License as published by the Free Software Foundation; either
 version 3.0 of the License, or (at your option) any later version.
 The full text of the license can be found in the file LICENSE.md at
 the top level directory of ideal.II.
----------------------------------------------------------------------
 --->
 
 # ideal.II an extension to deal.II for tensor-product space-time finite elements
@@ -21,7 +19,6 @@ so you should make yourself familiar with solving stationary problems with that 
 
 
 ## How to install ideal.II
---------------------------
 First you need to install deal.II by following the instructions on their [site](https://dealii.org/current/readme.html).
 If you plan on using parallel linear algebra and other advanced features of deal.II and ideal.II 
 you should use either the [cmake superbuild](www.github.com/jpthiele/dealii-cmake-superbuild) or [candi](www.github.com/dealii/candi). 
@@ -33,29 +30,29 @@ The installation of ideal.II is based on CMake as well, the steps are as follows
 
 2. Open a console and go to a directory where you want to download the source files (e.g. ~/Downloads) and clone the repository 
 
-	cd ~/Downloads
-	
-	git clone https://github.com/instatdealii/idealii
+~~~~~
+    cd ~/Downloads
+    git clone https://github.com/instatdealii/idealii
+~~~~~
 
 3. After cloning is finished execute the following commands (with the above directory examples write
   ~/Software/dealii instead of <path_to_your_deal_installation> and ~/Software/idealii instead of <path_to_install_idealii_in>
  
-	cd idealii   
-
+~~~~~
+    cd idealii   
     cmake -S. -Bbuild -DDEAL_II_DIR=<path_to_your_deal_installation> -DCMAKE_INSTALL_PREFIX=<path_to_install_idealii_in> 
-
     cmake --build build
-
     cmake --install build
- 
+~~~~~
 
 ## How to use ideal.II in your codes
-------------------------------------
 Take a look at one of the example steps and copy the CMakeLists.txt file from there into your project directory. 
 Set the correct project name and sources and then call the following commands from your project directory.
 
+~~~~~
     cmake -S. -Bbuild -DIDEAL_II_DIR=<path_to_install_idealii_in>
     cmake --build build
+~~~~~
 
 Then the executable will be inside the build subdirectory. 
 
@@ -68,31 +65,34 @@ If you write a paper using results obtained with the help of ideal.II, please ci
    ideal.II: a Galerkin space-time extension to the finite element library deal.II,
    2023, in preparation
    
-   ```
+~~~~~
       @article{idealII,
                title = {\texttt{ideal.II}: a Galerkin space-time extension to the finite element library deal.II},
                author = {Jan Philipp Thiele},
                year = {2023,\textit{in preparation}}
       }
-   ```
+~~~~~
    
 2. Please also cite deal.II as explained [here](https://dealii.org/publications.html)
     
 ## Doxygen documentation
-------------------------
 The doxygen documentation of the library functions will soon be hosted centrally.
 Until then, doxygen documentation can be build with the following steps
 
-1. Open a terminal and navigate to the ideal.II build directory, e.g. ~/Downloads/idealii/build
+1. Open a terminal and navigate to the ideal.II directory, e.g. ~/Downloads/idealii
 
 2. Execute the following command to build the documentation
 
-	make doxygen
-	
+~~~~~
+    cmake --build build --target doxygen
+~~~~~
+
 3. The documentation start page is located at the <build_dir>/doc/doxygen/html/index.html
    and can be opened with a webbrowser of your choice e.g.
     
+~~~~~
    firefox ~/Downloads/idealii/build/doc/doxygen/html/index.html
+~~~~~
 
 
 

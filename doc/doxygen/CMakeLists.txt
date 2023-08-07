@@ -26,8 +26,10 @@ if(IDEAL_II_DOCUMENTATION)
 		add_custom_target(doxygen 
 			COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT} > warnings.out 2>&1
 			WORKING_DIRECTORY ${CMAKE_CURRENT_BINDARY_DIR}
-			COMMENT "Generating Doxygen docymentation"
+			COMMENT "Generating Doxygen documentation"
 			VERBATIM )
+			
+                
 	else()
 		message(STATUS "Doxygen not found - skipping documentation")
 	endif()

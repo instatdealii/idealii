@@ -14,12 +14,13 @@
 ## ---------------------------------------------------------------------
 PROJECT_NAME           = "ideal.II"	
 
-JAVADOC_BANNER = YES
 CASE_SENSE_NAMES       = YES
-INPUT =  @CMAKE_CURRENT_SOURCE_DIR@/../../include
+INPUT =  @CMAKE_CURRENT_SOURCE_DIR@/../../Readme.md
+INPUT += @CMAKE_CURRENT_SOURCE_DIR@/../../include
 FILE_PATTERNS          = *.hh
 RECURSIVE              = YES
 SHOW_NAMESPACES = YES
+USE_MDFILE_AS_MAINPAGE = Readme.md
 
 # These variables are used to only offer certain functionality
 # if the base functionality is supplied by the current deal.II installation
@@ -32,4 +33,5 @@ MACRO_EXPANSION        = YES
 EXPAND_ONLY_PREDEF     = YES
 SEARCH_INCLUDES        = YES
 PREDEFINED = DEAL_II_WITH_MPI=1 \
-			 DEAL_II_WITH_TRILINOS=1  
+             DEAL_II_WITH_TRILINOS=1
+			 
