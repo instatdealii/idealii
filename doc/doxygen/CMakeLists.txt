@@ -28,7 +28,9 @@ if(IDEAL_II_DOCUMENTATION)
 			WORKING_DIRECTORY ${CMAKE_CURRENT_BINDARY_DIR}
 			COMMENT "Generating Doxygen documentation"
 			VERBATIM )
-			
+		
+                file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/../../Readme.md
+                    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})	
                 
 	else()
 		message(STATUS "Doxygen not found - skipping documentation")

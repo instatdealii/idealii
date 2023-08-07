@@ -76,23 +76,8 @@ If you write a paper using results obtained with the help of ideal.II, please ci
 2. Please also cite deal.II as explained [here](https://dealii.org/publications.html)
     
 ## Doxygen documentation
-The doxygen documentation of the library functions will soon be hosted centrally.
-Until then, doxygen documentation can be build with the following steps
-
-1. Open a terminal and navigate to the ideal.II directory, e.g. ~/Downloads/idealii
-
-2. Execute the following command to build the documentation
-
-~~~~~
-    cmake --build build --target doxygen
-~~~~~
-
-3. The documentation start page is located at the <build_dir>/doc/doxygen/html/index.html
-   and can be opened with a webbrowser of your choice e.g.
-    
-~~~~~
-   firefox ~/Downloads/idealii/build/doc/doxygen/html/index.html
-~~~~~
+The doxygen documentation of the library functions can be found 
+[here](https://instatdealii.github.io/idealii).
 
 
 
