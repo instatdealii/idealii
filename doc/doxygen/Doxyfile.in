@@ -15,7 +15,7 @@
 PROJECT_NAME           = "ideal.II"	
 
 CASE_SENSE_NAMES       = YES
-INPUT =  @CMAKE_CURRENT_SOURCE_DIR@/../../Readme.md
+INPUT =  @CMAKE_CURRENT_BINARY_DIR@/Readme.md
 INPUT += @CMAKE_CURRENT_SOURCE_DIR@/../../include
 FILE_PATTERNS          = *.hh
 RECURSIVE              = YES
