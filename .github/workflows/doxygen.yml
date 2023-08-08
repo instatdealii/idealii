@@ -16,7 +16,7 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Install Doxygen
-      run: sudo apt-get install doxygen -y
+      run: sudo apt-get install doxygen graphviz -y
       shell: bash
    
     - name: Configure CMake
@@ -26,12 +26,12 @@ jobs:
 
     - name: Build Documentation
       # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/build --target doxygen
+      run: doxygen ${{github.workspace}}/build/doc/doxygen/Doxyfile
 
     - name: Create .nojekyll
-      run: touch ${{github.workspace}}/build/doc/doxygen/html/.nojekyll
+      run: touch ${{github.workspace}}/html/.nojekyll
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ${{github.workspace}}/build/doc/doxygen/html
+        publish_dir: ${{github.workspace}}/html
