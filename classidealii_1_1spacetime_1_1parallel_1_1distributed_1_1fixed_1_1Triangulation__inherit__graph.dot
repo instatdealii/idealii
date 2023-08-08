@@ -1,9 +1,0 @@
-digraph "idealii::spacetime::parallel::distributed::fixed::Triangulation&lt; dim &gt;"
-{
- // LATEX_PDF_SIZE
-  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
-  node [fontname="Helvetica",fontsize="10",shape=record];
-  Node1 [label="idealii::spacetime\l::parallel::distributed\l::fixed::Triangulation\< dim \>",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="The spacetime triangulation object with a fixed MPI parallel dibstributed spatial mesh across time."];
-  Node2 -> Node1 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
-  Node2 [label="idealii::spacetime\l::parallel::distributed\l::Triangulation\< dim \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classidealii_1_1spacetime_1_1parallel_1_1distributed_1_1Triangulation.html",tooltip="The spacetime triangulation object with MPI parallel distributed spatial meshes."];
-}
