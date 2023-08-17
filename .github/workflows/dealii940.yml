@@ -1,0 +1,26 @@
+name: build with deal.II v9.4.0
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    container: 
+      image dealii/dealii:v9.4.0-focal
+    steps:
+    - uses: actions/checkout@v3
+    - name: configure
+      run: cmake -S. -Bbuild -DCMAKE_INSTALL_PREFIX=install
+    - name: build
+      run: cmake --build build
+    - name: install 
+      run: cmake --install build
+    - name: configure step-1
+      run: cmake -Sinstall/examples/step-1 -Bbuild-step-1
+    - name: build step-1
+      run: cmake --build build-step-1
