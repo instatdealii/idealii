@@ -11,7 +11,7 @@ jobs:
 
     runs-on: ubuntu-latest
     container: 
-      image dealii/dealii:v9.4.0-focal
+      dealii/dealii:v9.4.0-focal
     steps:
     - uses: actions/checkout@v3
     - name: configure
