@@ -10,6 +10,12 @@ version 3.0 of the License, or (at your option) any later version.
 The full text of the license can be found in the file LICENSE.md at
 the top level directory of ideal.II.
 --->
+Build status of the library against official deal.II docker images:
+
+![deal.II v9.3.0](https://github.com/instatdealii/idealii/actions/workflows/dealii930.yml/badge.svg)
+![deal.II v9.4.0](https://github.com/instatdealii/idealii/actions/workflows/dealii940.yml/badge.svg)
+![deal.II v9.4.2](https://github.com/instatdealii/idealii/actions/workflows/dealii942.yml/badge.svg)
+![deal.II v9.5.0](https://github.com/instatdealii/idealii/actions/workflows/dealii950.yml/badge.svg)
 
 # ideal.II an extension to deal.II for tensor-product space-time finite elements
 This library provides classes and functions to solve instationary partial differential equations by 
