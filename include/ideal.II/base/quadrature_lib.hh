@@ -21,6 +21,42 @@
 namespace idealii
 {
 
+
+    /**
+     * Gauss-Radau quadrature 
+     */
+    template<int dim>
+    class QGaussRadau :public dealii::Quadrature<dim>
+    {
+    public:
+        /*
+         * EndPoint is used to specify which of the two endpoints of the 
+         * unit interval is used as quadrature point 
+         */
+        enum EndPoint
+        {
+            /**
+             * Left end point.
+             */
+            left,
+            /**
+             * Right end point.
+             */
+            right
+        };
+
+        /// Generate a formula wit <tt>n</tt> quadrature points
+        QGaussRadau(const unsigned int n,
+                    EndPoint           ep = QGaussRadau::left);
+        /**
+         * Move constructor. We cannot rely on the move constructor for `Quadrature`,
+         * since it does not know about the additional member `ep` of this class.
+         */             
+        QGaussRadau(QGaussRadau<dim> &&) noexcept = default;
+    private:
+        const EndPoint ep;
+    };
+
     /**
      * @brief 1D right box rule.
      *
@@ -31,7 +67,7 @@ namespace idealii
      * elements in time leads to the backward Euler method.
      *
      */
-    class QRightBox : public dealii::Quadrature<1>
+    class QRightBox : public QGaussRadau<1>
     {
     public:
         /**
@@ -52,7 +88,7 @@ namespace idealii
      * Although this is not necessarily desirable, using this formula for dG(0)
      * elements in time leads to the forward Euler method.
      */
-    class QLeftBox : public dealii::Quadrature<1>
+    class QLeftBox : public QGaussRadau<1>
     {
     public:
         /**
@@ -64,6 +100,7 @@ namespace idealii
         QLeftBox ();
     };
 
+    
     namespace spacetime
     {
 
