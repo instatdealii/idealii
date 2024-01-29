@@ -104,10 +104,10 @@ $(function() {
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    {</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keyword">public</span>:</div>
 <div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="classidealii_1_1slab_1_1DoFHandler.html#a84d54958042fcee0dff92b9f4da59171">   47</a></span>&#160;        <a class="code" href="classidealii_1_1slab_1_1DoFHandler.html#a84d54958042fcee0dff92b9f4da59171">DoFHandler</a> ( <a class="code" href="classidealii_1_1slab_1_1Triangulation.html">Triangulation&lt;dim&gt;</a> &amp;tria );</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor">#ifdef DEAL_II_WITH_MPI</span></div>
 <div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="classidealii_1_1slab_1_1DoFHandler.html#a8b117533cb004525dc986d8f492af173">   53</a></span>&#160;        <a class="code" href="classidealii_1_1slab_1_1DoFHandler.html#a8b117533cb004525dc986d8f492af173">DoFHandler</a> (</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;                <a class="code" href="classidealii_1_1slab_1_1parallel_1_1distributed_1_1Triangulation.html">slab::parallel::distributed::Triangulation&lt;dim&gt;</a> &amp;tria );</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="classidealii_1_1slab_1_1DoFHandler.html#a3cae8fef23ffe1a512204e757d5abdef">   68</a></span>&#160;        <a class="code" href="classidealii_1_1slab_1_1DoFHandler.html#a3cae8fef23ffe1a512204e757d5abdef">DoFHandler</a> ( <span class="keyword">const</span> <a class="code" href="classidealii_1_1slab_1_1DoFHandler.html">DoFHandler&lt;dim&gt;</a> &amp;other );</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        std::shared_ptr&lt;dealii::DoFHandler&lt;dim&gt;&gt;</div>
 <div class="line"><a name="l00074"></a><span class="lineno"><a class="line" href="classidealii_1_1slab_1_1DoFHandler.html#ab7974b7b6819ace4a1bfafb357bd8c23">   74</a></span>&#160;        <a class="code" href="classidealii_1_1slab_1_1DoFHandler.html#ab7974b7b6819ace4a1bfafb357bd8c23">spatial</a> ();</div>

@@ -111,12 +111,14 @@ $(function() {
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="keyword">protected</span>:</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        <a class="code" href="classidealii_1_1spacetime_1_1Triangulation.html">Triangulation&lt;dim&gt;</a> *_tria;</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        <a class="code" href="classidealii_1_1spacetime_1_1parallel_1_1distributed_1_1Triangulation.html">spacetime::parallel::distributed::Triangulation&lt;dim&gt;</a> *_par_dist_tria;</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        std::list&lt;slab::DoFHandler&lt;dim&gt;&gt; _dof_handlers;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    };</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;}</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* INCLUDE_IDEAL_II_DOFS_FIXED_DOF_HANDLER_HH_ */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="preprocessor">#ifdef DEAL_II_WITH_MPI</span></div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        <a class="code" href="classidealii_1_1spacetime_1_1parallel_1_1distributed_1_1Triangulation.html">spacetime::parallel::distributed::Triangulation&lt;dim&gt;</a> *_par_dist_tria;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        std::list&lt;slab::DoFHandler&lt;dim&gt;&gt; _dof_handlers;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    };</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;}</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* INCLUDE_IDEAL_II_DOFS_FIXED_DOF_HANDLER_HH_ */</span><span class="preprocessor"></span></div>
 <div class="ttc" id="aclassidealii_1_1spacetime_1_1DoFHandler_html"><div class="ttname"><a href="classidealii_1_1spacetime_1_1DoFHandler.html">idealii::spacetime::DoFHandler</a></div><div class="ttdoc">The spacetime dofhandler object.</div><div class="ttdef"><b>Definition:</b> spacetime_dof_handler.hh:33</div></div>
 <div class="ttc" id="aclassidealii_1_1spacetime_1_1DoFHandler_html_a64746074260e14fad5e700440999bdfc"><div class="ttname"><a href="classidealii_1_1spacetime_1_1DoFHandler.html#a64746074260e14fad5e700440999bdfc">idealii::spacetime::DoFHandler::generate</a></div><div class="ttdeci">void generate()</div><div class="ttdoc">generate all slab::DofHandler objects.</div></div>
 <div class="ttc" id="aclassidealii_1_1spacetime_1_1DoFHandler_html_a7ce22bcf392d33996d242e4433aeb457"><div class="ttname"><a href="classidealii_1_1spacetime_1_1DoFHandler.html#a7ce22bcf392d33996d242e4433aeb457">idealii::spacetime::DoFHandler::DoFHandler</a></div><div class="ttdeci">DoFHandler(spacetime::parallel::distributed::Triangulation&lt; dim &gt; *tria)</div><div class="ttdoc">Constructor based on parallel::distributed::spacetime::Triangulation.</div></div>
