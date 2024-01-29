@@ -85,6 +85,14 @@ Functions</h2></td></tr>
 <tr class="memitem:a61b92049516939f41d21a6a22014afa2"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceidealii_1_1slab_1_1DoFTools.html#a61b92049516939f41d21a6a22014afa2">make_upwind_sparsity_pattern</a> (<a class="el" href="classidealii_1_1slab_1_1DoFHandler.html">DoFHandler</a>&lt; dim &gt; &amp;dof, const dealii::Table&lt; 2, dealii::DoFTools::Coupling &gt; &amp;space_couplings, dealii::DynamicSparsityPattern &amp;st_dsp, std::shared_ptr&lt; dealii::AffineConstraints&lt; double &gt;&gt; space_constraints=std::make_shared&lt; dealii::AffineConstraints&lt; double &gt;&gt;(), const bool keep_constrained_dofs=true)</td></tr>
 <tr class="memdesc:a61b92049516939f41d21a6a22014afa2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construction of a sparsity pattern with lower off diagonal jump terms.  <a href="namespaceidealii_1_1slab_1_1DoFTools.html#a61b92049516939f41d21a6a22014afa2">More...</a><br /></td></tr>
 <tr class="separator:a61b92049516939f41d21a6a22014afa2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2b175b8c45857338b1531209a1046b04"><td class="memTemplParams" colspan="2">template&lt;int dim&gt; </td></tr>
+<tr class="memitem:a2b175b8c45857338b1531209a1046b04"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceidealii_1_1slab_1_1DoFTools.html#a2b175b8c45857338b1531209a1046b04">make_downwind_sparsity_pattern</a> (<a class="el" href="classidealii_1_1slab_1_1DoFHandler.html">DoFHandler</a>&lt; dim &gt; &amp;dof, dealii::DynamicSparsityPattern &amp;st_dsp, std::shared_ptr&lt; dealii::AffineConstraints&lt; double &gt;&gt; space_constraints=std::make_shared&lt; dealii::AffineConstraints&lt; double &gt;&gt;(), const bool keep_constrained_dofs=true)</td></tr>
+<tr class="memdesc:a2b175b8c45857338b1531209a1046b04"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construction of a sparsity pattern with upper off diagonal jump terms.  <a href="namespaceidealii_1_1slab_1_1DoFTools.html#a2b175b8c45857338b1531209a1046b04">More...</a><br /></td></tr>
+<tr class="separator:a2b175b8c45857338b1531209a1046b04"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab283dcc997a4ad0f4571d4b1b151468e"><td class="memTemplParams" colspan="2">template&lt;int dim&gt; </td></tr>
+<tr class="memitem:ab283dcc997a4ad0f4571d4b1b151468e"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceidealii_1_1slab_1_1DoFTools.html#ab283dcc997a4ad0f4571d4b1b151468e">make_downwind_sparsity_pattern</a> (<a class="el" href="classidealii_1_1slab_1_1DoFHandler.html">DoFHandler</a>&lt; dim &gt; &amp;dof, const dealii::Table&lt; 2, dealii::DoFTools::Coupling &gt; &amp;space_couplings, dealii::DynamicSparsityPattern &amp;st_dsp, std::shared_ptr&lt; dealii::AffineConstraints&lt; double &gt;&gt; space_constraints=std::make_shared&lt; dealii::AffineConstraints&lt; double &gt;&gt;(), const bool keep_constrained_dofs=true)</td></tr>
+<tr class="memdesc:ab283dcc997a4ad0f4571d4b1b151468e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construction of a sparsity pattern with upper off diagonal jump terms.  <a href="namespaceidealii_1_1slab_1_1DoFTools.html#ab283dcc997a4ad0f4571d4b1b151468e">More...</a><br /></td></tr>
+<tr class="separator:ab283dcc997a4ad0f4571d4b1b151468e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeed98b222c57529b83ad65478d80e0f8"><td class="memTemplParams" colspan="2">template&lt;int dim, typename Number &gt; </td></tr>
 <tr class="memitem:aeed98b222c57529b83ad65478d80e0f8"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceidealii_1_1slab_1_1DoFTools.html#aeed98b222c57529b83ad65478d80e0f8">make_hanging_node_constraints</a> (<a class="el" href="classidealii_1_1slab_1_1DoFHandler.html">idealii::slab::DoFHandler</a>&lt; dim &gt; &amp;dof_handler, std::shared_ptr&lt; dealii::AffineConstraints&lt; Number &gt;&gt; spacetime_constraints)</td></tr>
 <tr class="memdesc:aeed98b222c57529b83ad65478d80e0f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construction of space-time hanging node constraints.  <a href="namespaceidealii_1_1slab_1_1DoFTools.html#aeed98b222c57529b83ad65478d80e0f8">More...</a><br /></td></tr>
@@ -126,6 +134,121 @@ template&lt;int dim&gt; </div>
 
 <p>Extract global space-time dof indices active on the current <a class="el" href="classidealii_1_1slab_1_1DoFHandler.html" title="Actual DoFHandler for a specific slab.">DoFHandler</a>. </p>
 <p>For DoFHandlers with a parallel triangulation this function returns the locally owned dofs and all dofs belonging to other processors that are located at a locally owned cell.s </p>
+
+</div>
+</div>
+<a id="ab283dcc997a4ad0f4571d4b1b151468e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab283dcc997a4ad0f4571d4b1b151468e">&#9670;&nbsp;</a></span>make_downwind_sparsity_pattern() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;int dim&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void idealii::slab::DoFTools::make_downwind_sparsity_pattern </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classidealii_1_1slab_1_1DoFHandler.html">DoFHandler</a>&lt; dim &gt; &amp;&#160;</td>
+          <td class="paramname"><em>dof</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const dealii::Table&lt; 2, dealii::DoFTools::Coupling &gt; &amp;&#160;</td>
+          <td class="paramname"><em>space_couplings</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">dealii::DynamicSparsityPattern &amp;&#160;</td>
+          <td class="paramname"><em>st_dsp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::shared_ptr&lt; dealii::AffineConstraints&lt; double &gt;&gt;&#160;</td>
+          <td class="paramname"><em>space_constraints</em> = <code>std::make_shared&lt;dealii::AffineConstraints&lt;double&gt;&gt;&#160;()</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const bool&#160;</td>
+          <td class="paramname"><em>keep_constrained_dofs</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Construction of a sparsity pattern with upper off diagonal jump terms. </p>
+<p>This functions works like the previous one but the spatial pattern is constructed using the supplied couplings. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">space_couplings</td><td>In coupled problems some components don't couple in the weak formulation and consequently don't needs entries in the sparsity pattern.</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>An example would be the Stokes system where pressure ansatz function is not multiplied by the pressure test function, which leads to an empty diagonal block. </p>
+
+</div>
+</div>
+<a id="a2b175b8c45857338b1531209a1046b04"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2b175b8c45857338b1531209a1046b04">&#9670;&nbsp;</a></span>make_downwind_sparsity_pattern() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;int dim&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void idealii::slab::DoFTools::make_downwind_sparsity_pattern </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classidealii_1_1slab_1_1DoFHandler.html">DoFHandler</a>&lt; dim &gt; &amp;&#160;</td>
+          <td class="paramname"><em>dof</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">dealii::DynamicSparsityPattern &amp;&#160;</td>
+          <td class="paramname"><em>st_dsp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::shared_ptr&lt; dealii::AffineConstraints&lt; double &gt;&gt;&#160;</td>
+          <td class="paramname"><em>space_constraints</em> = <code>std::make_shared&lt;dealii::AffineConstraints&lt;double&gt;&gt;&#160;()</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const bool&#160;</td>
+          <td class="paramname"><em>keep_constrained_dofs</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Construction of a sparsity pattern with upper off diagonal jump terms. </p>
+<p>This functions constructs the tensor product between a spatial sparsity pattern and a temporal upwind sparsity.</p>
+<p>The spatial pattern is constructed by calling the function make_sparsity_pattern() with the spatial <a class="el" href="classidealii_1_1slab_1_1DoFHandler.html" title="Actual DoFHandler for a specific slab.">DoFHandler</a> of <code>dof</code>, the <code>space_contraints</code> and <code>keep_constrained_dofs</code>.</p>
+<p>The temporal pattern is initially constructed as a block-diagonal sparsity pattern by the corresponding deal.II method for the temporal <a class="el" href="classidealii_1_1slab_1_1DoFHandler.html" title="Actual DoFHandler for a specific slab.">DoFHandler</a> of <code>dof</code>. If the number of temporal elements in this slab is greater than one, additional off diagonal entries for the jump terms between a temporal element and its direct right/later neighbor are added.</p>
+<p>For Gauss-Lobatto support points in time this is only a coupling between the final temporal dof of the current element and the initial temporal dof of the neighbor.</p>
+<p>For Gauss-Legendre support points in time this is the complete first upper off diagonal block.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dof</td><td>A shared pointer to the <a class="el" href="classidealii_1_1slab_1_1DoFHandler.html" title="Actual DoFHandler for a specific slab.">DoFHandler</a> object to base the patterns on. </td></tr>
+    <tr><td class="paramname">st_dsp</td><td>The dynamic sparsity pattern that will afterwards include the spacetime pattern. </td></tr>
+    <tr><td class="paramname">space_constraints</td><td>The spatial constraints handed to the spatial pattern function </td></tr>
+    <tr><td class="paramname">keep_constrained_dofs</td><td>When using distribute_local_to_global() of the spacetime constraints off diagonal entries of constrained dofs will not be written. So it is possible to not include these in the sparsity pattern. For more details see the functions in the dealii::DoFTools namespace. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
