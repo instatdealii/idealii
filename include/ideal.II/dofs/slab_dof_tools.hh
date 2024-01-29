@@ -56,6 +56,45 @@ namespace idealii::slab::DoFTools
                 }
             }
         }
+        template<int dim>
+        void downwind_temporal_pattern (
+                DoFHandler<dim> &dof ,
+                dealii::DynamicSparsityPattern &time_dsp )
+        {
+            dealii::DoFTools::make_sparsity_pattern ( *dof.temporal () ,
+                                                      time_dsp );
+            if ( dof.fe_support_type () == spacetime::DG_FiniteElement < dim
+                    > ::support_type::Lobatto )
+            {
+                for ( dealii::types::global_dof_index ii =
+                        dof.dofs_per_cell_time () ;
+                        ii < dof.n_dofs_time () ;
+                        ii += dof.dofs_per_cell_time () )
+                {
+                    time_dsp.add ( ii-1 , ii );
+                }
+            }
+            else
+            {
+                //go over first DoF of each cell
+                for ( dealii::types::global_dof_index ii =
+                        dof.dofs_per_cell_time () ;
+                        ii < dof.n_dofs_time () ;
+                        ii += dof.dofs_per_cell_time () )
+                {
+                    //row offset
+                    for ( dealii::types::global_dof_index k = 0 ;
+                            k < dof.dofs_per_cell_time () ; k++ )
+                    {
+                        for ( dealii::types::global_dof_index l = 0 ;
+                                l < dof.dofs_per_cell_time () ; l++ )
+                        {
+                            time_dsp.add ( ii - l - 1 , ii + k );
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -144,6 +183,105 @@ namespace idealii::slab::DoFTools
 
         dealii::DynamicSparsityPattern time_dsp ( dof.n_dofs_time () );
         internal::upwind_temporal_pattern ( dof , time_dsp );
+
+        for ( auto &space_entry : space_dsp )
+        {
+            for ( auto &time_entry : time_dsp )
+            {
+                st_dsp.add (
+                        time_entry.row () * dof.n_dofs_space () + space_entry.row () ,//test function
+                        time_entry.column () * dof.n_dofs_space () + space_entry.column ()// trial function
+                );
+            }
+        }
+    }
+
+    /**
+     * @brief Construction of a sparsity pattern with upper off diagonal jump terms.
+     *
+     * This functions constructs the tensor product between
+     * a spatial sparsity pattern and a temporal upwind sparsity.
+     *
+     * The spatial pattern is constructed by calling the function make_sparsity_pattern()
+     * with the spatial DoFHandler of @p dof, the @p space_contraints and @p keep_constrained_dofs.
+     *
+     * The temporal pattern is initially constructed as a block-diagonal sparsity pattern
+     * by the corresponding deal.II method for the temporal DoFHandler of @p dof.
+     * If the number of temporal elements in this slab is greater than one, additional
+     * off diagonal entries for the jump terms between a temporal element and its direct
+     * right/later neighbor are added.
+     *
+     * For Gauss-Lobatto support points in time this is only a coupling between
+     * the final temporal dof of the current element and
+     * the initial temporal dof of the neighbor.
+     *
+     * For Gauss-Legendre support points in time this is the complete first upper off diagonal block.
+     *
+     * @param dof A shared pointer to the DoFHandler object to base the patterns on.
+     * @param st_dsp The dynamic sparsity pattern that will afterwards include the spacetime pattern.
+     * @param space_constraints The spatial constraints handed to the spatial pattern function
+     * @param keep_constrained_dofs When using distribute_local_to_global() of the spacetime constraints
+     * off diagonal entries of constrained dofs will not be written. So it is possible to not include these
+     * in the sparsity pattern. For more details see the functions in the dealii::DoFTools namespace.
+     */
+    template<int dim>
+    void make_downwind_sparsity_pattern (
+        DoFHandler<dim> &dof ,
+        dealii::DynamicSparsityPattern &st_dsp ,
+        std::shared_ptr<dealii::AffineConstraints<double>> space_constraints =
+            std::make_shared<dealii::AffineConstraints<double>> () ,
+        const bool keep_constrained_dofs = true )
+    {
+        dealii::DynamicSparsityPattern space_dsp ( dof.n_dofs_space () );
+        dealii::DoFTools::make_sparsity_pattern ( *dof.spatial () ,
+                                                  space_dsp ,
+                                                  *space_constraints ,
+                                                  keep_constrained_dofs );
+
+        dealii::DynamicSparsityPattern time_dsp ( dof.n_dofs_time () );
+        internal::downwind_temporal_pattern ( dof , time_dsp );
+
+        for ( auto &space_entry : space_dsp )
+        {
+            for ( auto &time_entry : time_dsp )
+            {
+                st_dsp.add (
+                    time_entry.row () * dof.n_dofs_space () + space_entry.row () ,//test function
+                    time_entry.column () * dof.n_dofs_space () + space_entry.column ()// trial function
+                );
+            }
+        }
+    }
+    /**
+     * @brief Construction of a sparsity pattern with upper off diagonal jump terms.
+     *
+     * This functions works like the previous one but the spatial pattern is constructed
+     * using the supplied couplings.
+     * @param space_couplings In coupled problems some components
+     * don't couple in the weak formulation and consequently don't needs
+     * entries in the sparsity pattern.
+     *
+     * An example would be the Stokes system where pressure ansatz function is not
+     * multiplied by the pressure test function, which leads to an empty diagonal block.
+     */
+    template<int dim>
+    void make_downwind_sparsity_pattern (
+            DoFHandler<dim> &dof ,
+            const dealii::Table<2,dealii::DoFTools::Coupling> &space_couplings ,
+            dealii::DynamicSparsityPattern &st_dsp ,
+            std::shared_ptr<dealii::AffineConstraints<double>> space_constraints =
+                std::make_shared<dealii::AffineConstraints<double>> () ,
+            const bool keep_constrained_dofs = true )
+    {
+        dealii::DynamicSparsityPattern space_dsp ( dof.n_dofs_space () );
+        dealii::DoFTools::make_sparsity_pattern ( *dof.spatial () ,
+                                                  space_couplings ,
+                                                  space_dsp ,
+                                                  *space_constraints ,
+                                                  keep_constrained_dofs );
+
+        dealii::DynamicSparsityPattern time_dsp ( dof.n_dofs_time () );
+        internal::downwind_temporal_pattern ( dof , time_dsp );
 
         for ( auto &space_entry : space_dsp )
         {
