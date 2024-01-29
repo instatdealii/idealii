@@ -191,6 +191,7 @@ namespace idealii::slab::VectorTools
         }
     }
 
+#ifdef DEAL_II_WITH_MPI
     /**
      * @brief Get the spatial Trilinos subvector of a specific temporal dof of the corresponding slab.
      *
@@ -214,7 +215,7 @@ namespace idealii::slab::VectorTools
         }
         space_vector = tmp;
     }
-
+#endif
     /**
      * @brief Get the spatial subvector at a specific time point of the corresponding slab.
      * The result is calculated by linear combination of each temporal dof vector according
@@ -266,6 +267,7 @@ namespace idealii::slab::VectorTools
         }
     }
 
+#ifdef DEAL_II_WITH_MPI
     /**
      * @brief Get the spatial Trilinos subvector at a specific time point of the corresponding slab.
      * The result is calculated by linear combination of each temporal dof vector according
@@ -322,6 +324,7 @@ namespace idealii::slab::VectorTools
             }
         }
     }
+#endif
 
     /**
      * @brief calculate the L2 inner product of (u-u_{kh}) with itself

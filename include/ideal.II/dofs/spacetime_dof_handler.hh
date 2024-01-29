@@ -74,7 +74,9 @@ namespace idealii::spacetime
 
     protected:
         Triangulation<dim> *_tria;
+#ifdef DEAL_II_WITH_MPI
         spacetime::parallel::distributed::Triangulation<dim> *_par_dist_tria;
+#endif
         std::list<slab::DoFHandler<dim>> _dof_handlers;
     };
 }

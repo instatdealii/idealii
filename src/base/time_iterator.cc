@@ -24,22 +24,24 @@ namespace idealii
         tria.obj_collection =
             std::vector<spacetime::Triangulation<dim>*> ();
 
+#ifdef DEAL__II_WITH_MPI
         par_dist_tria.it_collection =
             std::vector<slab::parallel::distributed::TriaIterator<dim>*> ();
 
         par_dist_tria.obj_collection =
             std::vector<spacetime::parallel::distributed::Triangulation<dim>*> ();
-
+#endif
         dof.it_collection = std::vector<slab::DoFHandlerIterator<dim>*> ();
         dof.obj_collection = std::vector<spacetime::DoFHandler<dim>*> ();
 
         vector_double.it_collection = std::vector<slab::VectorIterator<double>*> ();
 
         vector_double.obj_collection = std::vector<spacetime::Vector<double>*> ();
-
+#ifdef DEAL_II_WITH_MPI
         trilinos_vector.it_collection = std::vector<slab::TrilinosVectorIterator*> ();
 
         trilinos_vector.obj_collection = std::vector<spacetime::TrilinosVector*> ();
+#endif
     }
 
     template<int dim>
@@ -79,7 +81,7 @@ namespace idealii
         vector_double.it_collection.push_back ( it );
         vector_double.obj_collection.push_back ( obj );
     }
-
+#ifdef DEAL_II_WITH_MPI
     template<int dim>
     void TimeIteratorCollection<dim>::add_iterator (
          slab::TrilinosVectorIterator *it ,
@@ -88,7 +90,7 @@ namespace idealii
         trilinos_vector.it_collection.push_back ( it );
         trilinos_vector.obj_collection.push_back ( obj );
     }
-
+#endif
     template<int dim>
     void TimeIteratorCollection<dim>::increment ()
     {
@@ -120,12 +122,14 @@ namespace idealii
                     dealii::ExcIteratorPastEnd () );
             ++( *vector_double.it_collection[i] );
         }
+#ifdef DEAL_II_WITH_MPI
         for ( unsigned int i = 0 ; i < trilinos_vector.it_collection.size () ; i++ )
         {
             Assert( *trilinos_vector.it_collection[i] != trilinos_vector.obj_collection[i]->end () ,
                     dealii::ExcIteratorPastEnd () );
             ++( *trilinos_vector.it_collection[i] );
         }
+#endif
     }
 
     template<int dim>
