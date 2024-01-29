@@ -26,7 +26,7 @@ namespace idealii::slab
         _temporal_dof = std::make_shared<dealii::DoFHandler<1>> ( *tria.temporal () );
         _locally_owned_dofs = dealii::IndexSet ();
     }
-
+#ifdef DEAL_II_WITH_MPI
     template<int dim>
     DoFHandler<dim>::DoFHandler ( slab::parallel::distributed::Triangulation<dim> &tria )
     {
@@ -36,6 +36,7 @@ namespace idealii::slab
         _temporal_dof = std::make_shared<dealii::DoFHandler<1>> ( *tria.temporal () );
         _locally_owned_dofs = dealii::IndexSet ();
     }
+#endif
 
     template<int dim>
     DoFHandler<dim>::DoFHandler ( const DoFHandler<dim> &other )

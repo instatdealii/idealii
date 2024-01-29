@@ -45,14 +45,14 @@ namespace idealii::slab
          * @param tria A shared pointer to a slab::Triangulation.
          */
         DoFHandler ( Triangulation<dim> &tria );
-
+#ifdef DEAL_II_WITH_MPI
         /**
          * @brief Constructor linking a parallel::distributed::slab::Triangulation.
          * @param tria A shared pointer to a parallel::distributed::slab::Triangulation.
          */
         DoFHandler (
                 slab::parallel::distributed::Triangulation<dim> &tria );
-
+#endif
         /**
          * @brief (shallow) copy constructor. Only the index set and fe support type
          * are actually copied. The underlying pointers will point to the same

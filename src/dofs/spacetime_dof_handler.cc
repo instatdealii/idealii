@@ -21,7 +21,9 @@ namespace idealii::spacetime
     DoFHandler<dim>::DoFHandler ( Triangulation<dim> *tria )
     {
         _tria = tria;
+#ifdef DEAL_II_WITH_MPI
         _par_dist_tria = nullptr;
+#endif
         _dof_handlers = std::list<idealii::slab::DoFHandler<dim>> ();
     }
 
@@ -53,6 +55,7 @@ namespace idealii::spacetime
                 this->_dof_handlers.push_back ( idealii::slab::DoFHandler<dim> ( *tria_it ) );
             }
         }
+#ifdef DEAL_II_WITH_MPI
         else if ( _par_dist_tria != nullptr )
         {
             slab::parallel::distributed::TriaIterator<dim> tria_it = this->_par_dist_tria->begin ();
@@ -62,6 +65,7 @@ namespace idealii::spacetime
                 this->_dof_handlers.push_back ( idealii::slab::DoFHandler<dim> ( *tria_it ) );
             }
         }
+#endif
         else
         {
             Assert( false , dealii::ExcInternalError () );
