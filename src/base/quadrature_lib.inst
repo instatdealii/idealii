@@ -21,8 +21,8 @@ namespace idealii
   
   // explicit specialization
   // note that 1d formulae are specialized by implementation
-  QGaussRadau<2>;
-  QGaussRadau<3>;
+  template class QGaussRadau<2>;
+  template class QGaussRadau<3>;
 
   namespace spacetime
   {
