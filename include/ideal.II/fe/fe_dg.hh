@@ -57,7 +57,11 @@ namespace idealii::spacetime
             /**Support points based on QGauss<1>*/
             Legendre,
             /**for dG(r), r>0: Support points based on QGaussLobatto<1>*/
-            Lobatto
+            Lobatto,
+            /**Support points based on left QGaussRadau<1>*/
+            RadauLeft,
+            /**Support points based on right QGaussRadau<1>*/
+            RadauRight
         };
         /**
          * @brief Constructor for the finite element class.

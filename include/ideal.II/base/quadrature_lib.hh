@@ -21,6 +21,69 @@
 namespace idealii
 {
 
+
+    
+/**
+ * The Gauss-Radau family of quadrature rules for numerical integration.
+ *
+ * This modification of the Gauss quadrature uses one of the two interval end
+ * points as well. Being exact for polynomials of degree $2n-2$, this
+ * formula is suboptimal by one degree.
+ *
+ * This formula is often used in the context of discontinuous Galerkin
+ * discretizations of ODEs and the temporal part of PDEs.
+ *
+ * The quadrature points are the left interval end point plus the $n-1$
+ * roots of the polynomial
+ * \f[
+ *   \frac{P_{n-1}(x)+P_n(x)}{1+x}
+ * \f]
+ * where $P_{n-1}$ and $P_n$ are Legendre polynomials.
+ * The quadrature weights are
+ * \f[
+ *   w_0=\frac{2}{n^2}\quad\text{and}
+ *   \quad w_i=\frac{1-x_i}{n^2(P_{n-1}(x_i))^2}\text{ for }i>0
+ * \f]
+ *
+ * For the right Gauss-Radau formula the quadrature points are
+ * $\tilde{x}_i=1-x_{n-i-1}$ and the weights are $\tilde{w}_i=w_{n-i-1}$,
+ * with $(x_i,w_i)$ as quadrature points
+ * and weights of the left Gauss-Radau formula.
+ *
+ * @see https://mathworld.wolfram.com/RadauQuadrature.html
+ */
+    template<int dim>
+    class QGaussRadau :public dealii::Quadrature<dim>
+    {
+    public:
+        /*
+         * EndPoint is used to specify which of the two endpoints of the 
+         * unit interval is used as quadrature point 
+         */
+        enum EndPoint
+        {
+            /**
+             * Left end point.
+             */
+            left,
+            /**
+             * Right end point.
+             */
+            right
+        };
+
+        /// Generate a formula wit <tt>n</tt> quadrature points
+        QGaussRadau(const unsigned int n,
+                    EndPoint           end_point = QGaussRadau::left);
+        /**
+         * Move constructor. We cannot rely on the move constructor for `Quadrature`,
+         * since it does not know about the additional member `end_point` of this class.
+         */             
+        QGaussRadau(QGaussRadau<dim> &&) noexcept = default;
+    private:
+        const EndPoint end_point;
+    };
+
     /**
      * @brief 1D right box rule.
      *
@@ -31,7 +94,7 @@ namespace idealii
      * elements in time leads to the backward Euler method.
      *
      */
-    class QRightBox : public dealii::Quadrature<1>
+    class QRightBox : public QGaussRadau<1>
     {
     public:
         /**
@@ -52,7 +115,7 @@ namespace idealii
      * Although this is not necessarily desirable, using this formula for dG(0)
      * elements in time leads to the forward Euler method.
      */
-    class QLeftBox : public dealii::Quadrature<1>
+    class QLeftBox : public QGaussRadau<1>
     {
     public:
         /**
@@ -64,6 +127,7 @@ namespace idealii
         QLeftBox ();
     };
 
+    
     namespace spacetime
     {
 

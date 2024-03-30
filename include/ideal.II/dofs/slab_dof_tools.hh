@@ -8,10 +8,12 @@
 #ifndef INCLUDE_IDEAL_II_DOFS_SLAB_DOF_TOOLS_HH_
 #define INCLUDE_IDEAL_II_DOFS_SLAB_DOF_TOOLS_HH_
 
+#include <deal.II/base/types.h>
 #include <ideal.II/dofs/slab_dof_handler.hh>
 
 #include <deal.II/lac/dynamic_sparsity_pattern.h>
 #include <deal.II/dofs/dof_tools.h>
+#include "ideal.II/fe/fe_dg.hh"
 
 namespace idealii::slab::DoFTools
 {
@@ -35,6 +37,34 @@ namespace idealii::slab::DoFTools
                     time_dsp.add ( ii , ii - 1 );
                 }
             }
+            else if ( dof.fe_support_type() == spacetime::DG_FiniteElement<dim>::support_type::RadauLeft)
+            {
+                for ( dealii::types::global_dof_index ii =
+                       dof.dofs_per_cell_time() ; 
+                       ii < dof.n_dofs_time() ;
+                       ii += dof.dofs_per_cell_time())
+                {
+                    for (dealii::types::global_dof_index l = 0 ;
+                         l < dof.dofs_per_cell_time() ; l++)
+                        {
+                             time_dsp.add ( ii , ii - l - 1);
+                        }
+                }
+            }
+            else if ( dof.fe_support_type() == spacetime::DG_FiniteElement<dim>::support_type::RadauRight)
+            {
+                for ( dealii::types::global_dof_index ii =
+                       dof.dofs_per_cell_time() ; 
+                       ii < dof.n_dofs_time() ;
+                       ii += dof.dofs_per_cell_time())
+                {
+                    for (dealii::types::global_dof_index k = 0 ;
+                          k < dof.dofs_per_cell_time() ; k++)
+                        {
+                             time_dsp.add ( ii + k , ii -1);
+                        }
+                }
+            } 
             else
             {
                 //go over first DoF of each cell
@@ -74,7 +104,35 @@ namespace idealii::slab::DoFTools
                     time_dsp.add ( ii-1 , ii );
                 }
             }
-            else
+            else if ( dof.fe_support_type() == spacetime::DG_FiniteElement<dim>::support_type::RadauRight)
+            {
+                for ( dealii::types::global_dof_index ii =
+                       dof.dofs_per_cell_time() ; 
+                       ii < dof.n_dofs_time() ;
+                       ii += dof.dofs_per_cell_time())
+                {
+                    for (dealii::types::global_dof_index k = 0 ;
+                          k < dof.dofs_per_cell_time() ; k++)
+                        {
+                             time_dsp.add ( ii -1 , ii + k );
+                        }
+                }
+            } 
+            else if ( dof.fe_support_type() == spacetime::DG_FiniteElement<dim>::support_type::RadauLeft)
+            {
+                for ( dealii::types::global_dof_index ii =
+                       dof.dofs_per_cell_time() ; 
+                       ii < dof.n_dofs_time() ;
+                       ii += dof.dofs_per_cell_time())
+                {
+                    for (dealii::types::global_dof_index l = 0 ;
+                         l < dof.dofs_per_cell_time() ; l++)
+                        {
+                             time_dsp.add ( ii - l - 1 , ii );
+                        }
+                }
+            }
+            else 
             {
                 //go over first DoF of each cell
                 for ( dealii::types::global_dof_index ii =
