@@ -16,8 +16,16 @@
 #ifndef __IDEAL_II_BASE_SPACETIME_QUADRATURE_inst
 #define __IDEAL_II_BASE_SPACETIME_QUADRATURE_inst
 
-namespace idealii::spacetime
+namespace idealii
 {
+  
+  // explicit specialization
+  // note that 1d formulae are specialized by implementation
+  template class QGaussRadau<2>;
+  template class QGaussRadau<3>;
+
+  namespace spacetime
+  {
     template class QGauss<1> ;
     template class QGauss<2> ;
     template class QGauss<3> ;
@@ -25,6 +33,7 @@ namespace idealii::spacetime
     template class QGaussRightBox<1> ;
     template class QGaussRightBox<2> ;
     template class QGaussRightBox<3> ;
+  }
 }
 
 #endif

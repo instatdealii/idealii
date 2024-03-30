@@ -13,7 +13,10 @@
 //
 // ---------------------------------------------------------------------
 
+#include <deal.II/fe/fe_dgq.h>
 #include <ideal.II/fe/fe_dg.hh>
+#include <memory>
+#include "ideal.II/base/quadrature_lib.hh"
 #include <deal.II/base/quadrature_lib.h>
 
 namespace idealii::spacetime
@@ -27,16 +30,31 @@ namespace idealii::spacetime
         _fe_space (fe_space ),
         _type ( type )
     {
-        if ( type == support_type::Legendre || r == 0 )
+        if ( type == support_type::Legendre || (type == support_type::Lobatto && r == 0) )
         {
             _fe_time =
                 std::make_shared<dealii::FE_DGQArbitraryNodes<1>> (dealii::QGauss<1> ( r + 1 ) );
         }
-        else
+        else if (type == support_type::Lobatto)
         {
             _fe_time =
                 std::make_shared<dealii::FE_DGQArbitraryNodes<1>> (dealii::QGaussLobatto<1> ( r + 1 ) );
         }
+        else if (type == support_type::RadauLeft)
+        {
+            _fe_time = 
+                std::make_shared<dealii::FE_DGQArbitraryNodes<1>>(
+                    idealii::QGaussRadau<1>(r+1,QGaussRadau<1>::left)
+                );
+        }
+        else 
+        {
+            _fe_time = 
+                std::make_shared<dealii::FE_DGQArbitraryNodes<1>>(
+                    idealii::QGaussRadau<1>(r+1,QGaussRadau<1>::right)
+                );
+        }
+    
     }
 
     template<int dim>
