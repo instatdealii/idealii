@@ -1,5 +1,7 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" title=" " alt="" coords="5,31,144,57"/>
-<area shape="rect" id="node2" href="$classidealii_1_1QLeftBox.html" title="1D left box rule." alt="" coords="197,5,326,32"/>
-<area shape="rect" id="node3" href="$classidealii_1_1QRightBox.html" title="1D right box rule." alt="" coords="192,56,331,83"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,60,144,87"/>
+<area shape="rect" id="node2" href="$classidealii_1_1QGaussRadau.html" title=" " alt="" coords="192,31,391,57"/>
+<area shape="rect" id="node5" href="$classidealii_1_1QGaussRadau.html" title=" " alt="" coords="211,82,372,123"/>
+<area shape="rect" id="node3" href="$classidealii_1_1QLeftBox.html" title="1D left box rule." alt="" coords="443,5,573,32"/>
+<area shape="rect" id="node4" href="$classidealii_1_1QRightBox.html" title="1D right box rule." alt="" coords="439,56,577,83"/>
 </map>

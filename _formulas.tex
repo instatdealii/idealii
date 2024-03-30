@@ -1,0 +1,18 @@
+\documentclass{article}
+\usepackage{ifthen}
+\usepackage{epsfig}
+\usepackage[utf8]{inputenc}
+\usepackage{newunicodechar}
+  \newunicodechar{⁻}{${}^{-}$}% Superscript minus
+  \newunicodechar{²}{${}^{2}$}% Superscript two
+  \newunicodechar{³}{${}^{3}$}% Superscript three
+
+\pagestyle{empty}
+\begin{document}
+\[ \frac{P_{n-1}(x)+P_n(x)}{1+x} \]
+\pagebreak
+
+\[ w_0=\frac{2}{n^2}\quad\text{and} \quad w_i=\frac{1-x_i}{n^2(P_{n-1}(x_i))^2}\text{ for }i>0 \]
+\pagebreak
+
+\end{document}
