@@ -108,7 +108,10 @@ namespace idealii
         namespace fixed
         {}
       } // namespace distributed
-    }   // namespace parallel
-  }     // namespace spacetime
+
+    } // namespace parallel
+
+  } // namespace spacetime
+
 } // namespace idealii
 #endif /* INCLUDE_IDEAL_II_BASE_IDEALII1_HH_ */
