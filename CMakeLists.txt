@@ -135,6 +135,22 @@ if(NOT DOCUMENTATION_ONLY)
 
 
   add_subdirectory(examples)
+
+
 endif()
 add_subdirectory(doc/doxygen)
 
+find_program(CLANG_FORMAT clang-format)
+
+if(${CLANG_FORMAT} STREQUAL "CLANG_FORMAT-NOTFOUND")
+    message("-- clang-format not found, custom check-format target will not be configured.")
+else()
+    message("-- clang-format found, setting up target check-format.")
+    file(GLOB_RECURSE FORMAT_SRC "src/*/*.cc" "src/*/*.inst")
+    file(GLOB_RECURSE FORMAT_INCLUDE "include/*/*.hh")
+    file(GLOB_RECURSE FORMAT_EXAMPLES "examples/*/*.cc")
+
+    add_custom_target(check-format 
+    COMMENT "Using clang-format to check for wrong indents"
+       COMMAND ${CLANG_FORMAT} --dry-run --Werror ${FORMAT_SRC} ${FORMAT_INCLUDE} ${FORMAT_EXAMPLES})
+endif()
