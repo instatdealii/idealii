@@ -475,7 +475,8 @@ Step1::assemble_system_on_slab()
                     right_hand_side.value(x_q) * fe_values_spacetime.JxW(q);
 
                 } // dofs i
-            }     // quad
+
+            } // quad
 
           // Jump terms and initial values just have a spatial quadrature loop
           for (unsigned int q = 0; q < n_quad_space; ++q)

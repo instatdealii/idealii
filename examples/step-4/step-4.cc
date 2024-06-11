@@ -543,8 +543,10 @@ Step4::assemble_system_on_slab()
                             fe_values_spacetime.JxW(q);
 
                         } // dofs j
-                    }     // dofs i
-                }         // quad
+
+                    } // dofs i
+
+                } // quad
 
               for (unsigned int q = 0; q < n_quad_space; ++q)
                 {
@@ -576,7 +578,8 @@ Step4::assemble_system_on_slab()
                                 fe_jump_values_spacetime.JxW(q);
                             }
                         } // dofs j
-                    }     // dofs i
+
+                    } // dofs i
                 }
 
             } // cell time
@@ -732,7 +735,8 @@ Step4::assemble_residual_on_slab()
                         div_v * fe_values_spacetime.JxW(q);
 
                     } // dofs i
-                }     // quad
+
+                } // quad
 
               fe_jump_values_spacetime.get_function_values_plus(
                 *slab_its.solution, old_solution_plus);
@@ -765,7 +769,8 @@ Step4::assemble_residual_on_slab()
                         v_minus * fe_jump_values_spacetime.JxW(q);
 
                     } // dofs i
-                }     // quad_space
+
+                } // quad_space
               if (n < N - 1)
                 {
                   fe_jump_values_spacetime.get_function_values_minus(

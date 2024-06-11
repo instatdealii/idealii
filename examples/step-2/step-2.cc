@@ -449,8 +449,10 @@ Step2::assemble_system_on_slab()
                         fe_values_spacetime.JxW(q);
 
                     } // dofs j
-                }     // dofs i
-            }         // quad
+
+                } // dofs i
+
+            } // quad
 
           // Jump terms and initial values just have a spatial loop
           // Only the velocity has a temporal derivative, so we don't need
