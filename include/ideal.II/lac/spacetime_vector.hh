@@ -20,55 +20,59 @@
 
 namespace idealii
 {
-    namespace slab
+  namespace slab
+  {
+    /**
+     *	@brief A shortened type for iterators over a list of shared pointers to dealii::Vectors.
+     */
+    template <typename Number>
+    using VectorIterator = typename std::list<dealii::Vector<Number>>::iterator;
+  } // namespace slab
+  namespace spacetime
+  {
+
+    /**
+     * @brief The spacetime vector object.
+     *
+     * In practice this is just a class around a list of shared pointers to
+     * dealii::Vector<Number> objects to simplify time marching.
+     */
+    template <typename Number>
+    class Vector
     {
-        /**
-         *	@brief A shortened type for iterators over a list of shared pointers to dealii::Vectors.
-         */
-        template<typename Number>
-        using VectorIterator = typename std::list<dealii::Vector<Number>>::iterator;
-    }
-    namespace spacetime
-    {
+    public:
+      /**
+       * @brief Construct an empty list of vectors.
+       */
+      Vector();
 
-        /**
-         * @brief The spacetime vector object.
-         *
-         * In practice this is just a class around a list of shared pointers to
-         * dealii::Vector<Number> objects to simplify time marching.
-         */
-        template<typename Number>
-        class Vector
-        {
-        public:
-            /**
-             * @brief Construct an empty list of vectors.
-             */
-            Vector ();
+      /**
+       * @brief Clear the list and add M empty vectors.
+       */
+      void
+      reinit(unsigned int M);
 
-            /**
-             * @brief Clear the list and add M empty vectors.
-             */
-            void reinit ( unsigned int M );
+      /**
+       * @brief Return the size of the list, i.e. the number of slabs.
+       */
+      unsigned int
+      M();
 
-            /**
-             * @brief Return the size of the list, i.e. the number of slabs.
-             */
-            unsigned int M ();
+      /**
+       * @brief Return an iterator pointing to the first "slab" vector.
+       */
+      slab::VectorIterator<Number>
+      begin();
+      /**
+       * @brief Return an iterator pointing behind the last "slab" vector.
+       */
+      slab::VectorIterator<Number>
+      end();
 
-            /**
-             * @brief Return an iterator pointing to the first "slab" vector.
-             */
-            slab::VectorIterator<Number> begin ();
-            /**
-             * @brief Return an iterator pointing behind the last "slab" vector.
-             */
-            slab::VectorIterator<Number> end ();
-
-        private:
-            std::list<dealii::Vector<Number>> _vectors;
-        };
-    }
-}
+    private:
+      std::list<dealii::Vector<Number>> _vectors;
+    };
+  } // namespace spacetime
+} // namespace idealii
 
 #endif /* INCLUDE_IDEAL_II_LAC_SPACETIME_VECTOR_HH_ */

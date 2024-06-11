@@ -18,51 +18,51 @@
 
 namespace idealii::slab::VectorTools
 {
-    template void
-    interpolate_boundary_values (
-      idealii::slab::DoFHandler<2> &dof_handler ,
-      const dealii::types::boundary_id boundary_component ,
-      dealii::Function<2,double> &boundary_function ,
-      std::shared_ptr<dealii::AffineConstraints<double>> spacetime_constraints ,
-      const dealii::ComponentMask &component_mask = dealii::ComponentMask () );
+  template void
+  interpolate_boundary_values(
+    idealii::slab::DoFHandler<2>                      &dof_handler,
+    const dealii::types::boundary_id                   boundary_component,
+    dealii::Function<2, double>                       &boundary_function,
+    std::shared_ptr<dealii::AffineConstraints<double>> spacetime_constraints,
+    const dealii::ComponentMask &component_mask = dealii::ComponentMask());
 
-    template void
-    interpolate_boundary_values (
-      idealii::slab::DoFHandler<3> &dof_handler ,
-      const dealii::types::boundary_id boundary_component ,
-      dealii::Function<3,double> &boundary_function ,
-      std::shared_ptr<dealii::AffineConstraints<double>> spacetime_constraints ,
-      const dealii::ComponentMask &component_mask = dealii::ComponentMask () );
+  template void
+  interpolate_boundary_values(
+    idealii::slab::DoFHandler<3>                      &dof_handler,
+    const dealii::types::boundary_id                   boundary_component,
+    dealii::Function<3, double>                       &boundary_function,
+    std::shared_ptr<dealii::AffineConstraints<double>> spacetime_constraints,
+    const dealii::ComponentMask &component_mask = dealii::ComponentMask());
 
-    template void
-    project_boundary_values_curl_conforming_l2 (
-        idealii::slab::DoFHandler<2> &dof_handler ,
-        unsigned int first_vector_component ,
-        dealii::Function<2,double> &boundary_function ,
-        const dealii::types::boundary_id boundary_component ,
-        std::shared_ptr<dealii::AffineConstraints<double>> spacetime_constraints );
+  template void
+  project_boundary_values_curl_conforming_l2(
+    idealii::slab::DoFHandler<2>                      &dof_handler,
+    unsigned int                                       first_vector_component,
+    dealii::Function<2, double>                       &boundary_function,
+    const dealii::types::boundary_id                   boundary_component,
+    std::shared_ptr<dealii::AffineConstraints<double>> spacetime_constraints);
 
-    template void
-    project_boundary_values_curl_conforming_l2 (
-        idealii::slab::DoFHandler<3> &dof_handler ,
-        unsigned int first_vector_component ,
-        dealii::Function<3,double> &boundary_function ,
-        const dealii::types::boundary_id boundary_component ,
-        std::shared_ptr<dealii::AffineConstraints<double>> spacetime_constraints );
+  template void
+  project_boundary_values_curl_conforming_l2(
+    idealii::slab::DoFHandler<3>                      &dof_handler,
+    unsigned int                                       first_vector_component,
+    dealii::Function<3, double>                       &boundary_function,
+    const dealii::types::boundary_id                   boundary_component,
+    std::shared_ptr<dealii::AffineConstraints<double>> spacetime_constraints);
 
-    template double
-    calculate_L2L2_squared_error_on_slab<2> (
-      slab::DoFHandler<2> &dof_handler ,
-      dealii::Vector<double> &spacetime_vector ,
-      dealii::Function<2,double> &exact_solution ,
-      spacetime::Quadrature<2> &quad );
+  template double
+  calculate_L2L2_squared_error_on_slab<2>(
+    slab::DoFHandler<2>         &dof_handler,
+    dealii::Vector<double>      &spacetime_vector,
+    dealii::Function<2, double> &exact_solution,
+    spacetime::Quadrature<2>    &quad);
 
-    template double
-    calculate_L2L2_squared_error_on_slab<3> (
-      slab::DoFHandler<3> &dof_handler ,
-      dealii::Vector<double> &spacetime_vector ,
-      dealii::Function<3,double> &exact_solution ,
-      spacetime::Quadrature<3> &quad );
-}
+  template double
+  calculate_L2L2_squared_error_on_slab<3>(
+    slab::DoFHandler<3>         &dof_handler,
+    dealii::Vector<double>      &spacetime_vector,
+    dealii::Function<3, double> &exact_solution,
+    spacetime::Quadrature<3>    &quad);
+} // namespace idealii::slab::VectorTools
 
 #endif

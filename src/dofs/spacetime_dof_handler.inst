@@ -18,8 +18,8 @@
 
 namespace idealii::spacetime
 {
-    template class DoFHandler<2> ;
-    template class DoFHandler<3> ;
-}
+  template class DoFHandler<2>;
+  template class DoFHandler<3>;
+} // namespace idealii::spacetime
 
 #endif

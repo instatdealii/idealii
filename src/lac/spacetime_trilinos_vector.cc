@@ -16,39 +16,42 @@
 #include <ideal.II/lac/spacetime_trilinos_vector.hh>
 
 #ifdef DEAL_II_WITH_TRILINOS
-#ifdef DEAL_II_WITH_MPI
+#  ifdef DEAL_II_WITH_MPI
 namespace idealii::spacetime
 {
-    TrilinosVector::TrilinosVector ()
-    {
-        _vectors = std::list<dealii::TrilinosWrappers::MPI::Vector> ();
-    }
+  TrilinosVector::TrilinosVector()
+  {
+    _vectors = std::list<dealii::TrilinosWrappers::MPI::Vector>();
+  }
 
-    unsigned int TrilinosVector::M ()
-    {
-        return _vectors.size ();
-    }
+  unsigned int
+  TrilinosVector::M()
+  {
+    return _vectors.size();
+  }
 
-    void TrilinosVector::reinit ( unsigned int M )
-    {
-        this->_vectors.clear ();
-        for ( unsigned int i = 0 ; i < M ; i++ )
-        {
-            this->_vectors.push_back (dealii::TrilinosWrappers::MPI::Vector () );
-        }
-    }
+  void
+  TrilinosVector::reinit(unsigned int M)
+  {
+    this->_vectors.clear();
+    for (unsigned int i = 0; i < M; i++)
+      {
+        this->_vectors.push_back(dealii::TrilinosWrappers::MPI::Vector());
+      }
+  }
 
-    slab::TrilinosVectorIterator TrilinosVector::begin ()
-    {
-        return _vectors.begin ();
-    }
+  slab::TrilinosVectorIterator
+  TrilinosVector::begin()
+  {
+    return _vectors.begin();
+  }
 
-    slab::TrilinosVectorIterator TrilinosVector::end ()
-    {
-        return _vectors.end ();
-    }
-}
+  slab::TrilinosVectorIterator
+  TrilinosVector::end()
+  {
+    return _vectors.end();
+  }
+} // namespace idealii::spacetime
 
+#  endif
 #endif
-#endif
-

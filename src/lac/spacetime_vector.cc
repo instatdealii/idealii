@@ -17,40 +17,43 @@
 
 namespace idealii::spacetime
 {
-    template<typename Number>
-    Vector<Number>::Vector ()
-    {
-        _vectors = std::list<dealii::Vector<Number>> ();
-    }
+  template <typename Number>
+  Vector<Number>::Vector()
+  {
+    _vectors = std::list<dealii::Vector<Number>>();
+  }
 
-    template<typename Number>
-    unsigned int Vector<Number>::M ()
-    {
-        return _vectors.size ();
-    }
+  template <typename Number>
+  unsigned int
+  Vector<Number>::M()
+  {
+    return _vectors.size();
+  }
 
-    template<typename Number>
-    void Vector<Number>::reinit ( unsigned int M )
-    {
-        this->_vectors.clear ();
-        for ( unsigned int i = 0 ; i < M ; i++ )
-        {
-            this->_vectors.push_back ( dealii::Vector<Number> () );
-        }
-    }
+  template <typename Number>
+  void
+  Vector<Number>::reinit(unsigned int M)
+  {
+    this->_vectors.clear();
+    for (unsigned int i = 0; i < M; i++)
+      {
+        this->_vectors.push_back(dealii::Vector<Number>());
+      }
+  }
 
-    template<typename Number>
-    slab::VectorIterator<Number> Vector<Number>::begin ()
-    {
-        return _vectors.begin ();
-    }
+  template <typename Number>
+  slab::VectorIterator<Number>
+  Vector<Number>::begin()
+  {
+    return _vectors.begin();
+  }
 
-    template<typename Number>
-    slab::VectorIterator<Number> Vector<Number>::end ()
-    {
-        return _vectors.end ();
-    }
-}
+  template <typename Number>
+  slab::VectorIterator<Number>
+  Vector<Number>::end()
+  {
+    return _vectors.end();
+  }
+} // namespace idealii::spacetime
 
 #include "spacetime_vector.inst"
-

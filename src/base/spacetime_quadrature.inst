@@ -18,9 +18,9 @@
 
 namespace idealii::spacetime
 {
-    template class Quadrature<1> ;
-    template class Quadrature<2> ;
-    template class Quadrature<3> ;
-}
+  template class Quadrature<1>;
+  template class Quadrature<2>;
+  template class Quadrature<3>;
+} // namespace idealii::spacetime
 
 #endif

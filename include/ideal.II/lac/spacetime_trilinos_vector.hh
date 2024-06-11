@@ -18,56 +18,66 @@
 
 #include <deal.II/base/config.h>
 #ifdef DEAL_II_WITH_TRILINOS
-#ifdef DEAL_II_WITH_MPI
-#include <deal.II/lac/trilinos_vector.h>
+#  ifdef DEAL_II_WITH_MPI
+#    include <deal.II/lac/trilinos_vector.h>
 
-namespace idealii{
-    namespace slab{
-        /**
-         *	@brief A shortened type for iterators over a list of shared pointers to dealii::TrilinosWrappers::MPI::Vectors.
-         */
-        using TrilinosVectorIterator = typename std::list<dealii::TrilinosWrappers::MPI::Vector>::iterator;
-    }
-    namespace spacetime{
+namespace idealii
+{
+  namespace slab
+  {
+    /**
+     *	@brief A shortened type for iterators over a list of shared pointers to dealii::TrilinosWrappers::MPI::Vectors.
+     */
+    using TrilinosVectorIterator =
+      typename std::list<dealii::TrilinosWrappers::MPI::Vector>::iterator;
+  } // namespace slab
+  namespace spacetime
+  {
 
 
-        /**
-         * @brief The spacetime Trilinos vector object.
-         *
-         * In practice this is just a class around a list of shared pointers to
-         * dealii::TrilinosWrappers::MPI::Vector objects to simplify time marching.
-         */
-        class TrilinosVector{
-        public:
-            /**
-             * @brief Construct an empty list of vectors.
-             */
-            TrilinosVector();
+    /**
+     * @brief The spacetime Trilinos vector object.
+     *
+     * In practice this is just a class around a list of shared pointers to
+     * dealii::TrilinosWrappers::MPI::Vector objects to simplify time marching.
+     */
+    class TrilinosVector
+    {
+    public:
+      /**
+       * @brief Construct an empty list of vectors.
+       */
+      TrilinosVector();
 
-            /**
-             * @brief Clear the list and add M empty vectors.
-             */
-            void reinit(unsigned int M);
+      /**
+       * @brief Clear the list and add M empty vectors.
+       */
+      void
+      reinit(unsigned int M);
 
-            /**
-             * @brief Return the size of the list, i.e. the number of slabs.
-             */
-            unsigned int M();
+      /**
+       * @brief Return the size of the list, i.e. the number of slabs.
+       */
+      unsigned int
+      M();
 
-            /**
-             * @brief Return an iterator pointing to the first "slab" vector.
-             */
-            slab::TrilinosVectorIterator begin();
-            /**
-             * @brief Return an iterator pointing behind the last "slab" vector.
-             */
-            slab::TrilinosVectorIterator end();
+      /**
+       * @brief Return an iterator pointing to the first "slab" vector.
+       */
+      slab::TrilinosVectorIterator
+      begin();
+      /**
+       * @brief Return an iterator pointing behind the last "slab" vector.
+       */
+      slab::TrilinosVectorIterator
+      end();
 
-        private:
-            std::list<dealii::TrilinosWrappers::MPI::Vector> _vectors;
-        };
-    }}
+    private:
+      std::list<dealii::TrilinosWrappers::MPI::Vector> _vectors;
+    };
+  } // namespace spacetime
+} // namespace idealii
 
-#endif /* DEAL_II_WITH_MPI */
-#endif /* DEAL_II_WITH_TRILINOS */
-#endif /* INCLUDE_IDEAL_II_LAC_SPACETIME_VECTOR_HH_ */
+#  endif /* DEAL_II_WITH_MPI */
+#endif   /* DEAL_II_WITH_TRILINOS */
+#endif   /* INCLUDE_IDEAL_II_LAC_SPACETIME_VECTOR_HH_ */

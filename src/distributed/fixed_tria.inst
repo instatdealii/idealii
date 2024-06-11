@@ -18,9 +18,9 @@
 
 namespace idealii::spacetime::parallel::distributed::fixed
 {
-    template class Triangulation<2> ;
-    template class Triangulation<3> ;
+  template class Triangulation<2>;
+  template class Triangulation<3>;
 
-} //namespaces
+} // namespace idealii::spacetime::parallel::distributed::fixed
 
 #endif
