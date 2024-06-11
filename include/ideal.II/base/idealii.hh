@@ -19,99 +19,96 @@
  */
 namespace idealii
 {
-    void
-    print_version_info ();
+  void
+  print_version_info();
+
+  /**
+   * @brief Namespace for slab objects.
+   *
+   * Namespace containing all classes that describe objects
+   * operating on a tensor product between a onedimensional
+   * temporal triangulation and an n-dimensional spatial triangulation.
+   */
+  namespace slab
+  {
+    /**
+     * @brief Namespace for MPI parallel objects in space.
+     */
+    namespace parallel
+    {
+      /**
+       * @brief Namespace where the processor local triangulations share a common coarse object.
+       */
+      namespace distributed
+      {}
+    } // namespace parallel
+    /**
+     * @brief Collection of functions working on degrees of freedom.
+     *
+     * These functions provide utilities for calculating
+     * spacetime variants of normally stationary objects provided by deal.II.
+     *
+     * In detail this means spreading stationary information over all temporal
+     * degrees of freedom in this slab. Examples are:
+     * - Offsetting hanging node constraints to each temporal dof.
+     * - Building tensor products of spatial and temporal sparsity patterns to
+     * obtain a spacetime pattern
+     */
+    namespace DoFTools
+    {}
 
     /**
-     * @brief Namespace for slab objects.
+     * @brief Collection of functions working on space-time slab Vectors.
      *
-     * Namespace containing all classes that describe objects
-     * operating on a tensor product between a onedimensional
-     * temporal triangulation and an n-dimensional spatial triangulation.
+     * These functions provide utilities for manipulating space-time indexed
+     * vectors of normally stationary objects provided by deal.II.
+     *
+     * Examples are:
+     * - interpolation of spatial boundary values to all corresponding
+     * space-time dofs
+     * - evaluation of space-time vectors at a specific time points of time dof.
      */
-    namespace slab
-    {
-        /**
-         * @brief Namespace for MPI parallel objects in space.
-         */
-        namespace parallel
-        {
-            /**
-             * @brief Namespace where the processor local triangulations share a common coarse object.
-             */
-            namespace distributed
-            {
-            }
-        }
-        /**
-         * @brief Collection of functions working on degrees of freedom.
-         *
-         * These functions provide utilities for calculating
-         * spacetime variants of normally stationary objects provided by deal.II.
-         *
-         * In detail this means spreading stationary information over all temporal degrees of freedom
-         * in this slab.
-         * Examples are:
-         * - Offsetting hanging node constraints to each temporal dof.
-         * - Building tensor products of spatial and temporal sparsity patterns to obtain a spacetime pattern
-         */
-        namespace DoFTools
-        {
-        }
+    namespace VectorTools
+    {}
+  } // namespace slab
 
-        /**
-         * @brief Collection of functions working on space-time slab Vectors.
-         *
-         * These functions provide utilities for manipulating space-time indexed
-         * vectors of normally stationary objects provided by deal.II.
-         *
-         * Examples are:
-         * - interpolation of spatial boundary values to all corresponding space-time dofs
-         * - evaluation of space-time vectors at a specific time points of time dof.
-         */
-        namespace VectorTools
-        {
-        }
-    }
-
+  /**
+   * @brief Namespace for general spacetime object and collections of slab objects.
+   *
+   * Namespace containing two types of classes.
+   *
+   * The first are general spacetime definitions independent of the actual
+   * triangulation. Examples are space-time finite element classes and
+   * quadrature formulae.
+   *
+   * The second are classes containing lists of slab:: classes or general
+   * objects related to a specific slab. Examples are triangulations, DoF
+   * handlers and vectors.
+   */
+  namespace spacetime
+  {
     /**
-     * @brief Namespace for general spacetime object and collections of slab objects.
-     *
-     * Namespace containing two types of classes.
-     *
-     * The first are general spacetime definitions independent of the actual triangulation.
-     * Examples are space-time finite element classes and quadrature formulae.
-     *
-     * The second are classes containing lists of slab:: classes or general objects
-     * related to a specific slab.
-     * Examples are triangulations, DoF handlers and vectors.
+     * @brief Namespace for tensor product triangulations with a single fixed spatial mesh.
      */
-    namespace spacetime
+    namespace fixed
+    {}
+    /**
+     * @brief Namespace for MPI parallel objects in space.
+     */
+    namespace parallel
     {
+      /**
+       * @brief Namespace where the processor local triangulations share a common coarse object.
+       */
+      namespace distributed
+      {
         /**
          * @brief Namespace for tensor product triangulations with a single fixed spatial mesh.
          */
         namespace fixed
-        {
-        }
-        /**
-         * @brief Namespace for MPI parallel objects in space.
-         */
-        namespace parallel
-        {
-            /**
-             * @brief Namespace where the processor local triangulations share a common coarse object.
-             */
-            namespace distributed
-            {
-                /**
-                 * @brief Namespace for tensor product triangulations with a single fixed spatial mesh.
-                 */
-                namespace fixed
-                {
-                }
-            }
-        }
-    }
-}
+        {}
+      } // namespace distributed
+    }   // namespace parallel
+  }     // namespace spacetime
+} // namespace idealii
 #endif /* INCLUDE_IDEAL_II_BASE_IDEALII1_HH_ */

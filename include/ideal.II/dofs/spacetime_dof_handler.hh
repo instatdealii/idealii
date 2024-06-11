@@ -16,69 +16,75 @@
 #ifndef INCLUDE_IDEAL_II_DOFS_SPACETIME_DOF_HANDLER_HH_
 #define INCLUDE_IDEAL_II_DOFS_SPACETIME_DOF_HANDLER_HH_
 
-#include <ideal.II/grid/spacetime_tria.hh>
 #include <ideal.II/distributed/spacetime_tria.hh>
+
 #include <ideal.II/dofs/slab_dof_handler.hh>
+
+#include <ideal.II/grid/spacetime_tria.hh>
 
 namespace idealii::spacetime
 {
+  /**
+   * @brief The spacetime dofhandler object.
+   *
+   * In practice this is just a class around a list of shared pointers to
+   * slab::DoFHandler objects to simplify generation and time marching.
+   */
+  template <int dim>
+  class DoFHandler
+  {
+  public:
     /**
-     * @brief The spacetime dofhandler object.
+     * @brief Constructor based on spacetime::Triangulation.
      *
-     * In practice this is just a class around a list of shared pointers to
-     * slab::DoFHandler objects to simplify generation and time marching.
+     * @param tria The spacetime::Triangulation object to use in construction of the underlying handlers.
      */
-    template<int dim>
-    class DoFHandler
-    {
-    public:
-        /**
-         * @brief Constructor based on spacetime::Triangulation.
-         *
-         * @param tria The spacetime::Triangulation object to use in construction of the underlying handlers.
-         */
-        DoFHandler ( spacetime::Triangulation<dim> *tria );
+    DoFHandler(spacetime::Triangulation<dim> *tria);
 
 #ifdef DEAL_II_WITH_MPI
-        /**
-         * @brief Constructor based on parallel::distributed::spacetime::Triangulation.
-         *
-         * @param tria The parallel::distributed::spacetime::Triangulation object to use in construction of the underlying handlers.
-         */
-        DoFHandler(spacetime::parallel::distributed::Triangulation<dim>* tria);
+    /**
+     * @brief Constructor based on parallel::distributed::spacetime::Triangulation.
+     *
+     * @param tria The parallel::distributed::spacetime::Triangulation object to use in construction of the underlying handlers.
+     */
+    DoFHandler(spacetime::parallel::distributed::Triangulation<dim> *tria);
 #endif
-        /**
-         * @brief generate all slab::DofHandler objects.
-         *
-         * This function iterates over all slab::Triangulation objects in the
-         * underlying triangulation and constructs one slab::DoFHandler for each.
-         */
-        void generate ();
+    /**
+     * @brief generate all slab::DofHandler objects.
+     *
+     * This function iterates over all slab::Triangulation objects in the
+     * underlying triangulation and constructs one slab::DoFHandler for each.
+     */
+    void
+    generate();
 
-        /**
-         * @brief The number of slabs.
-         * @return The size of the underlying list.
-         */
-        unsigned int M ();
+    /**
+     * @brief The number of slabs.
+     * @return The size of the underlying list.
+     */
+    unsigned int
+    M();
 
-        /**
-         * @brief An iterator pointing to the first slab::DoFHandler.
-         * @return The result of the begin() call to the underlying list.
-         */
-        slab::DoFHandlerIterator<dim>  begin ();
-        /**
-         * @brief An iterator pointing behind the last slab::DoFHandler.
-         * @return The result of the end() call to the underlying list.
-         */
-        slab::DoFHandlerIterator<dim> end ();
+    /**
+     * @brief An iterator pointing to the first slab::DoFHandler.
+     * @return The result of the begin() call to the underlying list.
+     */
+    slab::DoFHandlerIterator<dim>
+    begin();
+    /**
+     * @brief An iterator pointing behind the last slab::DoFHandler.
+     * @return The result of the end() call to the underlying list.
+     */
+    slab::DoFHandlerIterator<dim>
+    end();
 
-    protected:
-        Triangulation<dim> *_tria;
+  protected:
+    Triangulation<dim> *_tria;
 #ifdef DEAL_II_WITH_MPI
-        spacetime::parallel::distributed::Triangulation<dim> *_par_dist_tria;
+    spacetime::parallel::distributed::Triangulation<dim> *_par_dist_tria;
 #endif
-        std::list<slab::DoFHandler<dim>> _dof_handlers;
-    };
-}
+    std::list<slab::DoFHandler<dim>> _dof_handlers;
+  };
+} // namespace idealii::spacetime
 
 #endif /* INCLUDE_IDEAL_II_DOFS_FIXED_DOF_HANDLER_HH_ */

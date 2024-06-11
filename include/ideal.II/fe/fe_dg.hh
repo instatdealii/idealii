@@ -23,88 +23,88 @@
 
 namespace idealii::spacetime
 {
-    template<int dim>
+  template <int dim>
+  /**
+   * @brief A class for dG elements in time and arbitrary elements in space.
+   *
+   * This class implements a tensor product finite element of a discontinuous
+   * Galerkin temporal element and a user supplied spatial element.
+   * For the temporal element both GaussLegendre and GaussLobatto support points
+   * can be chosen
+   **/
+  class DG_FiniteElement
+  {
+  public:
+    // Info/Todo: With proper Quadrature class could be extended to RaudauLeft
+    // and RadauRight Would need Radau based on Legendre polynomial roots
     /**
-     * @brief A class for dG elements in time and arbitrary elements in space.
+     * @brief Choice of underlying temporal support points.
      *
-     * This class implements a tensor product finite element of a discontinuous
-     * Galerkin temporal element and a user supplied spatial element.
-     * For the temporal element both GaussLegendre and GaussLobatto support points
-     * can be chosen
-     **/
-    class DG_FiniteElement
+     * Allows the choice between GaussLobatto and GaussLegendre support points
+     * for the dG(r) elements in time.
+     *
+     * The choice of #Lobatto results in 1D dG elements as defined in FE_DGQ.
+     *
+     * The choice of #Legendre leads to dG elements without support points on
+     * the interval/element edges. This might lead to better convergence, but
+     * the resulting off-diagonal sparsity pattern will be larger as jump terms
+     * then depend on all temporal dofs.
+     *
+     * For r=0 the resulting element always uses the interval midpoint.
+     */
+    enum support_type
     {
-    public:
-        //Info/Todo: With proper Quadrature class could be extended to RaudauLeft and RadauRight
-        //Would need Radau based on Legendre polynomial roots
-        /**
-         * @brief Choice of underlying temporal support points.
-         *
-         * Allows the choice between GaussLobatto and GaussLegendre support points
-         * for the dG(r) elements in time.
-         *
-         * The choice of #Lobatto results in 1D dG elements as defined in FE_DGQ.
-         *
-         * The choice of #Legendre leads to dG elements without support points on the
-         * interval/element edges. This might lead to better convergence, but the
-         * resulting off-diagonal sparsity pattern will be larger as jump terms
-         * then depend on all temporal dofs.
-         *
-         * For r=0 the resulting element always uses the interval midpoint.
-         */
-        enum support_type
-        {
-            /**Support points based on QGauss<1>*/
-            Legendre,
-            /**for dG(r), r>0: Support points based on QGaussLobatto<1>*/
-            Lobatto,
-            /**Support points based on left QGaussRadau<1>*/
-            RadauLeft,
-            /**Support points based on right QGaussRadau<1>*/
-            RadauRight
-        };
-        /**
-         * @brief Constructor for the finite element class.
-         */
-        DG_FiniteElement (
-                std::shared_ptr<dealii::FiniteElement<dim>> fe_space ,
-                const unsigned int r , support_type type =
-                        support_type::Lobatto );
-        /**
-         * @brief The underlying spatial finite element.
-         * @return A shared pointer to the underlying finite element object.
-         */
-        std::shared_ptr<dealii::FiniteElement<dim>>
-        spatial ();
-        /**
-         * @brief The underlying temporal finite element.
-         * @return A shared pointer to the underlying finite element object.
-         */
-        std::shared_ptr<dealii::FiniteElement<1>>
-        temporal ();
-        /**
-         * @brief The number of degrees of freedom per space-time element.
-         *
-         * In practice this is simply (r+1) times the number of DoFs per spatial element.
-         * @return temporal()->dofs_per_cell * spatial()->dofs_per_cell
-         */
-        const unsigned int dofs_per_cell;
-        /**
-         * @brief The #support_type used for construction.
-         *
-         * This function is mostly used internally. One example would be the construction
-         * of the upstream and downstream sparsity patterns,
-         * which include off diagonals for jump terms.
-         * @return The underlying #support_type
-         */
-        support_type
-        type ();
-    private:
-        std::shared_ptr<dealii::FiniteElement<dim>> _fe_space;
-        std::shared_ptr<dealii::FiniteElement<1>> _fe_time;
-        support_type _type;
-
+      /**Support points based on QGauss<1>*/
+      Legendre,
+      /**for dG(r), r>0: Support points based on QGaussLobatto<1>*/
+      Lobatto,
+      /**Support points based on left QGaussRadau<1>*/
+      RadauLeft,
+      /**Support points based on right QGaussRadau<1>*/
+      RadauRight
     };
-} //end namespaces
+    /**
+     * @brief Constructor for the finite element class.
+     */
+    DG_FiniteElement(std::shared_ptr<dealii::FiniteElement<dim>> fe_space,
+                     const unsigned int                          r,
+                     support_type type = support_type::Lobatto);
+    /**
+     * @brief The underlying spatial finite element.
+     * @return A shared pointer to the underlying finite element object.
+     */
+    std::shared_ptr<dealii::FiniteElement<dim>>
+    spatial();
+    /**
+     * @brief The underlying temporal finite element.
+     * @return A shared pointer to the underlying finite element object.
+     */
+    std::shared_ptr<dealii::FiniteElement<1>>
+    temporal();
+    /**
+     * @brief The number of degrees of freedom per space-time element.
+     *
+     * In practice this is simply (r+1) times the number of DoFs per spatial
+     * element.
+     * @return temporal()->dofs_per_cell * spatial()->dofs_per_cell
+     */
+    const unsigned int dofs_per_cell;
+    /**
+     * @brief The #support_type used for construction.
+     *
+     * This function is mostly used internally. One example would be the
+     * construction of the upstream and downstream sparsity patterns, which
+     * include off diagonals for jump terms.
+     * @return The underlying #support_type
+     */
+    support_type
+    type();
+
+  private:
+    std::shared_ptr<dealii::FiniteElement<dim>> _fe_space;
+    std::shared_ptr<dealii::FiniteElement<1>>   _fe_time;
+    support_type                                _type;
+  };
+} // namespace idealii::spacetime
 
 #endif /* INCLUDE_IDEAL_II_FE_FE_DG_HH_ */

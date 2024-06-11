@@ -19,66 +19,78 @@
 #include <ideal.II/distributed/slab_tria.hh>
 
 #ifdef DEAL_II_WITH_MPI
-#include <deal.II/grid/tria.h>
+#  include <deal.II/grid/tria.h>
 
-#include <memory>
-#include <list>
+#  include <list>
+#  include <memory>
 
-namespace idealii::spacetime::parallel::distributed{
+namespace idealii::spacetime::parallel::distributed
+{
+  /**
+   * @brief The spacetime triangulation object with MPI parallel distributed spatial meshes.
+   *
+   * In practice this is just a class around a list of shared pointers to
+   * slab::parallel::distributed::Triangulation objects to simplify generation
+   * and time marching.
+   * @note This is a virtual base class.
+   */
+  template <int dim>
+  class Triangulation
+  {
+  public:
     /**
-     * @brief The spacetime triangulation object with MPI parallel distributed spatial meshes.
-     *
-     * In practice this is just a class around a list of shared pointers to slab::parallel::distributed::Triangulation objects to
-     * simplify generation and time marching.
-     * @note This is a virtual base class.
+     * @brief Constructor that initializes the underlying list object.
+     * @param max_N_intervals_per_slab. When to split a slab into two. (default 0 = never)
      */
-    template<int dim>
-    class Triangulation{
-    public:
-        /**
-         * @brief Constructor that initializes the underlying list object.
-         * @param max_N_intervals_per_slab. When to split a slab into two. (default 0 = never)
-         */
-        Triangulation ( dealii::types::global_cell_index max_N_intervals_per_slab=0);
+    Triangulation(
+      dealii::types::global_cell_index max_N_intervals_per_slab = 0);
 
-        /**
-         * @brief Generate a list of M slab triangulations with matching temporal meshes and space_tria.
-         *
-         * @param space_tria The underlying spatial dealii::parallel::distributed::Triangulation.
-         * @param M The number of slabs to be created.
-         * @param t0 The temporal startpoint. Defaults to 0.
-         * @param T The temporal endpoint. Defaults to 1.
-         */
-        virtual void generate(std::shared_ptr<dealii::parallel::distributed::Triangulation<dim>> space_tria,
-                              unsigned int M,
-                              double t0=0.,
-                              double T=1.)=0;
+    /**
+     * @brief Generate a list of M slab triangulations with matching temporal meshes and space_tria.
+     *
+     * @param space_tria The underlying spatial dealii::parallel::distributed::Triangulation.
+     * @param M The number of slabs to be created.
+     * @param t0 The temporal startpoint. Defaults to 0.
+     * @param T The temporal endpoint. Defaults to 1.
+     */
+    virtual void
+    generate(std::shared_ptr<dealii::parallel::distributed::Triangulation<dim>>
+                          space_tria,
+             unsigned int M,
+             double       t0 = 0.,
+             double       T  = 1.) = 0;
 
-        /**
-         * @brief Return the number of slabs in the triangulation.
-         */
-        unsigned int M();
-        /**
-         * brief An iterator pointing to the first slab::parallel::distributed::Triangulation
-         */
-        slab::parallel::distributed::TriaIterator<dim> begin();
-        /**
-         * @brief An iterator pointing behind the slab slab::parallel::distributed::Triangulation
-         */
-        slab::parallel::distributed::TriaIterator<dim> end();
+    /**
+     * @brief Return the number of slabs in the triangulation.
+     */
+    unsigned int
+    M();
+    /**
+     * brief An iterator pointing to the first
+     * slab::parallel::distributed::Triangulation
+     */
+    slab::parallel::distributed::TriaIterator<dim>
+    begin();
+    /**
+     * @brief An iterator pointing behind the slab slab::parallel::distributed::Triangulation
+     */
+    slab::parallel::distributed::TriaIterator<dim>
+    end();
 
-        /**
-         * @brief Do uniform mesh refinement in time and space
-         * @param times_space Number of times the spatial meshes are refined.
-         * @param times_time Number of times the temporal meshes are refined.
-         */
-        virtual void refine_global(const unsigned int times_space = 1, const unsigned int times_time = 1)=0;
+    /**
+     * @brief Do uniform mesh refinement in time and space
+     * @param times_space Number of times the spatial meshes are refined.
+     * @param times_time Number of times the temporal meshes are refined.
+     */
+    virtual void
+    refine_global(const unsigned int times_space = 1,
+                  const unsigned int times_time  = 1) = 0;
 
-    protected:
-        dealii::types::global_cell_index max_N_intervals_per_slab;
-        std::list<slab::parallel::distributed::Triangulation<dim>> trias;
-    };
-}
+  protected:
+    dealii::types::global_cell_index max_N_intervals_per_slab;
+    std::list<slab::parallel::distributed::Triangulation<dim>> trias;
+  };
+} // namespace idealii::spacetime::parallel::distributed
 
 #endif
 #endif /* INCLUDE_IDEAL_II_DISTRIBUTED_SPACETIME_TRIA_HH_ */

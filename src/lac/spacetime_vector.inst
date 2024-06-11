@@ -18,8 +18,8 @@
 
 namespace idealii::spacetime
 {
-    template class Vector<float> ;
-    template class Vector<double> ;
-}
+  template class Vector<float>;
+  template class Vector<double>;
+} // namespace idealii::spacetime
 
 #endif

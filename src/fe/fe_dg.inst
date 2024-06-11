@@ -18,8 +18,8 @@
 
 namespace idealii::spacetime
 {
-    template class DG_FiniteElement<2> ;
-    template class DG_FiniteElement<3> ;
-}
+  template class DG_FiniteElement<2>;
+  template class DG_FiniteElement<3>;
+} // namespace idealii::spacetime
 
 #endif

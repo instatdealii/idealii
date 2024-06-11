@@ -18,8 +18,8 @@
 
 namespace idealii::spacetime
 {
-    template class Triangulation<2> ;
-    template class Triangulation<3> ;
-} //namespaces
+  template class Triangulation<2>;
+  template class Triangulation<3>;
+} // namespace idealii::spacetime
 
 #endif

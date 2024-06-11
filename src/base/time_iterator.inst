@@ -19,8 +19,8 @@
 namespace idealii
 {
 
-    template class TimeIteratorCollection<2> ;
-    template class TimeIteratorCollection<3> ;
-}
+  template class TimeIteratorCollection<2>;
+  template class TimeIteratorCollection<3>;
+} // namespace idealii
 
 #endif

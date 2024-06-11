@@ -18,8 +18,8 @@
 
 namespace idealii::slab
 {
-    template class DoFHandler<2> ;
-    template class DoFHandler<3> ;
-}
+  template class DoFHandler<2>;
+  template class DoFHandler<3>;
+} // namespace idealii::slab
 
 #endif

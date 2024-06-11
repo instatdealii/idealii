@@ -20,42 +20,43 @@
 
 namespace idealii::spacetime
 {
+  /**
+   * @brief The base class for quadrature formulae in space and time.
+   *
+   * This is simply a convenience class that holds shared pointers to a spatial
+   * and a temporal quadrature formula.
+   *
+   * Therefore, it can be used with any user supplied formula.
+   * For common combinations like Gauss-Legendre in space and time derived
+   * classes may exist to simplify construction.
+   */
+  template <int dim>
+  class Quadrature
+  {
+  public:
     /**
-     * @brief The base class for quadrature formulae in space and time.
-     *
-     * This is simply a convenience class that holds shared pointers to a spatial
-     * and a temporal quadrature formula.
-     *
-     * Therefore, it can be used with any user supplied formula.
-     * For common combinations like Gauss-Legendre in space and time derived classes
-     * may exist to simplify construction.
+     * @brief Construct a spacetime quadrature formula by supplying shared pointers to
+     * a spatial and a temporal quadrature formula.
      */
-    template<int dim>
-    class Quadrature
-    {
-    public:
-        /**
-         * @brief Construct a spacetime quadrature formula by supplying shared pointers to
-         * a spatial and a temporal quadrature formula.
-         */
-        Quadrature ( std::shared_ptr<dealii::Quadrature<dim>> quad_space ,
-                     std::shared_ptr<dealii::Quadrature<1>> quad_time );
-        /**
-         * @brief The underlying spatial quadrature formula
-         * @return A shared pointer to the spatial quadrature formula.
-         */
-        std::shared_ptr<dealii::Quadrature<dim>>
-        spatial ();
-        /**
-         * @brief The underlying temporal quadrature formula
-         * @return A shared pointer to the temporal quadrature formula.
-         */
-        std::shared_ptr<dealii::Quadrature<1>>
-        temporal ();
-    private:
-        std::shared_ptr<dealii::Quadrature<dim>> _quad_space;
-        std::shared_ptr<dealii::Quadrature<1>> _quad_time;
-    };
-}
+    Quadrature(std::shared_ptr<dealii::Quadrature<dim>> quad_space,
+               std::shared_ptr<dealii::Quadrature<1>>   quad_time);
+    /**
+     * @brief The underlying spatial quadrature formula
+     * @return A shared pointer to the spatial quadrature formula.
+     */
+    std::shared_ptr<dealii::Quadrature<dim>>
+    spatial();
+    /**
+     * @brief The underlying temporal quadrature formula
+     * @return A shared pointer to the temporal quadrature formula.
+     */
+    std::shared_ptr<dealii::Quadrature<1>>
+    temporal();
+
+  private:
+    std::shared_ptr<dealii::Quadrature<dim>> _quad_space;
+    std::shared_ptr<dealii::Quadrature<1>>   _quad_time;
+  };
+} // namespace idealii::spacetime
 
 #endif /* INCLUDE_IDEAL_II_BASE_SPACETIME_QUADRATURE_HH_ */
