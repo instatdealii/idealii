@@ -15,8 +15,8 @@ jobs:
     - uses: actions/checkout@v4
     
     - name: install_dependencies
-      sudo apt update && sudo apt install clang-format
+      run: sudo apt update && sudo apt install clang-format
     - name: configure
-      cmake -D DOCUMENTATION_ONLY=ON -S. -Bbuild
+      run: cmake -D DOCUMENTATION_ONLY=ON -S. -Bbuild
     - name: check-format
-      cmake --build build --target check-format
+      run: cmake --build build --target check-format
