@@ -50,9 +50,9 @@ if(IDEAL_II_SPHINX_DOCUMENTATION)
             ${CMAKE_CURRENT_SOURCE_DIR}/Makefile
             ${CMAKE_CURRENT_SOURCE_DIR}/requirements.txt
             ${CMAKE_CURRENT_BINARY_DIR}
-			COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT} > warnings_dox.out 2>&1
+			COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
             COMMAND pip3 install -r requirements.txt 
-            COMMAND make html > warnings_sphinx.out 2>&1
+            COMMAND make html
 			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 			COMMENT "Generating Sphinx documentation"
 			VERBATIM )
