@@ -33,7 +33,7 @@ Welcome to ideal.II's documentation!
 .. toctree::
    :caption: Doxygen API Reference
 
-   Index <https://instatdealii.github.io/idealii/doxygen/index.html>
-   Namespace List <https://instatdealii.github.io/idealii/doxygen/namespaces.html>
-   Class List <https://instatdealii.github.io/idealii/doxygen/classes.html>
-   File List <https://instatdealii.github.io/idealii/doxygen/files.html>
+   Index <https://instatdealii.github.io/idealii/dev/doxygen/index.html>
+   Namespace List <https://instatdealii.github.io/idealii/dev/doxygen/namespaces.html>
+   Class List <https://instatdealii.github.io/idealii/dev/doxygen/classes.html>
+   File List <https://instatdealii.github.io/idealii/dev/doxygen/files.html>

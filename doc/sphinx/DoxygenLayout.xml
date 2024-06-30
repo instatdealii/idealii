@@ -3,7 +3,7 @@
   <!-- Navigation index tabs for HTML output -->
   <navindex>
     <tab type="mainpage" visible="no"/>
-    <tab type="user" visible="yes" title="Main documentation" url="../../index.html"/>
+    <tab type="user" visible="yes" title="Main documentation" url="../index.html"/>
     <tab type="namespaces" visible="yes" title="">
       <tab type="namespacelist" visible="yes" title="" intro=""/>
       <tab type="namespacemembers" visible="yes" title="" intro=""/>

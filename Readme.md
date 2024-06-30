@@ -10,12 +10,15 @@ version 3.0 of the License, or (at your option) any later version.
 The full text of the license can be found in the file LICENSE.md at
 the top level directory of ideal.II.
 --->
+[![](https://img.shields.io/badge/docs-dev-blue.svg)](https://instatdealii.github.io/idealii/dev)
+
 Build status of the library against official deal.II docker images:
 
 ![deal.II v9.3.0](https://github.com/instatdealii/idealii/actions/workflows/dealii930.yml/badge.svg)
 ![deal.II v9.4.0](https://github.com/instatdealii/idealii/actions/workflows/dealii940.yml/badge.svg)
 ![deal.II v9.4.2](https://github.com/instatdealii/idealii/actions/workflows/dealii942.yml/badge.svg)
 ![deal.II v9.5.0](https://github.com/instatdealii/idealii/actions/workflows/dealii950.yml/badge.svg)
+
 
 # ideal.II an extension to deal.II for tensor-product space-time finite elements
 This library provides classes and functions to solve instationary partial differential equations by 
@@ -81,9 +84,12 @@ If you write a paper using results obtained with the help of ideal.II, please ci
    
 2. Please also cite deal.II as explained [here](https://dealii.org/publications.html)
     
-## Doxygen documentation
-The doxygen documentation of the library functions can be found 
-[here](https://instatdealii.github.io/idealii).
+## Documentation
+A full documentation including the underlying mathematics (WIP)
+can be found [here](https://instatdealii.github.io/idealii/dev).
+
+The doxygen API Reference of the library functions can be found 
+[here](https://instatdealii.github.io/idealii/dev/doxygen).
 
 
 
