@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------
+//*---------------------------------------------------------------------
 //
 // Copyright (C) 2022 - 2023 by the ideal.II authors
 //
@@ -11,22 +11,26 @@
 // The full text of the license can be found in the file LICENSE.md at
 // the top level directory of ideal.II.
 //
-// ---------------------------------------------------------------------
+//*---------------------------------------------------------------------
 
-////////////////////////////////////////////
-// ideal.II includes
-////////////////////////////////////////////
+//////////////////////////////////////////
+// @<H2> include files
+//////////////////////////////////////////
 
-////////////////////////////////////////////
-//  Note:
-//   To avoid mix-ups ideal.II header files
-//   end on .hh instead of .h (deal.II)
-//   apart from that, many includes are
-//   called the same
-////////////////////////////////////////////
+//////////////////////////////////////////
+// @<H3> ideal.II includes
+//////////////////////////////////////////
+
+/** Note:
+ * To avoid mix-ups ideal.II header files
+ * end on .hh instead of .h (deal.II)
+ * apart from that, many includes are
+ * called the same
+ */
 
 // Include for the TimeIteratorCollection
 #include <ideal.II/base/time_iterator.hh>
+
 // Space-time quadrature formulae
 #include <ideal.II/base/quadrature_lib.hh>
 
@@ -38,6 +42,7 @@
 
 // discontinuous Galerkin space-time elements
 #include <ideal.II/fe/fe_dg.hh>
+
 // FEValues for evaluation of tensor product shape functions
 #include <ideal.II/fe/spacetime_fe_values.hh>
 
@@ -51,7 +56,7 @@
 #include <ideal.II/numerics/vector_tools.hh>
 
 ////////////////////////////////////////////
-// deal.II includes
+// @<H3> deal.II includes
 ////////////////////////////////////////////
 
 // needed for the spatial FE description
@@ -75,11 +80,15 @@
 #include <deal.II/numerics/data_out.h>
 
 ////////////////////////////////////////////
-// C++ includes
+// @<H3> C++ includes
 ////////////////////////////////////////////
 
 // needed for output into a file
 #include <fstream>
+
+////////////////////////////////////////////
+// @<H2> Space-time functions
+////////////////////////////////////////////
 
 /**
  * This function describes the exact solution.
@@ -135,8 +144,13 @@ RightHandSide::value(const dealii::Point<2>             &p,
   return return_value;
 }
 
+
+////////////////////////////////////////////
+// @<H2> The Step1 class
+////////////////////////////////////////////
 // This class describes the solution of the heat equation with
 // space-time slab tensor-product elements
+
 class Step1
 {
 public:
@@ -208,7 +222,10 @@ private:
   } slab_its;
 };
 
-// constructor
+
+////////////////////////////////////////////
+// @<H3> Step1::Step1
+////////////////////////////////////////////
 Step1::Step1(unsigned int spatial_degree, unsigned int temporal_degree)
   : // space-time triangulation
   triangulation()
@@ -229,6 +246,11 @@ Step1::Step1(unsigned int spatial_degree, unsigned int temporal_degree)
   slab(0)
 {}
 
+
+////////////////////////////////////////////
+// @<H3> Step1::run
+////////////////////////////////////////////
+
 // This functions is much shorter compared to the stationary versions
 // as the common FE-code loop is inside the time_marching function
 void
@@ -238,6 +260,9 @@ Step1::run()
   time_marching();
 }
 
+////////////////////////////////////////////
+// @<H3> Step1::make_grid
+////////////////////////////////////////////
 void
 Step1::make_grid()
 {
@@ -255,6 +280,10 @@ Step1::make_grid()
   // Generate a slab::DoFHandler for each slab::Triangulation
   dof_handler.generate();
 }
+
+////////////////////////////////////////////
+// @<H3> Step1::time_marching
+////////////////////////////////////////////
 
 void
 Step1::time_marching()
@@ -299,6 +328,9 @@ Step1::time_marching()
     }
 }
 
+////////////////////////////////////////////
+// @<H3> Step1::setup_system_on_slab
+////////////////////////////////////////////
 void
 Step1::setup_system_on_slab()
 {
@@ -346,6 +378,10 @@ Step1::setup_system_on_slab()
   slab_its.solution->reinit(slab_its.dof->n_dofs_spacetime());
   slab_system_rhs.reinit(slab_its.dof->n_dofs_spacetime());
 }
+
+////////////////////////////////////////////
+// @<H3> Step1::assemble_system_on_slab
+////////////////////////////////////////////
 
 void
 Step1::assemble_system_on_slab()
@@ -534,6 +570,11 @@ Step1::assemble_system_on_slab()
     } // cell space
 }
 
+
+////////////////////////////////////////////
+// @<H3> Step1::solve_system_on_slab
+////////////////////////////////////////////
+
 void
 Step1::solve_system_on_slab()
 {
@@ -545,6 +586,10 @@ Step1::solve_system_on_slab()
   // after solving set the correct Dirichlet values in the solution
   slab_constraints->distribute(*slab_its.solution);
 }
+
+////////////////////////////////////////////
+// @<H3> Step1::output_results_on_slab
+////////////////////////////////////////////
 
 // For now the output is done somewhat by hand.
 // But a spacetime or slab DataOut object is planned/WIP.
@@ -582,13 +627,20 @@ Step1::output_results_on_slab()
       output.close();
     }
 }
+
+////////////////////////////////////
+// @<H2> The main function
+////////////////////////////////////
+
 int
 main()
 {
   // spatial finite element order
   unsigned int s = 1;
+
   // temporal finite element order
   unsigned int r = 1;
+
   // Run the problem with cG(s)dG(r) finite elements.
   Step1 problem(s, r);
   problem.run();

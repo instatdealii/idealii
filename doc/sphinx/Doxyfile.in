@@ -1,0 +1,45 @@
+## ---------------------------------------------------------------------
+##
+## Copyright (C) 2022 - 2024 by the ideal.II authors
+##
+## This file is part of the ideal.II library.
+##
+## The ideal.II library is free software; you can use it, redistribute
+## it, and/or modify it under the terms of the GNU Lesser General
+## Public License as published by the Free Software Foundation; either
+## version 3.0 of the License, or (at your option) any later version.
+## The full text of the license can be found in the file LICENSE.md at
+## the top level directory of ideal.II.
+##
+## ---------------------------------------------------------------------
+PROJECT_NAME           = "Doxygen API reference documentation for ideal.II"	
+
+GENERATE_LATEX = NO
+GENERATE_XML = YES
+GENERATE_HTML = YES
+OUTPUT_DIRECTORY = ""
+HTML_OUTPUT = "@CMAKE_CURRENT_BINARY_DIR@/doxygenhtml/doxygen"
+XML_OUTPUT = "@CMAKE_CURRENT_BINARY_DIR@/_build/doxygenxml"
+LAYOUT_FILE = @CMAKE_CURRENT_SOURCE_DIR@/DoxygenLayout.xml
+HTML_EXTRA_STYLESHEET  = @CMAKE_CURRENT_SOURCE_DIR@/doxy_extra.css
+PROJECT_LOGO = @CMAKE_CURRENT_BINARY_DIR@/_static/idealii_logo_text_200.png
+
+CASE_SENSE_NAMES       = YES
+INPUT = @CMAKE_CURRENT_SOURCE_DIR@/../../include
+FILE_PATTERNS          = *.hh
+RECURSIVE              = YES
+SHOW_NAMESPACES = YES
+
+# These variables are used to only offer certain functionality
+# if the base functionality is supplied by the current deal.II installation
+# To ensure that these are shown in the documentation anyway the macros have to be set
+# as predefined
+
+
+ENABLE_PREPROCESSING   = YES
+MACRO_EXPANSION        = YES
+EXPAND_ONLY_PREDEF     = YES
+SEARCH_INCLUDES        = YES
+PREDEFINED = DEAL_II_WITH_MPI=1 \
+             DEAL_II_WITH_TRILINOS=1
+			 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------
+//*---------------------------------------------------------------------
 //
 // Copyright (C) 2022 - 2023 by the ideal.II authors
 //
@@ -11,7 +11,7 @@
 // The full text of the license can be found in the file LICENSE.md at
 // the top level directory of ideal.II.
 //
-// ---------------------------------------------------------------------
+//*---------------------------------------------------------------------
 
 // number of thread parallel threads, not used so far
 // but extension to dealii::WorkStream would be possible
