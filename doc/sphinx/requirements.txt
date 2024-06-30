@@ -116,9 +116,7 @@ python-dateutil==2.9.0.post0
 #soupsieve==2.5
 Sphinx==7.2.6
 sphinx-autobuild==2024.2.4
-sphinx-coderefinery-branding==0.1.0
 sphinx-copybutton==0.5.2
-sphinx-lesson==0.8.16
 sphinx-minipres==0.2.1
 sphinx-rtd-dark-mode==1.3.0
 sphinx-rtd-theme==2.0.0
