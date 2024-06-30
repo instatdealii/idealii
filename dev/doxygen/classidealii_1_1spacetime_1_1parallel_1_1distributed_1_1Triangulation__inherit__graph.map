@@ -1,0 +1,4 @@
+<map id="idealii::spacetime::parallel::distributed::Triangulation&lt; dim &gt;" name="idealii::spacetime::parallel::distributed::Triangulation&lt; dim &gt;">
+<area shape="rect" id="node1" title="The spacetime triangulation object with MPI parallel distributed spatial meshes." alt="" coords="25,5,194,61"/>
+<area shape="rect" id="node2" href="$classidealii_1_1spacetime_1_1parallel_1_1distributed_1_1fixed_1_1Triangulation.html" title="The spacetime triangulation object with a fixed MPI parallel dibstributed spatial mesh across time." alt="" coords="5,109,213,165"/>
+</map>

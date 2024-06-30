@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Example 1: Solving the heat equation &mdash; ideal.II  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b20cc3f5" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../_static/maths_admonition.css?v=597dd67d" />
+      <link rel="stylesheet" type="text/css" href="../_static/dark_mode_css/general.css?v=c0a7eb24" />
+      <link rel="stylesheet" type="text/css" href="../_static/dark_mode_css/dark.css?v=70edf1c7" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script src="../_static/dark_mode_js/default_dark.js?v=fd565c74"></script>
+        <script src="../_static/dark_mode_js/theme_switcher.js?v=358d3910"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Example 2: Solving the linear Stokes equation" href="step-2.html" />
+    <link rel="prev" title="Example overview" href="overview.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #450d54" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/idealii_logo_text.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Get ideal.II</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Mathematical foundations</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../maths/function_spaces.html">Space-time function spaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../maths/discretization.html">Finite element discretization</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorial examples</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Example overview</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Example 1: Solving the heat equation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#weak-formulation-of-the-heat-equation">Weak formulation of the heat equation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#space-time-discretization">Space-time discretization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#the-commented-program">The commented program</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#include-files">include files</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ideal-ii-includes">ideal.II includes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deal-ii-includes">deal.II includes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#c-includes">C++ includes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#space-time-functions">Space-time functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-step1-class">The Step1 class</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#step1-step1">Step1::Step1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step1-run">Step1::run</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step1-make-grid">Step1::make_grid</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step1-time-marching">Step1::time_marching</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step1-setup-system-on-slab">Step1::setup_system_on_slab</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step1-assemble-system-on-slab">Step1::assemble_system_on_slab</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step1-solve-system-on-slab">Step1::solve_system_on_slab</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step1-output-results-on-slab">Step1::output_results_on_slab</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#the-main-function">The main function</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#results">Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-plain-program">The plain program</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="step-2.html">Example 2: Solving the linear Stokes equation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="step-3.html">Example 3: Solving the heat equation in parallel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="step-4.html">Example 4: Solving the Navier-Stokes equations in parallel</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Doxygen API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://instatdealii.github.io/idealii/doxygen/index.html">Index</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://instatdealii.github.io/idealii/doxygen/namespaces.html">Namespace List</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://instatdealii.github.io/idealii/doxygen/classes.html">Class List</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://instatdealii.github.io/idealii/doxygen/files.html">File List</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #450d54" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ideal.II</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Example 1: Solving the heat equation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/examples/step-1.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="example-1-solving-the-heat-equation">
+<span id="step-1"></span><h1>Example 1: Solving the heat equation<a class="headerlink" href="#example-1-solving-the-heat-equation" title="Link to this heading"></a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#introduction" id="id1">Introduction</a></p>
+<ul>
+<li><p><a class="reference internal" href="#weak-formulation-of-the-heat-equation" id="id2">Weak formulation of the heat equation</a></p></li>
+<li><p><a class="reference internal" href="#space-time-discretization" id="id3">Space-time discretization</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#the-commented-program" id="id4">The commented program</a></p>
+<ul>
+<li><p><a class="reference internal" href="#include-files" id="id5">include files</a></p>
+<ul>
+<li><p><a class="reference internal" href="#ideal-ii-includes" id="id6">ideal.II includes</a></p></li>
+<li><p><a class="reference internal" href="#deal-ii-includes" id="id7">deal.II includes</a></p></li>
+<li><p><a class="reference internal" href="#c-includes" id="id8">C++ includes</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#space-time-functions" id="id9">Space-time functions</a></p></li>
+<li><p><a class="reference internal" href="#the-step1-class" id="id10">The Step1 class</a></p>
+<ul>
+<li><p><a class="reference internal" href="#step1-step1" id="id11">Step1::Step1</a></p></li>
+<li><p><a class="reference internal" href="#step1-run" id="id12">Step1::run</a></p></li>
+<li><p><a class="reference internal" href="#step1-make-grid" id="id13">Step1::make_grid</a></p></li>
+<li><p><a class="reference internal" href="#step1-time-marching" id="id14">Step1::time_marching</a></p></li>
+<li><p><a class="reference internal" href="#step1-setup-system-on-slab" id="id15">Step1::setup_system_on_slab</a></p></li>
+<li><p><a class="reference internal" href="#step1-assemble-system-on-slab" id="id16">Step1::assemble_system_on_slab</a></p></li>
+<li><p><a class="reference internal" href="#step1-solve-system-on-slab" id="id17">Step1::solve_system_on_slab</a></p></li>
+<li><p><a class="reference internal" href="#step1-output-results-on-slab" id="id18">Step1::output_results_on_slab</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#the-main-function" id="id19">The main function</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#results" id="id20">Results</a></p></li>
+<li><p><a class="reference internal" href="#the-plain-program" id="id21">The plain program</a></p></li>
+</ul>
+</nav>
+<section id="introduction">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Introduction</a><a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>In this tutorial we will look at how the basic concepts of <cite>ideal.II</cite>
+can be combined to solve a nonstationary PDE.
+This might repeat earlier definitions or explanations,
+but the goal is to see how everything will be put together
+to show a complete picture. The exemplary equation
+will again be the heat equation as it is a linear and scalar equation
+with well known terms and operators.</p>
+<p>As before we are interested in the solution on
+a space-time domain (cylinder), i.e. <span class="math notranslate nohighlight">\(Q = \Omega\times I\)</span>
+with spatial domain <span class="math notranslate nohighlight">\(\Omega\subset\mathbb{R}^d\)</span>
+and temporal domain <span class="math notranslate nohighlight">\(I = (0,T)\)</span>.
+Given an initial solution <span class="math notranslate nohighlight">\(u^0\in L^2(\Omega)\)</span>,
+a force term <span class="math notranslate nohighlight">\(f\in L^2(I,)\)</span> and a Dirichlet
+boundary function <span class="math notranslate nohighlight">\(g\in L^2(I,)\)</span> the heat equation reads as:</p>
+<div class="admonition-heat-equation-in-strong-formulation maths-equation admonition" id="maths-equation-0">
+<p class="admonition-title">Heat equation in strong formulation</p>
+<p>The strong formulation reads as follows:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\partial_t u - \Delta u &amp;= f\text{ in }Q\\
+u &amp;= g \text{ on }\partial\Omega\times I\\
+u &amp;= u^0 \text{ on }\Omega\times\{0\}\end{split}\]</div>
+</div>
+<section id="weak-formulation-of-the-heat-equation">
+<h3><a class="toc-backref" href="#id2" role="doc-backlink">Weak formulation of the heat equation</a><a class="headerlink" href="#weak-formulation-of-the-heat-equation" title="Link to this heading"></a></h3>
+<p>As a next step we will derive the weak formulation needed
+to do a finite element discretization.
+Using the fully continuous function space
+<span class="math notranslate nohighlight">\(X=X(I,H^1_0(\Omega))=\{v\in L^2(I,H^1_0(\Omega));\partial_t v\in L^2(I,H^1_0(\Omega)^*)\}\)</span>
+we can multiply the strong form by test functions <span class="math notranslate nohighlight">\(\varphi\in X\)</span>
+and integrate over <span class="math notranslate nohighlight">\(Q\)</span> to obtain:</p>
+<div class="admonition-heat-equation-in-weak-formulation maths-equation admonition" id="maths-equation-1">
+<p class="admonition-title">Heat equation in weak formulation</p>
+<p>Find <span class="math notranslate nohighlight">\(u\in X+g\)</span>
+such that:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\int\limits_0^T\int\limits_\Omega \varphi\partial_t u +
+\nabla_x\varphi\nabla_x u\;\mathrm{d}x\;\mathrm{d}t
+&amp;= \int\limits_0^T\int\limits_\Omega \varphi f  \;\mathrm{d}x\;\mathrm{d}t\; \forall\varphi\in X\\
+u(0,x) &amp;= u^0(x) \text{ in }\Omega\end{split}\]</div>
+</div>
+</section>
+<section id="space-time-discretization">
+<h3><a class="toc-backref" href="#id3" role="doc-backlink">Space-time discretization</a><a class="headerlink" href="#space-time-discretization" title="Link to this heading"></a></h3>
+<p>While this equation can be solved analytically in some cases,
+we are interested in approximately solving the equation
+on our computer. Since our space-time cylinder is a cartesian
+product we can construct function spaces by tensor products of
+spatial and temporal function spaces
+and space-time basis functions by multiplication (see TODO: TENSOR PRODUCT HILBERT SPACES).
+Therefore, we can split the discretization, starting with the temporal part.</p>
+<p>Here, we want to use the discontinuous Galerkin method
+so we replace <span class="math notranslate nohighlight">\(X(I,H^1_0(\Omega))\)</span> by the temporally
+discontinuous space <span class="math notranslate nohighlight">\(\widetilde{X}(\mathcal{T}_k,H^1_0(\Omega))\)</span>
+depending on our temporal triangulation
+<span class="math notranslate nohighlight">\(\mathcal{T}_k = \{I_1,I_2,\dots,I_M\}\)</span> with <span class="math notranslate nohighlight">\(I_m=(t_{m-1},t_m)\)</span>.
+To account for the discontinuity we introduce the jump terms
+<span class="math notranslate nohighlight">\(\varphi_m^+[u]_m=\varphi_m^+(u_m^+-u_m^-)\)</span> and
+<span class="math notranslate nohighlight">\(\varphi_0^+[u]_0=\varphi_m^+(u_0^+-u^0)\)</span> and
+split the temporal integral at the element faces.
+With this we can now state the discontinuous weak formulation:</p>
+<div class="admonition-heat-equation-in-discontinuous-weak-formulation maths-equation admonition" id="maths-equation-2">
+<p class="admonition-title">Heat equation in discontinuous weak formulation</p>
+<p>Find <span class="math notranslate nohighlight">\(u\in \widetilde{X}+g\)</span>
+such that:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\sum\limits_{m=1}^{M}&amp;\int\limits_{t_{m-1}}^{t_m}\int\limits_\Omega
+    \varphi\partial_t u +
+    \nabla_x\varphi\nabla_x u +
+\;\mathrm{d}x\;\mathrm{d}t
++\sum\limits_{m=0}^{M}\int\limits_\Omega
+    \varphi_m^+[u]_m\;\mathrm{d}x\\
+= \sum\limits_{m=1}^{M}&amp;\int\limits_{t_{m-1}}^{t_m}\int\limits_\Omega \varphi f  \;\mathrm{d}x\;\mathrm{d}t\; \forall\varphi\in X\end{split}\]</div>
+</div>
+</section>
+</section>
+<section id="the-commented-program">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">The commented program</a><a class="headerlink" href="#the-commented-program" title="Link to this heading"></a></h2>
+<section id="include-files">
+<h3><a class="toc-backref" href="#id5" role="doc-backlink">include files</a><a class="headerlink" href="#include-files" title="Link to this heading"></a></h3>
+<section id="ideal-ii-includes">
+<h4><a class="toc-backref" href="#id6" role="doc-backlink">ideal.II includes</a><a class="headerlink" href="#ideal-ii-includes" title="Link to this heading"></a></h4>
+<div class="admonition-note admonition">
+<p class="admonition-title">Note:</p>
+<p>To avoid mix-ups ideal.II header files
+end on .hh instead of .h (deal.II)
+apart from that, many includes are
+called the same</p>
+</div>
+<p>Include for the TimeIteratorCollection</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;ideal.II/base/time_iterator.hh&gt;</span>
+</pre></div>
+</div>
+<p>Space-time quadrature formulae</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;ideal.II/base/quadrature_lib.hh&gt;</span>
+</pre></div>
+</div>
+<p>Include DoF centered helper functions</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;ideal.II/dofs/slab_dof_tools.hh&gt;</span>
+</pre></div>
+</div>
+<p>actual DoFHandler</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;ideal.II/dofs/spacetime_dof_handler.hh&gt;</span>
+</pre></div>
+</div>
+<p>discontinuous Galerkin space-time elements</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;ideal.II/fe/fe_dg.hh&gt;</span>
+</pre></div>
+</div>
+<p>FEValues for evaluation of tensor product shape functions</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;ideal.II/fe/spacetime_fe_values.hh&gt;</span>
+</pre></div>
+</div>
+<p>Which triangulation to use, here: fixes spatial grid</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;ideal.II/grid/fixed_tria.hh&gt;</span>
+</pre></div>
+</div>
+<p>Container class for standard deal vectors</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;ideal.II/lac/spacetime_vector.hh&gt;</span>
+</pre></div>
+</div>
+<p>Include vector centered helper functions</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;ideal.II/numerics/vector_tools.hh&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="deal-ii-includes">
+<h4><a class="toc-backref" href="#id7" role="doc-backlink">deal.II includes</a><a class="headerlink" href="#deal-ii-includes" title="Link to this heading"></a></h4>
+<p>needed for the spatial FE description</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;deal.II/fe/fe_q.h&gt;</span>
+</pre></div>
+</div>
+<p>needed to generate underlying spatial grid</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;deal.II/grid/grid_generator.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;deal.II/grid/tria.h&gt;</span>
+</pre></div>
+</div>
+<p>All the linear algebra classes are used from deal.II directly</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;deal.II/lac/dynamic_sparsity_pattern.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;deal.II/lac/full_matrix.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;deal.II/lac/sparse_direct.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;deal.II/lac/sparse_matrix.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;deal.II/lac/vector.h&gt;</span>
+</pre></div>
+</div>
+<p>ideal.II uses deal.II functions with set and get time</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;deal.II/base/function.h&gt;</span>
+</pre></div>
+</div>
+<p>For now, output is done by hand</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;deal.II/numerics/data_out.h&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="c-includes">
+<h4><a class="toc-backref" href="#id8" role="doc-backlink">C++ includes</a><a class="headerlink" href="#c-includes" title="Link to this heading"></a></h4>
+<p>needed for output into a file</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;fstream&gt;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="space-time-functions">
+<h3><a class="toc-backref" href="#id9" role="doc-backlink">Space-time functions</a><a class="headerlink" href="#space-time-functions" title="Link to this heading"></a></h3>
+<p>This function describes the exact solution.
+It could be used to calculate L2-errors for example.
+Here it is only used to give the full problem description</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ExactSolution</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">dealii</span><span class="o">::</span><span class="n">Function</span><span class="o">&lt;</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">  </span><span class="n">ExactSolution</span><span class="p">()</span>
+<span class="w">    </span><span class="o">:</span><span class="w"> </span><span class="n">dealii</span><span class="o">::</span><span class="n">Function</span><span class="o">&lt;</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="p">()</span>
+<span class="w">  </span><span class="p">{}</span>
+<span class="w">  </span><span class="kt">double</span>
+<span class="w">  </span><span class="n">value</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">dealii</span><span class="o">::</span><span class="n">Point</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;</span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">component</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="kt">double</span>
+<span class="nf">ExactSolution::value</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">dealii</span><span class="o">::</span><span class="n">Point</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="w">             </span><span class="o">&amp;</span><span class="n">p</span><span class="p">,</span>
+<span class="w">                     </span><span class="p">[[</span><span class="n">maybe_unused</span><span class="p">]]</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">component</span><span class="p">)</span><span class="w"> </span><span class="k">const</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_time</span><span class="p">();</span>
+<span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.25</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This is the right hand side function of the heat equation.
+It is derived by plugging in the exact solution above into the heat equation.</p>
+<p>Note the use of get_time(). This is how ideal.II handles time-dependent functions as this
+functionality is already build into deal.II</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">RightHandSide</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">dealii</span><span class="o">::</span><span class="n">Function</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="kt">double</span>
+<span class="w">  </span><span class="n">value</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">dealii</span><span class="o">::</span><span class="n">Point</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;</span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">component</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="p">};</span>
+
+<span class="kt">double</span>
+<span class="nf">RightHandSide::value</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">dealii</span><span class="o">::</span><span class="n">Point</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="w">             </span><span class="o">&amp;</span><span class="n">p</span><span class="p">,</span>
+<span class="w">                     </span><span class="p">[[</span><span class="n">maybe_unused</span><span class="p">]]</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">component</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">t</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="n">get_time</span><span class="p">();</span>
+<span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">return_value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">x</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">y</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">  </span><span class="n">return_value</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">t</span><span class="p">;</span>
+<span class="w">  </span><span class="n">return_value</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">t</span><span class="p">;</span>
+<span class="w">  </span><span class="n">return_value</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.25</span><span class="p">;</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">return_value</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="the-step1-class">
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">The Step1 class</a><a class="headerlink" href="#the-step1-class" title="Link to this heading"></a></h3>
+<p>This class describes the solution of the heat equation with
+space-time slab tensor-product elements</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Step1</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+</pre></div>
+</div>
+<p>We want to be able to easily switch spatial and temporal polynomial degree
+i.e. bilinear/biquadratic elements in space and dG(0),dG(1),… elements in
+time.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">Step1</span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">spatial_degree</span><span class="p">,</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">temporal_degree</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>This is the main function of the problem calling all other functions in the
+right order</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="kt">void</span>
+<span class="w">  </span><span class="nf">run</span><span class="p">();</span>
+
+<span class="k">private</span><span class="o">:</span>
+</pre></div>
+</div>
+<p>Construct a spatial mesh and use it to construct a resulting space-time
+mesh</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span>
+<span class="nf">make_grid</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>Iterate over all slabs in the space-time mesh</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span>
+<span class="nf">time_marching</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>Distribute degrees of freedom and reinitialize linear algebra objects to
+correct size.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span>
+<span class="nf">setup_system_on_slab</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>Go over space-time elements in slab and calculate local contributions</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span>
+<span class="nf">assemble_system_on_slab</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>Solve the slab space-time linear equation system</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span>
+<span class="nf">solve_system_on_slab</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>Output the results of the current slab</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span>
+<span class="nf">output_results_on_slab</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>space-time collections of slab objects</p>
+<p>The fixed triangulation shared a pointer to the spatial mesh
+such that all slabs operate on the same mesh.
+Without adaptivity this is the best choice as it saves on memory</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">idealii</span><span class="o">::</span><span class="n">spacetime</span><span class="o">::</span><span class="n">fixed</span><span class="o">::</span><span class="n">Triangulation</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="w"> </span><span class="n">triangulation</span><span class="p">;</span>
+<span class="n">idealii</span><span class="o">::</span><span class="n">spacetime</span><span class="o">::</span><span class="n">DoFHandler</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="w">           </span><span class="n">dof_handler</span><span class="p">;</span>
+<span class="n">idealii</span><span class="o">::</span><span class="n">spacetime</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w">          </span><span class="n">solution</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>The space-time finite element description</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">idealii</span><span class="o">::</span><span class="n">spacetime</span><span class="o">::</span><span class="n">DG_FiniteElement</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="w"> </span><span class="n">fe</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>objects needed on a single slab</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">dealii</span><span class="o">::</span><span class="n">SparsityPattern</span><span class="w">                            </span><span class="n">slab_sparsity_pattern</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">dealii</span><span class="o">::</span><span class="n">AffineConstraints</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">slab_constraints</span><span class="p">;</span>
+<span class="n">dealii</span><span class="o">::</span><span class="n">SparseMatrix</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w">                       </span><span class="n">slab_system_matrix</span><span class="p">;</span>
+<span class="n">dealii</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w">                             </span><span class="n">slab_system_rhs</span><span class="p">;</span>
+<span class="n">dealii</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w">                             </span><span class="n">slab_initial_value</span><span class="p">;</span>
+<span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">slab</span><span class="p">;</span><span class="w"> </span><span class="c1">// count the index of the current slab</span>
+</pre></div>
+</div>
+<p>Struct holding all iterators over the space-time objects.
+this is completely optional but hopefully enhances
+readability as it becomes clear that these are iterators.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="k">struct</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="n">idealii</span><span class="o">::</span><span class="n">slab</span><span class="o">::</span><span class="n">TriaIterator</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="w">        </span><span class="n">tria</span><span class="p">;</span>
+<span class="w">    </span><span class="n">idealii</span><span class="o">::</span><span class="n">slab</span><span class="o">::</span><span class="n">DoFHandlerIterator</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="w">  </span><span class="n">dof</span><span class="p">;</span>
+<span class="w">    </span><span class="n">idealii</span><span class="o">::</span><span class="n">slab</span><span class="o">::</span><span class="n">VectorIterator</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">solution</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="n">slab_its</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<section id="step1-step1">
+<h4><a class="toc-backref" href="#id11" role="doc-backlink">Step1::Step1</a><a class="headerlink" href="#step1-step1" title="Link to this heading"></a></h4>
+<blockquote>
+<div><dl class="simple">
+<dt>Step1::Step1(unsigned int spatial_degree, unsigned int temporal_degree)</dt><dd><p>: // space-time triangulation
+triangulation()
+,</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>DoFHandler has to get pointer to space-time tria
+as different types (e.g. MPI parallel triangulations) can’t be derived
+from a common base class due to lists of shared pointers.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">dof_handler</span><span class="p">(</span><span class="o">&amp;</span><span class="n">triangulation</span><span class="p">)</span>
+<span class="p">,</span>
+</pre></div>
+</div>
+<p>space-time finite element with
+* continuous Lagrangian FE_Q finite element in space of order
+spatial_degree
+* discontinuous Lagrangian FE_DGQ finite element in time of order
+temporal_degree</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">fe</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">dealii</span><span class="o">::</span><span class="n">FE_Q</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="n">spatial_degree</span><span class="p">),</span><span class="w"> </span><span class="n">temporal_degree</span><span class="p">)</span>
+<span class="p">,</span>
+</pre></div>
+</div>
+<p>initialize current slab number to 0</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="n">slab</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="p">{}</span>
+</pre></div>
+</div>
+</section>
+<section id="step1-run">
+<h4><a class="toc-backref" href="#id12" role="doc-backlink">Step1::run</a><a class="headerlink" href="#step1-run" title="Link to this heading"></a></h4>
+<p>This functions is much shorter compared to the stationary versions
+as the common FE-code loop is inside the time_marching function</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span>
+<span class="nf">Step1::run</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">make_grid</span><span class="p">();</span>
+<span class="w">  </span><span class="n">time_marching</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="step1-make-grid">
+<h4><a class="toc-backref" href="#id13" role="doc-backlink">Step1::make_grid</a><a class="headerlink" href="#step1-make-grid" title="Link to this heading"></a></h4>
+<blockquote>
+<div><p>void
+Step1::make_grid()
+{</p>
+</div></blockquote>
+<p>construct a shared pointer to a spatial triangulation</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span><span class="w"> </span><span class="n">space_tria</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">dealii</span><span class="o">::</span><span class="n">Triangulation</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;&gt;</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>generate a unit square spatial domain</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">dealii</span><span class="o">::</span><span class="n">GridGenerator</span><span class="o">::</span><span class="n">hyper_cube</span><span class="p">(</span><span class="o">*</span><span class="n">space_tria</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>number of initial slabs in the triangulation</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">const</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">M</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Fill the internal list with M slab::Triangulation objects sharing the same
+spatial triangulation</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">triangulation</span><span class="p">.</span><span class="n">generate</span><span class="p">(</span><span class="n">space_tria</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Refine the grids on each slab in (space,time)</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">triangulation</span><span class="p">.</span><span class="n">refine_global</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Generate a slab::DoFHandler for each slab::Triangulation</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="n">dof_handler</span><span class="p">.</span><span class="n">generate</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="step1-time-marching">
+<h4><a class="toc-backref" href="#id14" role="doc-backlink">Step1::time_marching</a><a class="headerlink" href="#step1-time-marching" title="Link to this heading"></a></h4>
+<blockquote>
+<div><p>void
+Step1::time_marching()
+{</p>
+</div></blockquote>
+<p>This collection simplifies time marching and increments all
+registered spacetime iterators at the same time</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">idealii</span><span class="o">::</span><span class="n">TimeIteratorCollection</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="w"> </span><span class="n">tic</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">idealii</span><span class="o">::</span><span class="n">TimeIteratorCollection</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>Fill the internal list of vectors with M dealii::Vector&lt;double&gt; vectors.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">solution</span><span class="p">.</span><span class="n">reinit</span><span class="p">(</span><span class="n">triangulation</span><span class="p">.</span><span class="n">M</span><span class="p">());</span>
+</pre></div>
+</div>
+<p>Get iterators to the first slabs</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">slab_its</span><span class="p">.</span><span class="n">tria</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">triangulation</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
+<span class="n">slab_its</span><span class="p">.</span><span class="n">dof</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">dof_handler</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
+<span class="n">slab_its</span><span class="p">.</span><span class="n">solution</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">solution</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>Register iterators with the TimeIteratorCollection</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">tic</span><span class="p">.</span><span class="n">add_iterator</span><span class="p">(</span><span class="o">&amp;</span><span class="n">slab_its</span><span class="p">.</span><span class="n">tria</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">triangulation</span><span class="p">);</span>
+<span class="n">tic</span><span class="p">.</span><span class="n">add_iterator</span><span class="p">(</span><span class="o">&amp;</span><span class="n">slab_its</span><span class="p">.</span><span class="n">dof</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">dof_handler</span><span class="p">);</span>
+<span class="n">tic</span><span class="p">.</span><span class="n">add_iterator</span><span class="p">(</span><span class="o">&amp;</span><span class="n">slab_its</span><span class="p">.</span><span class="n">solution</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">solution</span><span class="p">);</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;*******Starting time-stepping*********&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+<span class="n">slab</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Iterate over the iterator collection</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">for</span><span class="w"> </span><span class="p">(;</span><span class="w"> </span><span class="o">!</span><span class="n">tic</span><span class="p">.</span><span class="n">at_end</span><span class="p">();</span><span class="w"> </span><span class="n">tic</span><span class="p">.</span><span class="n">increment</span><span class="p">())</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Starting time-step (&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">slab_its</span><span class="p">.</span><span class="n">tria</span><span class="o">-&gt;</span><span class="n">startpoint</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;,&quot;</span>
+<span class="w">              </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">slab_its</span><span class="p">.</span><span class="n">tria</span><span class="o">-&gt;</span><span class="n">endpoint</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;]&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>this is the “typical” FE-code loop without the make_grid function</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">setup_system_on_slab</span><span class="p">();</span>
+<span class="n">assemble_system_on_slab</span><span class="p">();</span>
+<span class="n">solve_system_on_slab</span><span class="p">();</span>
+<span class="n">output_results_on_slab</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>Take the slab solution subvector at the final temporal dof of the
+current slab This is needed as the initial value for the next slab</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">      </span><span class="n">idealii</span><span class="o">::</span><span class="n">slab</span><span class="o">::</span><span class="n">VectorTools</span><span class="o">::</span><span class="n">extract_subvector_at_time_dof</span><span class="p">(</span>
+<span class="w">        </span><span class="o">*</span><span class="n">slab_its</span><span class="p">.</span><span class="n">solution</span><span class="p">,</span>
+<span class="w">        </span><span class="n">slab_initial_value</span><span class="p">,</span>
+<span class="w">        </span><span class="n">slab_its</span><span class="p">.</span><span class="n">tria</span><span class="o">-&gt;</span><span class="n">temporal</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">n_global_active_cells</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="w">      </span><span class="n">slab</span><span class="o">++</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="step1-setup-system-on-slab">
+<h4><a class="toc-backref" href="#id15" role="doc-backlink">Step1::setup_system_on_slab</a><a class="headerlink" href="#step1-setup-system-on-slab" title="Link to this heading"></a></h4>
+<blockquote>
+<div><p>void
+Step1::setup_system_on_slab()
+{</p>
+</div></blockquote>
+<p>Distribute spatial and temporal dofs</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">slab_its</span><span class="p">.</span><span class="n">dof</span><span class="o">-&gt;</span><span class="n">distribute_dofs</span><span class="p">(</span><span class="n">fe</span><span class="p">);</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Number of degrees of freedom: </span><span class="se">\n\t</span><span class="s">&quot;</span>
+<span class="w">          </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">slab_its</span><span class="p">.</span><span class="n">dof</span><span class="o">-&gt;</span><span class="n">n_dofs_space</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; (space) * &quot;</span>
+<span class="w">          </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">slab_its</span><span class="p">.</span><span class="n">dof</span><span class="o">-&gt;</span><span class="n">n_dofs_time</span><span class="p">()</span>
+<span class="w">          </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; (time) = &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">slab_its</span><span class="p">.</span><span class="n">dof</span><span class="o">-&gt;</span><span class="n">n_dofs_spacetime</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>On the first slab the initial value vector has to be set to the correct
+(spatial) size.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">slab</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="n">slab_initial_value</span><span class="p">.</span><span class="n">reinit</span><span class="p">(</span><span class="n">slab_its</span><span class="p">.</span><span class="n">dof</span><span class="o">-&gt;</span><span class="n">n_dofs_space</span><span class="p">());</span>
+</pre></div>
+</div>
+<p>For the above ExactSolution the initial value is 0</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="n">slab_initial_value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>construct the constraint object</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">slab_constraints</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">dealii</span><span class="o">::</span><span class="n">AffineConstraints</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;&gt;</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>The Dirichlet boundary condition for the ExactSolution is homogeneous</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span><span class="w"> </span><span class="n">zero</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dealii</span><span class="o">::</span><span class="n">Functions</span><span class="o">::</span><span class="n">ZeroFunction</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>Add Dirichlet boundary values to the constraint object.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">idealii</span><span class="o">::</span><span class="n">slab</span><span class="o">::</span><span class="n">VectorTools</span><span class="o">::</span><span class="n">interpolate_boundary_values</span><span class="p">(</span><span class="o">*</span><span class="n">slab_its</span><span class="p">.</span><span class="n">dof</span><span class="p">,</span>
+<span class="w">                                                        </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">                                                        </span><span class="n">zero</span><span class="p">,</span>
+<span class="w">                                                        </span><span class="n">slab_constraints</span><span class="p">);</span>
+
+<span class="n">slab_constraints</span><span class="o">-&gt;</span><span class="n">close</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>initialize a dynamic sparsity pattern to the slab size</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">dealii</span><span class="o">::</span><span class="n">DynamicSparsityPattern</span><span class="w"> </span><span class="nf">dsp</span><span class="p">(</span><span class="n">slab_its</span><span class="p">.</span><span class="n">dof</span><span class="o">-&gt;</span><span class="n">n_dofs_spacetime</span><span class="p">());</span>
+</pre></div>
+</div>
+<p>construct the space-time sparsity pattern
+Upwind means we solve forward in time and need information for
+internal jump terms for slabs with more than one temporal element.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">idealii</span><span class="o">::</span><span class="n">slab</span><span class="o">::</span><span class="n">DoFTools</span><span class="o">::</span><span class="n">make_upwind_sparsity_pattern</span><span class="p">(</span><span class="o">*</span><span class="n">slab_its</span><span class="p">.</span><span class="n">dof</span><span class="p">,</span><span class="w"> </span><span class="n">dsp</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>as in deal.II</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">slab_sparsity_pattern</span><span class="p">.</span><span class="n">copy_from</span><span class="p">(</span><span class="n">dsp</span><span class="p">);</span>
+<span class="n">slab_system_matrix</span><span class="p">.</span><span class="n">reinit</span><span class="p">(</span><span class="n">slab_sparsity_pattern</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>set solution and right hand side to the correct number of unknowns</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="n">slab_its</span><span class="p">.</span><span class="n">solution</span><span class="o">-&gt;</span><span class="n">reinit</span><span class="p">(</span><span class="n">slab_its</span><span class="p">.</span><span class="n">dof</span><span class="o">-&gt;</span><span class="n">n_dofs_spacetime</span><span class="p">());</span>
+<span class="w">  </span><span class="n">slab_system_rhs</span><span class="p">.</span><span class="n">reinit</span><span class="p">(</span><span class="n">slab_its</span><span class="p">.</span><span class="n">dof</span><span class="o">-&gt;</span><span class="n">n_dofs_spacetime</span><span class="p">());</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="step1-assemble-system-on-slab">
+<h4><a class="toc-backref" href="#id16" role="doc-backlink">Step1::assemble_system_on_slab</a><a class="headerlink" href="#step1-assemble-system-on-slab" title="Link to this heading"></a></h4>
+<blockquote>
+<div><p>void
+Step1::assemble_system_on_slab()
+{</p>
+</div></blockquote>
+<p>Similar to the stationary case we start with a quadrature and FEValues
+objects</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">idealii</span><span class="o">::</span><span class="n">spacetime</span><span class="o">::</span><span class="n">QGauss</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="w"> </span><span class="n">quad</span><span class="p">(</span><span class="n">fe</span><span class="p">.</span><span class="n">spatial</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">degree</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">                                   </span><span class="n">fe</span><span class="p">.</span><span class="n">temporal</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">degree</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+
+<span class="n">idealii</span><span class="o">::</span><span class="n">spacetime</span><span class="o">::</span><span class="n">FEValues</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="w"> </span><span class="n">fe_values_spacetime</span><span class="p">(</span>
+<span class="w">  </span><span class="n">fe</span><span class="p">,</span>
+<span class="w">  </span><span class="n">quad</span><span class="p">,</span>
+<span class="w">  </span><span class="n">dealii</span><span class="o">::</span><span class="n">update_values</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">dealii</span><span class="o">::</span><span class="n">update_gradients</span><span class="w"> </span><span class="o">|</span>
+<span class="w">    </span><span class="n">dealii</span><span class="o">::</span><span class="n">update_quadrature_points</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">dealii</span><span class="o">::</span><span class="n">update_JxW_values</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>To account for jump values we use the FEJumpValues object which is somewhat
+similar to FEFaceValues objects.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">idealii</span><span class="o">::</span><span class="n">spacetime</span><span class="o">::</span><span class="n">FEJumpValues</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="w"> </span><span class="n">fe_jump_values_spacetime</span><span class="p">(</span>
+<span class="w">  </span><span class="n">fe</span><span class="p">,</span>
+<span class="w">  </span><span class="n">quad</span><span class="p">,</span>
+<span class="w">  </span><span class="n">dealii</span><span class="o">::</span><span class="n">update_values</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">dealii</span><span class="o">::</span><span class="n">update_gradients</span><span class="w"> </span><span class="o">|</span>
+<span class="w">    </span><span class="n">dealii</span><span class="o">::</span><span class="n">update_quadrature_points</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">dealii</span><span class="o">::</span><span class="n">update_JxW_values</span><span class="p">);</span>
+
+<span class="n">RightHandSide</span><span class="w"> </span><span class="n">right_hand_side</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Get the number of dofs in a space-time elmement</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">const</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fe</span><span class="p">.</span><span class="n">dofs_per_cell</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Number of temporal elements</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">slab_its</span><span class="p">.</span><span class="n">tria</span><span class="o">-&gt;</span><span class="n">temporal</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">n_global_active_cells</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>The easiest way to account for jump values is to construct local objects
+extruded in the temporal direction, such that they hold information over
+all temporal elements but just the information of a single spatial element</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">dealii</span><span class="o">::</span><span class="n">FullMatrix</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">cell_matrix</span><span class="p">(</span><span class="n">N</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="p">,</span>
+<span class="w">                                       </span><span class="n">N</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="p">);</span>
+
+<span class="n">dealii</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">cell_rhs</span><span class="p">(</span><span class="n">N</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="p">);</span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">dealii</span><span class="o">::</span><span class="n">types</span><span class="o">::</span><span class="n">global_dof_index</span><span class="o">&gt;</span><span class="w"> </span><span class="n">local_spacetime_dof_index</span><span class="p">(</span>
+<span class="w">  </span><span class="n">N</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>index of the current temporal element to calculate index offset</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>number of space-time and space quadrature points</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">n_quad_spacetime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fe_values_spacetime</span><span class="p">.</span><span class="n">n_quadrature_points</span><span class="p">;</span>
+<span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">n_quad_space</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">quad</span><span class="p">.</span><span class="n">spatial</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>First, iterate over active spatial elements</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="o">&amp;</span><span class="n">cell_space</span><span class="w"> </span><span class="o">:</span>
+<span class="w">     </span><span class="n">slab_its</span><span class="p">.</span><span class="n">dof</span><span class="o">-&gt;</span><span class="n">spatial</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">active_cell_iterators</span><span class="p">())</span>
+<span class="w">  </span><span class="p">{</span>
+</pre></div>
+</div>
+<p>recalculate local information for the current spatial element</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">fe_values_spacetime</span><span class="p">.</span><span class="n">reinit_space</span><span class="p">(</span><span class="n">cell_space</span><span class="p">);</span>
+<span class="n">fe_jump_values_spacetime</span><span class="p">.</span><span class="n">reinit_space</span><span class="p">(</span><span class="n">cell_space</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>get local contribution of the slab_initial_value vector</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">initial_values</span><span class="p">(</span>
+<span class="w">  </span><span class="n">fe_values_spacetime</span><span class="p">.</span><span class="n">spatial</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">n_quadrature_points</span><span class="p">);</span>
+<span class="n">fe_values_spacetime</span><span class="p">.</span><span class="n">spatial</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">get_function_values</span><span class="p">(</span><span class="n">slab_initial_value</span><span class="p">,</span>
+<span class="w">                                                   </span><span class="n">initial_values</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Reset local contributions to 0</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">cell_matrix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="n">cell_rhs</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Second, iterator over active temporal elements</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="o">&amp;</span><span class="n">cell_time</span><span class="w"> </span><span class="o">:</span>
+<span class="w">     </span><span class="n">slab_its</span><span class="p">.</span><span class="n">dof</span><span class="o">-&gt;</span><span class="n">temporal</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">active_cell_iterators</span><span class="p">())</span>
+<span class="w">  </span><span class="p">{</span>
+</pre></div>
+</div>
+<p>As the temporal elements are part of a 1-d triangulation
+the indices are ordered from left to right, i.e. startpoint to
+endpoint</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cell_time</span><span class="o">-&gt;</span><span class="n">index</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>recalculate local information for the current temporal element</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">fe_values_spacetime</span><span class="p">.</span><span class="n">reinit_time</span><span class="p">(</span><span class="n">cell_time</span><span class="p">);</span>
+<span class="n">fe_jump_values_spacetime</span><span class="p">.</span><span class="n">reinit_time</span><span class="p">(</span><span class="n">cell_time</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>get local space-time dof indices for the current
+cell_space x cell_time tensor product cell</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">fe_values_spacetime</span><span class="p">.</span><span class="n">get_local_dof_indices</span><span class="p">(</span><span class="n">local_spacetime_dof_index</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Iterate over space-time quadrature points for
+all contributions except for jump terms</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">n_quad_spacetime</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">q</span><span class="p">)</span>
+<span class="w">  </span><span class="p">{</span>
+</pre></div>
+</div>
+<p>set the time of the right hand side to the time current
+quadrature point</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">right_hand_side</span><span class="p">.</span><span class="n">set_time</span><span class="p">(</span>
+<span class="w">  </span><span class="n">fe_values_spacetime</span><span class="p">.</span><span class="n">time_quadrature_point</span><span class="p">(</span><span class="n">q</span><span class="p">));</span>
+</pre></div>
+</div>
+<p>get the spatial location of the current quadrature point</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="o">&amp;</span><span class="n">x_q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fe_values_spacetime</span><span class="p">.</span><span class="n">space_quadrature_point</span><span class="p">(</span><span class="n">q</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>iterate over all space-time dofs of the current element
+and calculate contributions at current quadrature point</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">j</span><span class="p">)</span>
+<span class="w">      </span><span class="p">{</span>
+</pre></div>
+</div>
+<p>Note that for unsymmetric matrices the indices are flipped
+in comparison to the usual weak form derivation by
+multiplying test functions from the right.</p>
+<p>offset indices by the past space-time dofs of previous
+temporal elements</p>
+<p>(dt u, v)</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">cell_matrix</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="p">,</span>
+<span class="w">            </span><span class="n">j</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="p">)</span><span class="w"> </span><span class="o">+=</span>
+<span class="w">  </span><span class="n">fe_values_spacetime</span><span class="p">.</span><span class="n">shape_value</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="p">)</span><span class="w"> </span><span class="o">*</span>
+<span class="w">  </span><span class="n">fe_values_spacetime</span><span class="p">.</span><span class="n">shape_dt</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="p">)</span><span class="w"> </span><span class="o">*</span>
+<span class="w">  </span><span class="n">fe_values_spacetime</span><span class="p">.</span><span class="n">JxW</span><span class="p">(</span><span class="n">q</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>(grad u, grad v)</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="n">cell_matrix</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="p">,</span>
+<span class="w">              </span><span class="n">j</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="p">)</span><span class="w"> </span><span class="o">+=</span>
+<span class="w">    </span><span class="n">fe_values_spacetime</span><span class="p">.</span><span class="n">shape_space_grad</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="p">)</span><span class="w"> </span><span class="o">*</span>
+<span class="w">    </span><span class="n">fe_values_spacetime</span><span class="p">.</span><span class="n">shape_space_grad</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="p">)</span><span class="w"> </span><span class="o">*</span>
+<span class="w">    </span><span class="n">fe_values_spacetime</span><span class="p">.</span><span class="n">JxW</span><span class="p">(</span><span class="n">q</span><span class="p">);</span>
+
+<span class="p">}</span><span class="w"> </span><span class="c1">// dofs j</span>
+</pre></div>
+</div>
+<p>Calculate local contribution of the right hand side
+function.
+Note that the correct time was set above so it still is an evaluation
+f(t,x)</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">      </span><span class="n">cell_rhs</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="p">)</span><span class="w"> </span><span class="o">+=</span>
+<span class="w">        </span><span class="n">fe_values_spacetime</span><span class="p">.</span><span class="n">shape_value</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="p">)</span><span class="w"> </span><span class="o">*</span>
+<span class="w">        </span><span class="n">right_hand_side</span><span class="p">.</span><span class="n">value</span><span class="p">(</span><span class="n">x_q</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">fe_values_spacetime</span><span class="p">.</span><span class="n">JxW</span><span class="p">(</span><span class="n">q</span><span class="p">);</span>
+
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="c1">// dofs i</span>
+
+<span class="p">}</span><span class="w"> </span><span class="c1">// quad</span>
+</pre></div>
+</div>
+<p>Jump terms and initial values just have a spatial quadrature loop</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">n_quad_space</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">q</span><span class="p">)</span>
+<span class="w">  </span><span class="p">{</span>
+</pre></div>
+</div>
+<p>However, dof loops are still over space-time indices
+as different temporal support points might not have a
+degree of freedom at the edges of the temporal element
+and so all shape functions contribute to the jump values</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">j</span><span class="p">)</span>
+<span class="w">      </span><span class="p">{</span>
+</pre></div>
+</div>
+<p>(v^+, u^+)</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">cell_matrix</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="p">,</span>
+<span class="w">            </span><span class="n">j</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="p">)</span><span class="w"> </span><span class="o">+=</span>
+<span class="w">  </span><span class="n">fe_jump_values_spacetime</span><span class="p">.</span><span class="n">shape_value_plus</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="p">)</span><span class="w"> </span><span class="o">*</span>
+<span class="w">  </span><span class="n">fe_jump_values_spacetime</span><span class="p">.</span><span class="n">shape_value_plus</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="p">)</span><span class="w"> </span><span class="o">*</span>
+<span class="w">  </span><span class="n">fe_jump_values_spacetime</span><span class="p">.</span><span class="n">JxW</span><span class="p">(</span><span class="n">q</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>-(v^+, u^-)
+If we have more than a single element per slab
+We have to account for the inner jumps between elements
+Therefore the column index is offset by one temporal
+element</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="n">cell_matrix</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="p">,</span>
+<span class="w">                  </span><span class="n">j</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="p">)</span><span class="w"> </span><span class="o">-=</span>
+<span class="w">        </span><span class="n">fe_jump_values_spacetime</span><span class="p">.</span><span class="n">shape_value_plus</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="p">)</span><span class="w"> </span><span class="o">*</span>
+<span class="w">        </span><span class="n">fe_jump_values_spacetime</span><span class="p">.</span><span class="n">shape_value_minus</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="p">)</span><span class="w"> </span><span class="o">*</span>
+<span class="w">        </span><span class="n">fe_jump_values_spacetime</span><span class="p">.</span><span class="n">JxW</span><span class="p">(</span><span class="n">q</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span><span class="w"> </span><span class="c1">// dofs j</span>
+</pre></div>
+</div>
+<p>The first temporal element has to account for the jump
+to the previous slab or the initial value in the right
+hand side.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">          </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">              </span><span class="n">cell_rhs</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">+=</span>
+<span class="w">                </span><span class="n">fe_jump_values_spacetime</span><span class="p">.</span><span class="n">shape_value_plus</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="p">)</span><span class="w"> </span><span class="o">*</span>
+<span class="w">                </span><span class="n">initial_values</span><span class="p">[</span><span class="n">q</span><span class="p">]</span><span class="w"> </span><span class="c1">// value of previous solution at t0</span>
+<span class="w">                </span><span class="o">*</span><span class="w"> </span><span class="n">fe_jump_values_spacetime</span><span class="p">.</span><span class="n">JxW</span><span class="p">(</span><span class="n">q</span><span class="p">);</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="c1">// dofs i</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="p">}</span><span class="w"> </span><span class="c1">// cell time</span>
+</pre></div>
+</div>
+<p>after contributions for all temporal elements are calculated,
+write this information into the slab system matrix and rhs</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">      </span><span class="n">slab_constraints</span><span class="o">-&gt;</span><span class="n">distribute_local_to_global</span><span class="p">(</span><span class="n">cell_matrix</span><span class="p">,</span>
+<span class="w">                                                   </span><span class="n">cell_rhs</span><span class="p">,</span>
+<span class="w">                                                   </span><span class="n">local_spacetime_dof_index</span><span class="p">,</span>
+<span class="w">                                                   </span><span class="n">slab_system_matrix</span><span class="p">,</span>
+<span class="w">                                                   </span><span class="n">slab_system_rhs</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="c1">// cell space</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="step1-solve-system-on-slab">
+<h4><a class="toc-backref" href="#id17" role="doc-backlink">Step1::solve_system_on_slab</a><a class="headerlink" href="#step1-solve-system-on-slab" title="Link to this heading"></a></h4>
+<blockquote>
+<div><p>void
+Step1::solve_system_on_slab()
+{</p>
+</div></blockquote>
+<p>Simply use a direct solver here. CG would not work as the matrix is not
+symmetric.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">dealii</span><span class="o">::</span><span class="n">SparseDirectUMFPACK</span><span class="w"> </span><span class="n">solver</span><span class="p">;</span>
+<span class="n">solver</span><span class="p">.</span><span class="n">factorize</span><span class="p">(</span><span class="n">slab_system_matrix</span><span class="p">);</span>
+<span class="n">solver</span><span class="p">.</span><span class="n">vmult</span><span class="p">(</span><span class="o">*</span><span class="n">slab_its</span><span class="p">.</span><span class="n">solution</span><span class="p">,</span><span class="w"> </span><span class="n">slab_system_rhs</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>after solving set the correct Dirichlet values in the solution</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="n">slab_constraints</span><span class="o">-&gt;</span><span class="n">distribute</span><span class="p">(</span><span class="o">*</span><span class="n">slab_its</span><span class="p">.</span><span class="n">solution</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="step1-output-results-on-slab">
+<h4><a class="toc-backref" href="#id18" role="doc-backlink">Step1::output_results_on_slab</a><a class="headerlink" href="#step1-output-results-on-slab" title="Link to this heading"></a></h4>
+<p>For now the output is done somewhat by hand.
+But a spacetime or slab DataOut object is planned/WIP.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span>
+<span class="nf">Step1::output_results_on_slab</span><span class="p">()</span>
+<span class="p">{</span>
+</pre></div>
+</div>
+<p>Simply output the subvectors at all temporal degrees of freedom.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span><span class="w"> </span><span class="n">n_dofs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">slab_its</span><span class="p">.</span><span class="n">dof</span><span class="o">-&gt;</span><span class="n">n_dofs_time</span><span class="p">();</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">n_dofs</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="w">  </span><span class="p">{</span>
+</pre></div>
+</div>
+<p>Construct a spatial DataOut object</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">dealii</span><span class="o">::</span><span class="n">DataOut</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="w"> </span><span class="n">data_out</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Register the spatial dof handler</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">data_out</span><span class="p">.</span><span class="n">attach_dof_handler</span><span class="p">(</span><span class="o">*</span><span class="n">slab_its</span><span class="p">.</span><span class="n">dof</span><span class="o">-&gt;</span><span class="n">spatial</span><span class="p">());</span>
+</pre></div>
+</div>
+<p>extract the spatial solution at the current temporal dof</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">dealii</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">local_solution</span><span class="p">;</span>
+<span class="n">local_solution</span><span class="p">.</span><span class="n">reinit</span><span class="p">(</span><span class="n">slab_its</span><span class="p">.</span><span class="n">dof</span><span class="o">-&gt;</span><span class="n">n_dofs_space</span><span class="p">());</span>
+<span class="n">idealii</span><span class="o">::</span><span class="n">slab</span><span class="o">::</span><span class="n">VectorTools</span><span class="o">::</span><span class="n">extract_subvector_at_time_dof</span><span class="p">(</span>
+<span class="w">  </span><span class="o">*</span><span class="n">slab_its</span><span class="p">.</span><span class="n">solution</span><span class="p">,</span><span class="w"> </span><span class="n">local_solution</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>add this vector to the DataOut object</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">data_out</span><span class="p">.</span><span class="n">add_data_vector</span><span class="p">(</span><span class="n">local_solution</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Solution&quot;</span><span class="p">);</span>
+<span class="n">data_out</span><span class="p">.</span><span class="n">build_patches</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>construct a filename, for a fixed triangulation with uniform refinement
+this is relatively easy as all slabs have the same number of temporal
+degrees of freedom. Later slabs are just offset</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">ostringstream</span><span class="w"> </span><span class="n">filename</span><span class="p">;</span>
+<span class="w">      </span><span class="n">filename</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;solution_split_dG(&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">fe</span><span class="p">.</span><span class="n">temporal</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">degree</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;)_t_&quot;</span>
+<span class="w">               </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">slab</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">n_dofs</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;.vtk&quot;</span><span class="p">;</span>
+
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">ofstream</span><span class="w"> </span><span class="nf">output</span><span class="p">(</span><span class="n">filename</span><span class="p">.</span><span class="n">str</span><span class="p">());</span>
+<span class="w">      </span><span class="n">data_out</span><span class="p">.</span><span class="n">write_vtk</span><span class="p">(</span><span class="n">output</span><span class="p">);</span>
+<span class="w">      </span><span class="n">output</span><span class="p">.</span><span class="n">close</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="the-main-function">
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">The main function</a><a class="headerlink" href="#the-main-function" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p>int
+main()
+{</p>
+</div></blockquote>
+<p>spatial finite element order</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>temporal finite element order</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Run the problem with cG(s)dG(r) finite elements.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">  </span><span class="n">Step1</span><span class="w"> </span><span class="nf">problem</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">);</span>
+<span class="w">  </span><span class="n">problem</span><span class="p">.</span><span class="n">run</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="results">
+<h2><a class="toc-backref" href="#id20" role="doc-backlink">Results</a><a class="headerlink" href="#results" title="Link to this heading"></a></h2>
+</section>
+<section id="the-plain-program">
+<h2><a class="toc-backref" href="#id21" role="doc-backlink">The plain program</a><a class="headerlink" href="#the-plain-program" title="Link to this heading"></a></h2>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;ideal.II/base/time_iterator.hh&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;ideal.II/base/quadrature_lib.hh&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;ideal.II/dofs/slab_dof_tools.hh&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;ideal.II/dofs/spacetime_dof_handler.hh&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;ideal.II/fe/fe_dg.hh&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;ideal.II/fe/spacetime_fe_values.hh&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;ideal.II/grid/fixed_tria.hh&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;ideal.II/lac/spacetime_vector.hh&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;ideal.II/numerics/vector_tools.hh&gt;</span>
+
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;deal.II/fe/fe_q.h&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;deal.II/grid/grid_generator.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;deal.II/grid/tria.h&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;deal.II/lac/dynamic_sparsity_pattern.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;deal.II/lac/full_matrix.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;deal.II/lac/sparse_direct.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;deal.II/lac/sparse_matrix.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;deal.II/lac/vector.h&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;deal.II/base/function.h&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;deal.II/numerics/data_out.h&gt;</span>
+
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;fstream&gt;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ExactSolution</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">dealii</span><span class="o">::</span><span class="n">Function</span><span class="o">&lt;</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">  </span><span class="n">ExactSolution</span><span class="p">()</span>
+<span class="w">    </span><span class="o">:</span><span class="w"> </span><span class="n">dealii</span><span class="o">::</span><span class="n">Function</span><span class="o">&lt;</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="p">()</span>
+<span class="w">  </span><span class="p">{}</span>
+<span class="w">  </span><span class="kt">double</span>
+<span class="w">  </span><span class="n">value</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">dealii</span><span class="o">::</span><span class="n">Point</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;</span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">component</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="kt">double</span>
+<span class="nf">ExactSolution::value</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">dealii</span><span class="o">::</span><span class="n">Point</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="w">             </span><span class="o">&amp;</span><span class="n">p</span><span class="p">,</span>
+<span class="w">                     </span><span class="p">[[</span><span class="n">maybe_unused</span><span class="p">]]</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">component</span><span class="p">)</span><span class="w"> </span><span class="k">const</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_time</span><span class="p">();</span>
+<span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.25</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">RightHandSide</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">dealii</span><span class="o">::</span><span class="n">Function</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">  </span><span class="k">virtual</span><span class="w"> </span><span class="kt">double</span>
+<span class="w">  </span><span class="n">value</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">dealii</span><span class="o">::</span><span class="n">Point</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;</span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">component</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="p">};</span>
+
+<span class="kt">double</span>
+<span class="nf">RightHandSide::value</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">dealii</span><span class="o">::</span><span class="n">Point</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="w">             </span><span class="o">&amp;</span><span class="n">p</span><span class="p">,</span>
+<span class="w">                     </span><span class="p">[[</span><span class="n">maybe_unused</span><span class="p">]]</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">component</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">t</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="n">get_time</span><span class="p">();</span>
+<span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">return_value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">x</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">y</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">  </span><span class="n">return_value</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">t</span><span class="p">;</span>
+<span class="w">  </span><span class="n">return_value</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">t</span><span class="p">;</span>
+<span class="w">  </span><span class="n">return_value</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.25</span><span class="p">;</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">return_value</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Step1</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">  </span><span class="n">Step1</span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">spatial_degree</span><span class="p">,</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">temporal_degree</span><span class="p">);</span>
+<span class="w">  </span><span class="kt">void</span>
+<span class="w">  </span><span class="nf">run</span><span class="p">();</span>
+
+<span class="k">private</span><span class="o">:</span>
+<span class="w">  </span><span class="kt">void</span>
+<span class="w">  </span><span class="n">make_grid</span><span class="p">();</span>
+<span class="w">  </span><span class="kt">void</span>
+<span class="w">  </span><span class="nf">time_marching</span><span class="p">();</span>
+<span class="w">  </span><span class="kt">void</span>
+<span class="w">  </span><span class="nf">setup_system_on_slab</span><span class="p">();</span>
+<span class="w">  </span><span class="kt">void</span>
+<span class="w">  </span><span class="nf">assemble_system_on_slab</span><span class="p">();</span>
+<span class="w">  </span><span class="kt">void</span>
+<span class="w">  </span><span class="nf">solve_system_on_slab</span><span class="p">();</span>
+<span class="w">  </span><span class="kt">void</span>
+<span class="w">  </span><span class="nf">output_results_on_slab</span><span class="p">();</span>
+
+
+<span class="w">  </span><span class="n">idealii</span><span class="o">::</span><span class="n">spacetime</span><span class="o">::</span><span class="n">fixed</span><span class="o">::</span><span class="n">Triangulation</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="w"> </span><span class="n">triangulation</span><span class="p">;</span>
+<span class="w">  </span><span class="n">idealii</span><span class="o">::</span><span class="n">spacetime</span><span class="o">::</span><span class="n">DoFHandler</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="w">           </span><span class="n">dof_handler</span><span class="p">;</span>
+<span class="w">  </span><span class="n">idealii</span><span class="o">::</span><span class="n">spacetime</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w">          </span><span class="n">solution</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">idealii</span><span class="o">::</span><span class="n">spacetime</span><span class="o">::</span><span class="n">DG_FiniteElement</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="w"> </span><span class="n">fe</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">dealii</span><span class="o">::</span><span class="n">SparsityPattern</span><span class="w">                            </span><span class="n">slab_sparsity_pattern</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">dealii</span><span class="o">::</span><span class="n">AffineConstraints</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">slab_constraints</span><span class="p">;</span>
+<span class="w">  </span><span class="n">dealii</span><span class="o">::</span><span class="n">SparseMatrix</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w">                       </span><span class="n">slab_system_matrix</span><span class="p">;</span>
+<span class="w">  </span><span class="n">dealii</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w">                             </span><span class="n">slab_system_rhs</span><span class="p">;</span>
+<span class="w">  </span><span class="n">dealii</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w">                             </span><span class="n">slab_initial_value</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">slab</span><span class="p">;</span><span class="w"> </span><span class="c1">// count the index of the current slab</span>
+
+<span class="w">  </span><span class="k">struct</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="n">idealii</span><span class="o">::</span><span class="n">slab</span><span class="o">::</span><span class="n">TriaIterator</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="w">        </span><span class="n">tria</span><span class="p">;</span>
+<span class="w">    </span><span class="n">idealii</span><span class="o">::</span><span class="n">slab</span><span class="o">::</span><span class="n">DoFHandlerIterator</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="w">  </span><span class="n">dof</span><span class="p">;</span>
+<span class="w">    </span><span class="n">idealii</span><span class="o">::</span><span class="n">slab</span><span class="o">::</span><span class="n">VectorIterator</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">solution</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="n">slab_its</span><span class="p">;</span>
+<span class="p">};</span>
+
+
+<span class="n">Step1</span><span class="o">::</span><span class="n">Step1</span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">spatial_degree</span><span class="p">,</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">temporal_degree</span><span class="p">)</span>
+<span class="w">  </span><span class="o">:</span><span class="w"> </span><span class="c1">// space-time triangulation</span>
+<span class="w">  </span><span class="n">triangulation</span><span class="p">()</span>
+<span class="w">  </span><span class="p">,</span>
+<span class="w">  </span><span class="n">dof_handler</span><span class="p">(</span><span class="o">&amp;</span><span class="n">triangulation</span><span class="p">)</span>
+<span class="w">  </span><span class="p">,</span>
+<span class="w">  </span><span class="n">fe</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">dealii</span><span class="o">::</span><span class="n">FE_Q</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="n">spatial_degree</span><span class="p">),</span><span class="w"> </span><span class="n">temporal_degree</span><span class="p">)</span>
+<span class="w">  </span><span class="p">,</span>
+<span class="w">  </span><span class="n">slab</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="p">{}</span>
+
+
+
+<span class="kt">void</span>
+<span class="n">Step1</span><span class="o">::</span><span class="n">run</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">make_grid</span><span class="p">();</span>
+<span class="w">  </span><span class="n">time_marching</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kt">void</span>
+<span class="n">Step1</span><span class="o">::</span><span class="n">make_grid</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">space_tria</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">dealii</span><span class="o">::</span><span class="n">Triangulation</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;&gt;</span><span class="p">();</span>
+<span class="w">  </span><span class="n">dealii</span><span class="o">::</span><span class="n">GridGenerator</span><span class="o">::</span><span class="n">hyper_cube</span><span class="p">(</span><span class="o">*</span><span class="n">space_tria</span><span class="p">);</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">M</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+<span class="w">  </span><span class="n">triangulation</span><span class="p">.</span><span class="n">generate</span><span class="p">(</span><span class="n">space_tria</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="p">);</span>
+<span class="w">  </span><span class="n">triangulation</span><span class="p">.</span><span class="n">refine_global</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="w">  </span><span class="n">dof_handler</span><span class="p">.</span><span class="n">generate</span><span class="p">();</span>
+<span class="p">}</span>
+
+
+<span class="kt">void</span>
+<span class="n">Step1</span><span class="o">::</span><span class="n">time_marching</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">idealii</span><span class="o">::</span><span class="n">TimeIteratorCollection</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="w"> </span><span class="n">tic</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">idealii</span><span class="o">::</span><span class="n">TimeIteratorCollection</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="p">();</span>
+
+<span class="w">  </span><span class="n">solution</span><span class="p">.</span><span class="n">reinit</span><span class="p">(</span><span class="n">triangulation</span><span class="p">.</span><span class="n">M</span><span class="p">());</span>
+
+<span class="w">  </span><span class="n">slab_its</span><span class="p">.</span><span class="n">tria</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">triangulation</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
+<span class="w">  </span><span class="n">slab_its</span><span class="p">.</span><span class="n">dof</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">dof_handler</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
+<span class="w">  </span><span class="n">slab_its</span><span class="p">.</span><span class="n">solution</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">solution</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
+
+<span class="w">  </span><span class="n">tic</span><span class="p">.</span><span class="n">add_iterator</span><span class="p">(</span><span class="o">&amp;</span><span class="n">slab_its</span><span class="p">.</span><span class="n">tria</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">triangulation</span><span class="p">);</span>
+<span class="w">  </span><span class="n">tic</span><span class="p">.</span><span class="n">add_iterator</span><span class="p">(</span><span class="o">&amp;</span><span class="n">slab_its</span><span class="p">.</span><span class="n">dof</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">dof_handler</span><span class="p">);</span>
+<span class="w">  </span><span class="n">tic</span><span class="p">.</span><span class="n">add_iterator</span><span class="p">(</span><span class="o">&amp;</span><span class="n">slab_its</span><span class="p">.</span><span class="n">solution</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">solution</span><span class="p">);</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;*******Starting time-stepping*********&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">slab</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(;</span><span class="w"> </span><span class="o">!</span><span class="n">tic</span><span class="p">.</span><span class="n">at_end</span><span class="p">();</span><span class="w"> </span><span class="n">tic</span><span class="p">.</span><span class="n">increment</span><span class="p">())</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Starting time-step (&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">slab_its</span><span class="p">.</span><span class="n">tria</span><span class="o">-&gt;</span><span class="n">startpoint</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;,&quot;</span>
+<span class="w">                </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">slab_its</span><span class="p">.</span><span class="n">tria</span><span class="o">-&gt;</span><span class="n">endpoint</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;]&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+<span class="w">      </span><span class="n">setup_system_on_slab</span><span class="p">();</span>
+<span class="w">      </span><span class="n">assemble_system_on_slab</span><span class="p">();</span>
+<span class="w">      </span><span class="n">solve_system_on_slab</span><span class="p">();</span>
+<span class="w">      </span><span class="n">output_results_on_slab</span><span class="p">();</span>
+<span class="w">      </span><span class="n">idealii</span><span class="o">::</span><span class="n">slab</span><span class="o">::</span><span class="n">VectorTools</span><span class="o">::</span><span class="n">extract_subvector_at_time_dof</span><span class="p">(</span>
+<span class="w">        </span><span class="o">*</span><span class="n">slab_its</span><span class="p">.</span><span class="n">solution</span><span class="p">,</span>
+<span class="w">        </span><span class="n">slab_initial_value</span><span class="p">,</span>
+<span class="w">        </span><span class="n">slab_its</span><span class="p">.</span><span class="n">tria</span><span class="o">-&gt;</span><span class="n">temporal</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">n_global_active_cells</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="w">      </span><span class="n">slab</span><span class="o">++</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span>
+<span class="n">Step1</span><span class="o">::</span><span class="n">setup_system_on_slab</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">slab_its</span><span class="p">.</span><span class="n">dof</span><span class="o">-&gt;</span><span class="n">distribute_dofs</span><span class="p">(</span><span class="n">fe</span><span class="p">);</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Number of degrees of freedom: </span><span class="se">\n\t</span><span class="s">&quot;</span>
+<span class="w">            </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">slab_its</span><span class="p">.</span><span class="n">dof</span><span class="o">-&gt;</span><span class="n">n_dofs_space</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; (space) * &quot;</span>
+<span class="w">            </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">slab_its</span><span class="p">.</span><span class="n">dof</span><span class="o">-&gt;</span><span class="n">n_dofs_time</span><span class="p">()</span>
+<span class="w">            </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; (time) = &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">slab_its</span><span class="p">.</span><span class="n">dof</span><span class="o">-&gt;</span><span class="n">n_dofs_spacetime</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">slab</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="n">slab_initial_value</span><span class="p">.</span><span class="n">reinit</span><span class="p">(</span><span class="n">slab_its</span><span class="p">.</span><span class="n">dof</span><span class="o">-&gt;</span><span class="n">n_dofs_space</span><span class="p">());</span>
+<span class="w">      </span><span class="n">slab_initial_value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">slab_constraints</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">dealii</span><span class="o">::</span><span class="n">AffineConstraints</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;&gt;</span><span class="p">();</span>
+
+<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">zero</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dealii</span><span class="o">::</span><span class="n">Functions</span><span class="o">::</span><span class="n">ZeroFunction</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">  </span><span class="n">idealii</span><span class="o">::</span><span class="n">slab</span><span class="o">::</span><span class="n">VectorTools</span><span class="o">::</span><span class="n">interpolate_boundary_values</span><span class="p">(</span><span class="o">*</span><span class="n">slab_its</span><span class="p">.</span><span class="n">dof</span><span class="p">,</span>
+<span class="w">                                                          </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">                                                          </span><span class="n">zero</span><span class="p">,</span>
+<span class="w">                                                          </span><span class="n">slab_constraints</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">slab_constraints</span><span class="o">-&gt;</span><span class="n">close</span><span class="p">();</span>
+
+<span class="w">  </span><span class="n">dealii</span><span class="o">::</span><span class="n">DynamicSparsityPattern</span><span class="w"> </span><span class="nf">dsp</span><span class="p">(</span><span class="n">slab_its</span><span class="p">.</span><span class="n">dof</span><span class="o">-&gt;</span><span class="n">n_dofs_spacetime</span><span class="p">());</span>
+<span class="w">  </span><span class="n">idealii</span><span class="o">::</span><span class="n">slab</span><span class="o">::</span><span class="n">DoFTools</span><span class="o">::</span><span class="n">make_upwind_sparsity_pattern</span><span class="p">(</span><span class="o">*</span><span class="n">slab_its</span><span class="p">.</span><span class="n">dof</span><span class="p">,</span><span class="w"> </span><span class="n">dsp</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">slab_sparsity_pattern</span><span class="p">.</span><span class="n">copy_from</span><span class="p">(</span><span class="n">dsp</span><span class="p">);</span>
+<span class="w">  </span><span class="n">slab_system_matrix</span><span class="p">.</span><span class="n">reinit</span><span class="p">(</span><span class="n">slab_sparsity_pattern</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">slab_its</span><span class="p">.</span><span class="n">solution</span><span class="o">-&gt;</span><span class="n">reinit</span><span class="p">(</span><span class="n">slab_its</span><span class="p">.</span><span class="n">dof</span><span class="o">-&gt;</span><span class="n">n_dofs_spacetime</span><span class="p">());</span>
+<span class="w">  </span><span class="n">slab_system_rhs</span><span class="p">.</span><span class="n">reinit</span><span class="p">(</span><span class="n">slab_its</span><span class="p">.</span><span class="n">dof</span><span class="o">-&gt;</span><span class="n">n_dofs_spacetime</span><span class="p">());</span>
+<span class="p">}</span>
+
+
+<span class="kt">void</span>
+<span class="n">Step1</span><span class="o">::</span><span class="n">assemble_system_on_slab</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">idealii</span><span class="o">::</span><span class="n">spacetime</span><span class="o">::</span><span class="n">QGauss</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="w"> </span><span class="n">quad</span><span class="p">(</span><span class="n">fe</span><span class="p">.</span><span class="n">spatial</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">degree</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">                                     </span><span class="n">fe</span><span class="p">.</span><span class="n">temporal</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">degree</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">idealii</span><span class="o">::</span><span class="n">spacetime</span><span class="o">::</span><span class="n">FEValues</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="w"> </span><span class="n">fe_values_spacetime</span><span class="p">(</span>
+<span class="w">    </span><span class="n">fe</span><span class="p">,</span>
+<span class="w">    </span><span class="n">quad</span><span class="p">,</span>
+<span class="w">    </span><span class="n">dealii</span><span class="o">::</span><span class="n">update_values</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">dealii</span><span class="o">::</span><span class="n">update_gradients</span><span class="w"> </span><span class="o">|</span>
+<span class="w">      </span><span class="n">dealii</span><span class="o">::</span><span class="n">update_quadrature_points</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">dealii</span><span class="o">::</span><span class="n">update_JxW_values</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">idealii</span><span class="o">::</span><span class="n">spacetime</span><span class="o">::</span><span class="n">FEJumpValues</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="w"> </span><span class="n">fe_jump_values_spacetime</span><span class="p">(</span>
+<span class="w">    </span><span class="n">fe</span><span class="p">,</span>
+<span class="w">    </span><span class="n">quad</span><span class="p">,</span>
+<span class="w">    </span><span class="n">dealii</span><span class="o">::</span><span class="n">update_values</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">dealii</span><span class="o">::</span><span class="n">update_gradients</span><span class="w"> </span><span class="o">|</span>
+<span class="w">      </span><span class="n">dealii</span><span class="o">::</span><span class="n">update_quadrature_points</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">dealii</span><span class="o">::</span><span class="n">update_JxW_values</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">RightHandSide</span><span class="w"> </span><span class="n">right_hand_side</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fe</span><span class="p">.</span><span class="n">dofs_per_cell</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">slab_its</span><span class="p">.</span><span class="n">tria</span><span class="o">-&gt;</span><span class="n">temporal</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">n_global_active_cells</span><span class="p">();</span>
+
+<span class="w">  </span><span class="n">dealii</span><span class="o">::</span><span class="n">FullMatrix</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">cell_matrix</span><span class="p">(</span><span class="n">N</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="p">,</span>
+<span class="w">                                         </span><span class="n">N</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">dealii</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">cell_rhs</span><span class="p">(</span><span class="n">N</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">dealii</span><span class="o">::</span><span class="n">types</span><span class="o">::</span><span class="n">global_dof_index</span><span class="o">&gt;</span><span class="w"> </span><span class="n">local_spacetime_dof_index</span><span class="p">(</span>
+<span class="w">    </span><span class="n">N</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="p">);</span>
+
+<span class="w">  </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">n_quad_spacetime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fe_values_spacetime</span><span class="p">.</span><span class="n">n_quadrature_points</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">n_quad_space</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">quad</span><span class="p">.</span><span class="n">spatial</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">();</span>
+
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="o">&amp;</span><span class="n">cell_space</span><span class="w"> </span><span class="o">:</span>
+<span class="w">       </span><span class="n">slab_its</span><span class="p">.</span><span class="n">dof</span><span class="o">-&gt;</span><span class="n">spatial</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">active_cell_iterators</span><span class="p">())</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="n">fe_values_spacetime</span><span class="p">.</span><span class="n">reinit_space</span><span class="p">(</span><span class="n">cell_space</span><span class="p">);</span>
+<span class="w">      </span><span class="n">fe_jump_values_spacetime</span><span class="p">.</span><span class="n">reinit_space</span><span class="p">(</span><span class="n">cell_space</span><span class="p">);</span>
+
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">initial_values</span><span class="p">(</span>
+<span class="w">        </span><span class="n">fe_values_spacetime</span><span class="p">.</span><span class="n">spatial</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">n_quadrature_points</span><span class="p">);</span>
+<span class="w">      </span><span class="n">fe_values_spacetime</span><span class="p">.</span><span class="n">spatial</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">get_function_values</span><span class="p">(</span><span class="n">slab_initial_value</span><span class="p">,</span>
+<span class="w">                                                         </span><span class="n">initial_values</span><span class="p">);</span>
+
+<span class="w">      </span><span class="n">cell_matrix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">      </span><span class="n">cell_rhs</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="w">      </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="o">&amp;</span><span class="n">cell_time</span><span class="w"> </span><span class="o">:</span>
+<span class="w">           </span><span class="n">slab_its</span><span class="p">.</span><span class="n">dof</span><span class="o">-&gt;</span><span class="n">temporal</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">active_cell_iterators</span><span class="p">())</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cell_time</span><span class="o">-&gt;</span><span class="n">index</span><span class="p">();</span>
+
+<span class="w">          </span><span class="n">fe_values_spacetime</span><span class="p">.</span><span class="n">reinit_time</span><span class="p">(</span><span class="n">cell_time</span><span class="p">);</span>
+<span class="w">          </span><span class="n">fe_jump_values_spacetime</span><span class="p">.</span><span class="n">reinit_time</span><span class="p">(</span><span class="n">cell_time</span><span class="p">);</span>
+<span class="w">          </span><span class="n">fe_values_spacetime</span><span class="p">.</span><span class="n">get_local_dof_indices</span><span class="p">(</span><span class="n">local_spacetime_dof_index</span><span class="p">);</span>
+
+<span class="w">          </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">n_quad_spacetime</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">q</span><span class="p">)</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">              </span><span class="n">right_hand_side</span><span class="p">.</span><span class="n">set_time</span><span class="p">(</span>
+<span class="w">                </span><span class="n">fe_values_spacetime</span><span class="p">.</span><span class="n">time_quadrature_point</span><span class="p">(</span><span class="n">q</span><span class="p">));</span>
+<span class="w">              </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="o">&amp;</span><span class="n">x_q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fe_values_spacetime</span><span class="p">.</span><span class="n">space_quadrature_point</span><span class="p">(</span><span class="n">q</span><span class="p">);</span>
+<span class="w">              </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span>
+<span class="w">                </span><span class="p">{</span>
+<span class="w">                  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">j</span><span class="p">)</span>
+<span class="w">                    </span><span class="p">{</span>
+
+
+<span class="w">                      </span><span class="n">cell_matrix</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="p">,</span>
+<span class="w">                                  </span><span class="n">j</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="p">)</span><span class="w"> </span><span class="o">+=</span>
+<span class="w">                        </span><span class="n">fe_values_spacetime</span><span class="p">.</span><span class="n">shape_value</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="p">)</span><span class="w"> </span><span class="o">*</span>
+<span class="w">                        </span><span class="n">fe_values_spacetime</span><span class="p">.</span><span class="n">shape_dt</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="p">)</span><span class="w"> </span><span class="o">*</span>
+<span class="w">                        </span><span class="n">fe_values_spacetime</span><span class="p">.</span><span class="n">JxW</span><span class="p">(</span><span class="n">q</span><span class="p">);</span>
+
+<span class="w">                      </span><span class="n">cell_matrix</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="p">,</span>
+<span class="w">                                  </span><span class="n">j</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="p">)</span><span class="w"> </span><span class="o">+=</span>
+<span class="w">                        </span><span class="n">fe_values_spacetime</span><span class="p">.</span><span class="n">shape_space_grad</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="p">)</span><span class="w"> </span><span class="o">*</span>
+<span class="w">                        </span><span class="n">fe_values_spacetime</span><span class="p">.</span><span class="n">shape_space_grad</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="p">)</span><span class="w"> </span><span class="o">*</span>
+<span class="w">                        </span><span class="n">fe_values_spacetime</span><span class="p">.</span><span class="n">JxW</span><span class="p">(</span><span class="n">q</span><span class="p">);</span>
+
+<span class="w">                    </span><span class="p">}</span><span class="w"> </span><span class="c1">// dofs j</span>
+<span class="w">                  </span><span class="n">cell_rhs</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="p">)</span><span class="w"> </span><span class="o">+=</span>
+<span class="w">                    </span><span class="n">fe_values_spacetime</span><span class="p">.</span><span class="n">shape_value</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="p">)</span><span class="w"> </span><span class="o">*</span>
+<span class="w">                    </span><span class="n">right_hand_side</span><span class="p">.</span><span class="n">value</span><span class="p">(</span><span class="n">x_q</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">fe_values_spacetime</span><span class="p">.</span><span class="n">JxW</span><span class="p">(</span><span class="n">q</span><span class="p">);</span>
+
+<span class="w">                </span><span class="p">}</span><span class="w"> </span><span class="c1">// dofs i</span>
+
+<span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="c1">// quad</span>
+
+<span class="w">          </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">n_quad_space</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">q</span><span class="p">)</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">              </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span>
+<span class="w">                </span><span class="p">{</span>
+<span class="w">                  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">j</span><span class="p">)</span>
+<span class="w">                    </span><span class="p">{</span>
+<span class="w">                      </span><span class="n">cell_matrix</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="p">,</span>
+<span class="w">                                  </span><span class="n">j</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="p">)</span><span class="w"> </span><span class="o">+=</span>
+<span class="w">                        </span><span class="n">fe_jump_values_spacetime</span><span class="p">.</span><span class="n">shape_value_plus</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="p">)</span><span class="w"> </span><span class="o">*</span>
+<span class="w">                        </span><span class="n">fe_jump_values_spacetime</span><span class="p">.</span><span class="n">shape_value_plus</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="p">)</span><span class="w"> </span><span class="o">*</span>
+<span class="w">                        </span><span class="n">fe_jump_values_spacetime</span><span class="p">.</span><span class="n">JxW</span><span class="p">(</span><span class="n">q</span><span class="p">);</span>
+
+<span class="w">                      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">                        </span><span class="p">{</span>
+<span class="w">                          </span><span class="n">cell_matrix</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="p">,</span>
+<span class="w">                                      </span><span class="n">j</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">dofs_per_spacetime_cell</span><span class="p">)</span><span class="w"> </span><span class="o">-=</span>
+<span class="w">                            </span><span class="n">fe_jump_values_spacetime</span><span class="p">.</span><span class="n">shape_value_plus</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="p">)</span><span class="w"> </span><span class="o">*</span>
+<span class="w">                            </span><span class="n">fe_jump_values_spacetime</span><span class="p">.</span><span class="n">shape_value_minus</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="p">)</span><span class="w"> </span><span class="o">*</span>
+<span class="w">                            </span><span class="n">fe_jump_values_spacetime</span><span class="p">.</span><span class="n">JxW</span><span class="p">(</span><span class="n">q</span><span class="p">);</span>
+<span class="w">                        </span><span class="p">}</span>
+<span class="w">                    </span><span class="p">}</span><span class="w"> </span><span class="c1">// dofs j</span>
+<span class="w">                  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">                    </span><span class="p">{</span>
+<span class="w">                      </span><span class="n">cell_rhs</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">+=</span>
+<span class="w">                        </span><span class="n">fe_jump_values_spacetime</span><span class="p">.</span><span class="n">shape_value_plus</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="p">)</span><span class="w"> </span><span class="o">*</span>
+<span class="w">                        </span><span class="n">initial_values</span><span class="p">[</span><span class="n">q</span><span class="p">]</span><span class="w"> </span><span class="c1">// value of previous solution at t0</span>
+<span class="w">                        </span><span class="o">*</span><span class="w"> </span><span class="n">fe_jump_values_spacetime</span><span class="p">.</span><span class="n">JxW</span><span class="p">(</span><span class="n">q</span><span class="p">);</span>
+<span class="w">                    </span><span class="p">}</span>
+<span class="w">                </span><span class="p">}</span><span class="w"> </span><span class="c1">// dofs i</span>
+<span class="w">            </span><span class="p">}</span>
+
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="c1">// cell time</span>
+<span class="w">      </span><span class="n">slab_constraints</span><span class="o">-&gt;</span><span class="n">distribute_local_to_global</span><span class="p">(</span><span class="n">cell_matrix</span><span class="p">,</span>
+<span class="w">                                                   </span><span class="n">cell_rhs</span><span class="p">,</span>
+<span class="w">                                                   </span><span class="n">local_spacetime_dof_index</span><span class="p">,</span>
+<span class="w">                                                   </span><span class="n">slab_system_matrix</span><span class="p">,</span>
+<span class="w">                                                   </span><span class="n">slab_system_rhs</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="c1">// cell space</span>
+<span class="p">}</span>
+
+
+
+<span class="kt">void</span>
+<span class="n">Step1</span><span class="o">::</span><span class="n">solve_system_on_slab</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">dealii</span><span class="o">::</span><span class="n">SparseDirectUMFPACK</span><span class="w"> </span><span class="n">solver</span><span class="p">;</span>
+<span class="w">  </span><span class="n">solver</span><span class="p">.</span><span class="n">factorize</span><span class="p">(</span><span class="n">slab_system_matrix</span><span class="p">);</span>
+<span class="w">  </span><span class="n">solver</span><span class="p">.</span><span class="n">vmult</span><span class="p">(</span><span class="o">*</span><span class="n">slab_its</span><span class="p">.</span><span class="n">solution</span><span class="p">,</span><span class="w"> </span><span class="n">slab_system_rhs</span><span class="p">);</span>
+<span class="w">  </span><span class="n">slab_constraints</span><span class="o">-&gt;</span><span class="n">distribute</span><span class="p">(</span><span class="o">*</span><span class="n">slab_its</span><span class="p">.</span><span class="n">solution</span><span class="p">);</span>
+<span class="p">}</span>
+
+
+<span class="kt">void</span>
+<span class="n">Step1</span><span class="o">::</span><span class="n">output_results_on_slab</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">n_dofs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">slab_its</span><span class="p">.</span><span class="n">dof</span><span class="o">-&gt;</span><span class="n">n_dofs_time</span><span class="p">();</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">n_dofs</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="n">dealii</span><span class="o">::</span><span class="n">DataOut</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="w"> </span><span class="n">data_out</span><span class="p">;</span>
+<span class="w">      </span><span class="n">data_out</span><span class="p">.</span><span class="n">attach_dof_handler</span><span class="p">(</span><span class="o">*</span><span class="n">slab_its</span><span class="p">.</span><span class="n">dof</span><span class="o">-&gt;</span><span class="n">spatial</span><span class="p">());</span>
+
+<span class="w">      </span><span class="n">dealii</span><span class="o">::</span><span class="n">Vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">local_solution</span><span class="p">;</span>
+<span class="w">      </span><span class="n">local_solution</span><span class="p">.</span><span class="n">reinit</span><span class="p">(</span><span class="n">slab_its</span><span class="p">.</span><span class="n">dof</span><span class="o">-&gt;</span><span class="n">n_dofs_space</span><span class="p">());</span>
+<span class="w">      </span><span class="n">idealii</span><span class="o">::</span><span class="n">slab</span><span class="o">::</span><span class="n">VectorTools</span><span class="o">::</span><span class="n">extract_subvector_at_time_dof</span><span class="p">(</span>
+<span class="w">        </span><span class="o">*</span><span class="n">slab_its</span><span class="p">.</span><span class="n">solution</span><span class="p">,</span><span class="w"> </span><span class="n">local_solution</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">);</span>
+
+<span class="w">      </span><span class="n">data_out</span><span class="p">.</span><span class="n">add_data_vector</span><span class="p">(</span><span class="n">local_solution</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Solution&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="n">data_out</span><span class="p">.</span><span class="n">build_patches</span><span class="p">();</span>
+
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">ostringstream</span><span class="w"> </span><span class="n">filename</span><span class="p">;</span>
+<span class="w">      </span><span class="n">filename</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;solution_split_dG(&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">fe</span><span class="p">.</span><span class="n">temporal</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">degree</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;)_t_&quot;</span>
+<span class="w">               </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">slab</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">n_dofs</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;.vtk&quot;</span><span class="p">;</span>
+
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">ofstream</span><span class="w"> </span><span class="nf">output</span><span class="p">(</span><span class="n">filename</span><span class="p">.</span><span class="n">str</span><span class="p">());</span>
+<span class="w">      </span><span class="n">data_out</span><span class="p">.</span><span class="n">write_vtk</span><span class="p">(</span><span class="n">output</span><span class="p">);</span>
+<span class="w">      </span><span class="n">output</span><span class="p">.</span><span class="n">close</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+
+<span class="kt">int</span>
+<span class="n">main</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">Step1</span><span class="w"> </span><span class="nf">problem</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">);</span>
+<span class="w">  </span><span class="n">problem</span><span class="p">.</span><span class="n">run</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="overview.html" class="btn btn-neutral float-left" title="Example overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="step-2.html" class="btn btn-neutral float-right" title="Example 2: Solving the linear Stokes equation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, the ideal.II authors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,4 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$classidealii_1_1spacetime_1_1parallel_1_1distributed_1_1Triangulation.html" title="The spacetime triangulation object with MPI parallel distributed spatial meshes." alt="" coords="5,5,175,61"/>
+<area shape="rect" id="node2" href="$classidealii_1_1spacetime_1_1parallel_1_1distributed_1_1fixed_1_1Triangulation.html" title="The spacetime triangulation object with a fixed MPI parallel dibstributed spatial mesh across time." alt="" coords="223,5,431,61"/>
+</map>

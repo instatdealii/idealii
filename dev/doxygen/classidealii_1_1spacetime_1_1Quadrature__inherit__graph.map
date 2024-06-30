@@ -1,0 +1,6 @@
+<map id="idealii::spacetime::Quadrature&lt; dim &gt;" name="idealii::spacetime::Quadrature&lt; dim &gt;">
+<area shape="rect" id="node1" title="The base class for quadrature formulae in space and time." alt="" coords="5,71,164,112"/>
+<area shape="rect" id="node2" href="$classidealii_1_1spacetime_1_1QGauss.html" title="A Gauss&#45;Legende quadrature formula in space and time." alt="" coords="240,5,379,47"/>
+<area shape="rect" id="node3" href="$classidealii_1_1spacetime_1_1QGaussLeftBox.html" title="A Gauss&#45;Legende quadrature formula in space and left box rule in time." alt="" coords="217,71,401,112"/>
+<area shape="rect" id="node4" href="$classidealii_1_1spacetime_1_1QGaussRightBox.html" title="A Gauss&#45;Legende quadrature formula in space and right box rule in time." alt="" coords="212,136,407,177"/>
+</map>
