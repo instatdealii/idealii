@@ -139,6 +139,7 @@ if(NOT DOCUMENTATION_ONLY)
 
 endif()
 add_subdirectory(doc/doxygen)
+add_subdirectory(doc/sphinx)
 
 find_program(CLANG_FORMAT clang-format)
 
