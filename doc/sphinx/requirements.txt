@@ -87,7 +87,7 @@ pathspec==0.12.1
 #pycurl==7.43.0.6
 #pyenchant==3.2.0
 Pygments==2.16.1
-PyGObject==3.40.1
+#PyGObject==3.40.1
 #pykwalify==1.8.0
 #pyrsistent==0.20.0
 #PySocks==1.7.1
