@@ -1,4 +1,4 @@
-name: Doxygen
+name: Documentation
   
 on:
   push:
@@ -6,17 +6,14 @@ on:
     
 jobs:
   build-doc:
-    # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
-    # You can convert this to a matrix build if you need cross-platform coverage.
-    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
-    runs-on: ubuntu-latest
+    runs-on: python-latest
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Install Doxygen
-      run: sudo apt-get install doxygen graphviz -y
+    - name: Install requirements
+      run: sudo apt-get install cmake doxygen graphviz -y
       shell: bash
    
     - name: Configure CMake
@@ -26,12 +23,12 @@ jobs:
 
     - name: Build Documentation
       # Build your program with the given configuration
-      run: doxygen ${{github.workspace}}/build/doc/doxygen/Doxyfile
+      run: cmake --build ${{github.workspace}}/build --target sphinx
 
-    - name: Create .nojekyll
-      run: touch ${{github.workspace}}/html/.nojekyll
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ${{github.workspace}}/html
+        publish_dir: ${{github.workspace}}/build/doc/sphinx/_build/html
+        destination_dir: dev
+
