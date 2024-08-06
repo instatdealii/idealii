@@ -37,7 +37,8 @@ namespace idealii::spacetime::fixed
      * @brief Constructor that initializes the underlying list object.
      * @param max_N_intervals_per_slab. When to split a slab into two. (default 0 = never)
      */
-    Triangulation(unsigned int max_N_intervals_per_slab = 0);
+    Triangulation(
+      dealii::types::global_cell_index max_N_intervals_per_slab = 0);
 
     /**
      * @brief Generate a list of M slab triangulations with matching temporal meshes pointing to the same
