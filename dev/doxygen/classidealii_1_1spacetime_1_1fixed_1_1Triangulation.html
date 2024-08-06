@@ -100,9 +100,9 @@ Collaboration diagram for idealii::spacetime::fixed::Triangulation&lt; dim &gt;:
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a56f40f6ed8014cd670e1be5c9e9954a9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classidealii_1_1spacetime_1_1fixed_1_1Triangulation.html#a56f40f6ed8014cd670e1be5c9e9954a9">Triangulation</a> (unsigned int max_N_intervals_per_slab=0)</td></tr>
-<tr class="memdesc:a56f40f6ed8014cd670e1be5c9e9954a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor that initializes the underlying list object.  <a href="classidealii_1_1spacetime_1_1fixed_1_1Triangulation.html#a56f40f6ed8014cd670e1be5c9e9954a9">More...</a><br /></td></tr>
-<tr class="separator:a56f40f6ed8014cd670e1be5c9e9954a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a20c49e6fa83de3b3e6aba57a3a2dc252"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classidealii_1_1spacetime_1_1fixed_1_1Triangulation.html#a20c49e6fa83de3b3e6aba57a3a2dc252">Triangulation</a> (dealii::types::global_cell_index max_N_intervals_per_slab=0)</td></tr>
+<tr class="memdesc:a20c49e6fa83de3b3e6aba57a3a2dc252"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor that initializes the underlying list object.  <a href="classidealii_1_1spacetime_1_1fixed_1_1Triangulation.html#a20c49e6fa83de3b3e6aba57a3a2dc252">More...</a><br /></td></tr>
+<tr class="separator:a20c49e6fa83de3b3e6aba57a3a2dc252"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8cbb74bc7a0014fb3d88177a6e9c2e08"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classidealii_1_1spacetime_1_1fixed_1_1Triangulation.html#a8cbb74bc7a0014fb3d88177a6e9c2e08">generate</a> (std::shared_ptr&lt; dealii::Triangulation&lt; dim &gt;&gt; space_tria, unsigned int <a class="el" href="classidealii_1_1spacetime_1_1Triangulation.html#aabfd63056abfa6ba74a16d0d958cd708">M</a>, double t0=0., double T=1.)</td></tr>
 <tr class="memdesc:a8cbb74bc7a0014fb3d88177a6e9c2e08"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate a list of M slab triangulations with matching temporal meshes pointing to the same spatial triangulation.  <a href="classidealii_1_1spacetime_1_1fixed_1_1Triangulation.html#a8cbb74bc7a0014fb3d88177a6e9c2e08">More...</a><br /></td></tr>
 <tr class="separator:a8cbb74bc7a0014fb3d88177a6e9c2e08"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -146,8 +146,8 @@ class idealii::spacetime::fixed::Triangulation&lt; dim &gt;</h3>
 <p>The spacetime triangulation object with a fixed spatial mesh across time. </p>
 <p>In practice all pointers in the list point to the same <a class="el" href="classidealii_1_1slab_1_1Triangulation.html" title="Actual Triangulation for a specific slab.">slab::Triangulation</a> object. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a56f40f6ed8014cd670e1be5c9e9954a9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a56f40f6ed8014cd670e1be5c9e9954a9">&#9670;&nbsp;</a></span>Triangulation()</h2>
+<a id="a20c49e6fa83de3b3e6aba57a3a2dc252"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a20c49e6fa83de3b3e6aba57a3a2dc252">&#9670;&nbsp;</a></span>Triangulation()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -157,7 +157,7 @@ template&lt;int dim&gt; </div>
         <tr>
           <td class="memname"><a class="el" href="classidealii_1_1spacetime_1_1fixed_1_1Triangulation.html">idealii::spacetime::fixed::Triangulation</a>&lt; dim &gt;::<a class="el" href="classidealii_1_1spacetime_1_1fixed_1_1Triangulation.html">Triangulation</a> </td>
           <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramtype">dealii::types::global_cell_index&#160;</td>
           <td class="paramname"><em>max_N_intervals_per_slab</em> = <code>0</code></td><td>)</td>
           <td></td>
         </tr>

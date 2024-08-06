@@ -100,9 +100,9 @@ Collaboration diagram for idealii::spacetime::parallel::distributed::fixed::Tria
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a18544eab34cea606287176b722a06bdf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classidealii_1_1spacetime_1_1parallel_1_1distributed_1_1fixed_1_1Triangulation.html#a18544eab34cea606287176b722a06bdf">Triangulation</a> (unsigned int max_N_intervals_per_slab=0)</td></tr>
-<tr class="memdesc:a18544eab34cea606287176b722a06bdf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor that initializes the underlying list object.  <a href="classidealii_1_1spacetime_1_1parallel_1_1distributed_1_1fixed_1_1Triangulation.html#a18544eab34cea606287176b722a06bdf">More...</a><br /></td></tr>
-<tr class="separator:a18544eab34cea606287176b722a06bdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:add810cc29e2cc51fec8da95f3433eaae"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classidealii_1_1spacetime_1_1parallel_1_1distributed_1_1fixed_1_1Triangulation.html#add810cc29e2cc51fec8da95f3433eaae">Triangulation</a> (dealii::types::global_cell_index max_N_intervals_per_slab=0)</td></tr>
+<tr class="memdesc:add810cc29e2cc51fec8da95f3433eaae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor that initializes the underlying list object.  <a href="classidealii_1_1spacetime_1_1parallel_1_1distributed_1_1fixed_1_1Triangulation.html#add810cc29e2cc51fec8da95f3433eaae">More...</a><br /></td></tr>
+<tr class="separator:add810cc29e2cc51fec8da95f3433eaae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaaad5df4c89c09f8c89904edfd84895e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classidealii_1_1spacetime_1_1parallel_1_1distributed_1_1fixed_1_1Triangulation.html#aaaad5df4c89c09f8c89904edfd84895e">generate</a> (std::shared_ptr&lt; dealii::parallel::distributed::Triangulation&lt; dim &gt;&gt; space_tria, unsigned int <a class="el" href="classidealii_1_1spacetime_1_1parallel_1_1distributed_1_1Triangulation.html#a1fc672304950bea06db0a6bbab244a8c">M</a>, double t0=0., double T=1.)</td></tr>
 <tr class="memdesc:aaaad5df4c89c09f8c89904edfd84895e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate a list of M slab triangulations with matching temporal meshes pointing to the same spatial triangulation.  <a href="classidealii_1_1spacetime_1_1parallel_1_1distributed_1_1fixed_1_1Triangulation.html#aaaad5df4c89c09f8c89904edfd84895e">More...</a><br /></td></tr>
 <tr class="separator:aaaad5df4c89c09f8c89904edfd84895e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -144,8 +144,8 @@ class idealii::spacetime::parallel::distributed::fixed::Triangulation&lt; dim &g
 <p>The spacetime triangulation object with a fixed MPI parallel dibstributed spatial mesh across time. </p>
 <p>In practice all pointers in the list point to the same <a class="el" href="classidealii_1_1slab_1_1parallel_1_1distributed_1_1Triangulation.html" title="Actual Triangulation for a specific slab with an MPI distributed spatial mesh.">slab::parallel::distributed::Triangulation</a> object. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a18544eab34cea606287176b722a06bdf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a18544eab34cea606287176b722a06bdf">&#9670;&nbsp;</a></span>Triangulation()</h2>
+<a id="add810cc29e2cc51fec8da95f3433eaae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#add810cc29e2cc51fec8da95f3433eaae">&#9670;&nbsp;</a></span>Triangulation()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -155,7 +155,7 @@ template&lt;int dim&gt; </div>
         <tr>
           <td class="memname"><a class="el" href="classidealii_1_1spacetime_1_1parallel_1_1distributed_1_1fixed_1_1Triangulation.html">idealii::spacetime::parallel::distributed::fixed::Triangulation</a>&lt; dim &gt;::<a class="el" href="classidealii_1_1spacetime_1_1parallel_1_1distributed_1_1fixed_1_1Triangulation.html">Triangulation</a> </td>
           <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramtype">dealii::types::global_cell_index&#160;</td>
           <td class="paramname"><em>max_N_intervals_per_slab</em> = <code>0</code></td><td>)</td>
           <td></td>
         </tr>
