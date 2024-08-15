@@ -111,7 +111,7 @@ class CppExampleDirective(SphinxDirective):
                     if codeblock_:
                         rst+= f"\n"
                     codeblock_ = False
-                    line = re.sub('^ *// *','',line)
+                    line = re.sub('^ *// ?','',line)
                     rst += f"{line}"
                     continue
 
@@ -133,7 +133,7 @@ class CppExampleDirective(SphinxDirective):
                 if not codeblock_:
                     if not re.search("^ *$",line):
                         codeblock_=True
-                        rst += f"\n.. code-block:: c++ \n \n"
+                        rst += f"\n.. code-block:: c++ \n \t:dedent: 0\n\n"
 
                 rst += f"\t{line}"
         return self.parse_rst(rst)

@@ -29,6 +29,7 @@ if(IDEAL_II_COMPONENT_EXAMPLES)
     PATTERN "step*/CMakeLists.txt"
     PATTERN "*.inp"
     PATTERN "*.md"
+    PATTERN "*.R"
   )
     
   set(IDEAL_II_COMPILE_EXAMPLES FALSE) #TODO: fix problem with linking deal.II lib itself!

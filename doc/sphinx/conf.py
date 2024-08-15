@@ -23,6 +23,7 @@ extensions = [
     "sphinx.ext.ifconfig",
     "sphinx.ext.viewcode",
     "sphinx.ext.inheritance_diagram",
+    "sphinxcontrib.video",
     "breathe",
     "sphinx_rtd_theme",
     "sphinx_rtd_dark_mode",

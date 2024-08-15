@@ -123,6 +123,14 @@ namespace idealii::slab
     dofs_per_cell_time();
 
     /**
+     * @brief Number of spatial dofs in a single element.
+     *
+     * @return The number of spatial dofs.
+     */
+    unsigned int
+    dofs_per_cell_space();
+
+    /**
      * @brief The underlying support type used for constructing the temporal finite element.
      *
      * @return The spacetime::DG_FiniteElement<dim>::support_type of the underlying finite element.
