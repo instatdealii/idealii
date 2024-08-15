@@ -1,6 +1,6 @@
 //*---------------------------------------------------------------------
 //
-// Copyright (C) 2022 - 2023 by the ideal.II authors
+// Copyright (C) 2022 - 2024 by the ideal.II authors
 //
 // This file is part of the ideal.II library.
 //
@@ -13,21 +13,23 @@
 //
 //*---------------------------------------------------------------------
 
-// number of thread parallel threads, not used so far
-// but extension to dealii::WorkStream would be possible
-#define MPIX_THREADS 1
+//////////////////////////////////////////
+// @<H2> include files
+//////////////////////////////////////////
 
 ////////////////////////////////////////////
-// ideal.II includes
+// @<H3> ideal.II includes
 ////////////////////////////////////////////
 
-// now we use the parallel distributed instead of the sequential triangulation
+// Here, we use the parallel distributed triangulation and linear algebra
+// (provided by Trilinos) so we have to use the matching includes.
 #include <ideal.II/distributed/fixed_tria.hh>
-// as well as trilinos linear algebra, so the collection is now over trilinos
-// vectors
+
 #include <ideal.II/lac/spacetime_trilinos_vector.hh>
 
-// all other ideal.II includes are known
+#include <cmath>
+
+// All other ideal.II includes are known
 #include <ideal.II/base/quadrature_lib.hh>
 #include <ideal.II/base/time_iterator.hh>
 
@@ -38,27 +40,31 @@
 #include <ideal.II/fe/spacetime_fe_values.hh>
 
 #include <ideal.II/numerics/vector_tools.hh>
+// As we need the support type quite often we shorten this lengthy typename with
+// an alias
+using DGFE = idealii::spacetime::DG_FiniteElement<2>;
 
 ////////////////////////////////////////////
-// deal.II includes
+// @<H3> deal.II includes
 ////////////////////////////////////////////
 
-// we only want process 0 to write to the console, ConditionalOStream provides
-// this
+// Most includes are the same as before except for the
+// distributed versions of triangulation and linear algebra objects.
+// Additionally, we include the conditional output stream to suppress
+// duplicate output on other processors.
 #include <deal.II/base/conditional_ostream.h>
-
-// now we use the parallel distributed instead of the sequential triangulation
 #include <deal.II/base/function.h>
 
 #include <deal.II/distributed/tria.h>
 
-// and also distributed linear algebra provided by trilinos
 #include <deal.II/fe/fe_q.h>
 
 #include <deal.II/grid/grid_generator.h>
 
 #include <deal.II/lac/dynamic_sparsity_pattern.h>
 #include <deal.II/lac/full_matrix.h>
+#include <deal.II/lac/sparsity_pattern.h>
+#include <deal.II/lac/sparsity_tools.h>
 #include <deal.II/lac/trilinos_solver.h>
 #include <deal.II/lac/trilinos_sparse_matrix.h>
 #include <deal.II/lac/trilinos_vector.h>
@@ -67,15 +73,42 @@
 #include <deal.II/numerics/data_out.h>
 
 ////////////////////////////////////////////
-// C++ includes
+// @<H3> Trilinos and C++ includes
 ////////////////////////////////////////////
+// To simplify handling of command line arguments
+// in ``main()``
+#include <Teuchos_CommandLineProcessor.hpp>
+
 #include <fstream>
 
-// right hand side function is derived from the exact solution described in
-// Ralf Hartmann
-// A-posteriori Fehlerschätzung und adaptive Schrittweiten- und
-// Ortsgittersteuerung bei Galerkin-Verfahren für die Wärmeleitungsgleichung
-// Diploma thesis, University of Heidelberg, 1998. (in German)
+////////////////////////////////////////////
+// @<H2> Space-time functions
+////////////////////////////////////////////
+//
+// The manufactured exact solution :math:`u` is described in [Hartmann1998]_.
+// The right hand side function is derived by inserting :math:`u` into the heat
+// equation.
+
+class ExactSolution : public dealii::Function<2, double>
+{
+public:
+  ExactSolution()
+    : dealii::Function<2, double>()
+  {}
+  double
+  value(const dealii::Point<2> &p, const unsigned int component = 0) const;
+};
+
+double
+ExactSolution::value(const dealii::Point<2>             &p,
+                     [[maybe_unused]] const unsigned int component) const
+{
+  const double t  = get_time();
+  const double x0 = 0.5 + 0.25 * std::cos(2. * M_PI * t);
+  const double x1 = 0.5 + 0.25 * std::sin(2. * M_PI * t);
+  return 1. /
+         (1. + 50. * ((p[0] - x0) * (p[0] - x0) + (p[1] - x1) * (p[1] - x1)));
+}
 
 class RightHandSide : public dealii::Function<2>
 {
@@ -112,31 +145,19 @@ RightHandSide::value(const dealii::Point<2>             &p,
   return dtu - (u_xx + u_yy);
 }
 
-class ExactSolution : public dealii::Function<2, double>
-{
-public:
-  ExactSolution()
-    : dealii::Function<2, double>()
-  {}
-  double
-  value(const dealii::Point<2> &p, const unsigned int component = 0) const;
-};
-
-double
-ExactSolution::value(const dealii::Point<2>             &p,
-                     [[maybe_unused]] const unsigned int component) const
-{
-  const double t  = get_time();
-  const double x0 = 0.5 + 0.25 * std::cos(2. * M_PI * t);
-  const double x1 = 0.5 + 0.25 * std::sin(2. * M_PI * t);
-  return 1. /
-         (1. + 50. * ((p[0] - x0) * (p[0] - x0) + (p[1] - x1) * (p[1] - x1)));
-}
-
+////////////////////////////////////////////
+// @<H2> The Step3 class
+////////////////////////////////////////////
+//
 class Step3
 {
 public:
-  Step3(unsigned int spatial_degree, unsigned int temporal_degree);
+  Step3(unsigned int       spatial_degree,
+        unsigned int       temporal_degree,
+        unsigned int       M,
+        unsigned int       n_ref_space,
+        DGFE::support_type support_type,
+        bool               write_vtu);
   void
   run();
 
@@ -152,52 +173,49 @@ private:
   void
   solve_system_on_slab();
   void
+  process_results_on_slab();
+  void
   output_results_on_slab();
 
-  // we need to know the MPI communicator
-  MPI_Comm mpi_comm;
-  // Output based on some condition (here MPI process id = 0)
-  dealii::ConditionalOStream pout;
-  /////////////////////////////////////////////
-  // space-time collections of slab objects
-  /////////////////////////////////////////////
-  // The triangulation is now parallel distributed
+  MPI_Comm     mpi_comm;    // MPI Communicator
+  unsigned int M;           // Number of temporal elements
+  unsigned int n_ref_space; // number of spatial refinements
+  bool         write_vtu;   // output results?
+
+  dealii::ConditionalOStream pout; // To allow output only on MPI rank 0
+  // The triangulation is now parallel distributed and the matrices and vectors
+  // are provided by Trilinos.
   idealii::spacetime::parallel::distributed::fixed::Triangulation<2>
                                      triangulation;
   idealii::spacetime::DoFHandler<2>  dof_handler;
   idealii::spacetime::TrilinosVector solution;
 
-  // The space-time finite element description
   idealii::spacetime::DG_FiniteElement<2> fe;
 
-  ////////////////////////////////////////////
-  // objects needed on a single slab
-  ////////////////////////////////////////////
   dealii::SparsityPattern                            slab_sparsity_pattern;
   std::shared_ptr<dealii::AffineConstraints<double>> slab_constraints;
   dealii::TrilinosWrappers::SparseMatrix             slab_system_matrix;
   dealii::TrilinosWrappers::MPI::Vector              slab_system_rhs;
   dealii::TrilinosWrappers::MPI::Vector              slab_initial_value;
   unsigned int                                       slab;
-  // For initial and Dirichlet boundary values it is simplest
-  // to use the exact solution if known.
-  ExactSolution exact_solution;
+  ExactSolution                                      exact_solution;
+  double                                             L2_sqr_error;
+  unsigned int                                       dofs_total;
 
-  // to allow for communication between locally owned and shared vectors
-  // we sometimes need temporary vectors that we can write into
+  // For parallel communication we need some additional information.
+  // First we need to know which DoF indices are owned by the current MPI rank.
+  // Then, we need to know which indices are relevant, i.e. owned or ghost
+  // entries needed for assembly but belonging to a different rank. We need
+  // those both for the complete slab and for the spatial grid in different
+  // points of the code. Finally, we sometimes need temporary vectors that the
+  // current rank is allowed to write into for communication between different
+  // ranks.
+  dealii::IndexSet                      slab_locally_owned_dofs;
+  dealii::IndexSet                      slab_locally_relevant_dofs;
+  dealii::IndexSet                      space_locally_owned_dofs;
+  dealii::IndexSet                      space_locally_relevant_dofs;
   dealii::TrilinosWrappers::MPI::Vector slab_owned_tmp;
-  // set of space-time dofs owned by the processor
-  dealii::IndexSet slab_locally_owned_dofs;
-  // owned or belonging to owned elements (ghost dofs)
-  dealii::IndexSet slab_locally_relevant_dofs;
 
-  // same as above but just on the spatial grid
-  dealii::IndexSet space_locally_owned_dofs;
-  dealii::IndexSet space_locally_relevant_dofs;
-
-  ///////////////////////////////////////////////////////////////
-  // Struct holding all iterators over the space-time objects.
-  ///////////////////////////////////////////////////////////////
   struct
   {
     idealii::slab::parallel::distributed::TriaIterator<2> tria;
@@ -205,41 +223,72 @@ private:
     idealii::slab::TrilinosVectorIterator                 solution;
   } slab_its;
 };
-
-Step3::Step3(unsigned int spatial_degree, unsigned int temporal_degree)
-  : // MPI communicator is set to world i.e. all nodes provided by MPI
-  mpi_comm(MPI_COMM_WORLD)
-  ,
-  // Only output if process id is 0
-  pout(std::cout, dealii::Utilities::MPI::this_mpi_process(mpi_comm) == 0)
+////////////////////////////////////////////
+// @<H3> Step3::Step3
+////////////////////////////////////////////
+// The constructor is almost the same as for step-1 as we are solving the same
+// PDE. The main differences are
+//
+// * A larger set of parameters to support a parameter study,
+// * Initializing the MPI communicator. Here to world, i.e. all ranks,
+// * Restricting conditional output to rank 0,
+// * Allowing the temporal support type to change.
+//
+Step3::Step3(unsigned int       spatial_degree,
+             unsigned int       temporal_degree,
+             unsigned int       M,
+             unsigned int       n_ref_space,
+             DGFE::support_type support_type,
+             bool               write_vtu)
+  : mpi_comm(MPI_COMM_WORLD)
+  , pout(std::cout, dealii::Utilities::MPI::this_mpi_process(mpi_comm) == 0)
   , triangulation()
   , dof_handler(&triangulation)
   , fe(std::make_shared<dealii::FE_Q<2>>(spatial_degree),
        temporal_degree,
-       idealii::spacetime::DG_FiniteElement<2>::support_type::Legendre)
+       support_type)
+  , M(M)
+  , n_ref_space(n_ref_space)
+  , write_vtu(write_vtu)
   , slab(0)
   , exact_solution()
+  , L2_sqr_error(0.)
+  , dofs_total(0)
 {}
 
+////////////////////////////////////////////
+// @<H3> Step3::run
+////////////////////////////////////////////
+//
 void
-Step3::run()
+Step3::run() // same as before
 {
   make_grid();
   time_marching();
 }
 
+////////////////////////////////////////////
+// @<H3> Step3::make_grid
+////////////////////////////////////////////
+//
 void
 Step3::make_grid()
 {
-  // construct an MPI parallel triangulation with the provided MPI communicator
-  auto space_tria =
+  auto space_tria = // Construct an MPI parallel triangulation
     std::make_shared<dealii::parallel::distributed::Triangulation<2>>(mpi_comm);
   dealii::GridGenerator::hyper_cube(*space_tria);
-  const unsigned int M = 5;
   triangulation.generate(space_tria, M);
-  triangulation.refine_global(4, 0);
+  triangulation.refine_global(n_ref_space, 0);
   dof_handler.generate();
 }
+
+////////////////////////////////////////////
+// @<H3> Step3::time_marching
+////////////////////////////////////////////
+// We now want to assess the performance of the different discretizations
+// so we will calculate local contributions to the :math:`L^2` error in
+// ``process_results_on_slab()``.
+// Additionally, we only do output if ``write_vtu`` is true.
 
 void
 Step3::time_marching()
@@ -264,7 +313,13 @@ Step3::time_marching()
       setup_system_on_slab();
       assemble_system_on_slab();
       solve_system_on_slab();
-      output_results_on_slab();
+      process_results_on_slab();
+      if (write_vtu)
+        output_results_on_slab();
+      // For some support points the final DoF of the slab is no longer at the
+      // final time point. Therefore, we have to calculate the value as a linear
+      // combination of the DoF values at the final temporal element.
+      // This is done by the following extract function.
       idealii::slab::VectorTools::extract_subvector_at_time_point(
         *slab_its.dof,
         *slab_its.solution,
@@ -272,8 +327,15 @@ Step3::time_marching()
         slab_its.tria->endpoint());
       slab++;
     }
+  double L2_error = std::sqrt(L2_sqr_error);
+  pout << "Total number of space-time DoFs:\n\t" << dofs_total << std::endl;
+  pout << "L2_error:\n\t" << L2_error << std::endl;
 }
 
+////////////////////////////////////////////
+// @<H3> Step3::setup_system_on_slab
+////////////////////////////////////////////
+//
 void
 Step3::setup_system_on_slab()
 {
@@ -282,14 +344,16 @@ Step3::setup_system_on_slab()
        << " (space) * " << slab_its.dof->n_dofs_time()
        << " (time) = " << slab_its.dof->n_dofs_spacetime() << std::endl;
 
-  // we need to know the spatial set of degrees of freedom owned by the current
-  // MPI processor
+  // Tally the total amount of space-time
+  dofs_total += slab_its.dof->n_dofs_spacetime();
+  // Extract the spatial DoF indices by accessing the ``spatial()``
+  // component of the ``slab::DoFHandler``.
   space_locally_owned_dofs = slab_its.dof->spatial()->locally_owned_dofs();
-  // and beloging to elements owned by the processor
   dealii::DoFTools::extract_locally_relevant_dofs(*slab_its.dof->spatial(),
                                                   space_locally_relevant_dofs);
 
-  // The same holds for the set of space-time degrees of freedom
+  // The slab DoF indices are extracted in a similar way, but by using functions
+  // provided in ideal.II.
   slab_locally_owned_dofs = slab_its.dof->locally_owned_dofs();
   slab_locally_relevant_dofs =
     idealii::slab::DoFTools::extract_locally_relevant_dofs(*slab_its.dof);
@@ -298,44 +362,48 @@ Step3::setup_system_on_slab()
 
   if (slab == 0)
     {
-      // On the first slab the initial value has to be set to the correct
-      // set of spatially relevant dofs
+      // On the first slab the initial value has to be set to the set of
+      // spatially relevant dofs
       slab_initial_value.reinit(space_locally_owned_dofs,
                                 space_locally_relevant_dofs,
                                 mpi_comm);
 
-      // We only have full write access for locally owned vectors
+      // We only have write access to locally owned vectors.
+      // Compared to ``slab_owned_tmp`` we need this temporary vector only on
+      // the first slab for interpolation of the initial value into the FE
+      // space.
       dealii::TrilinosWrappers::MPI::Vector tmp;
       tmp.reinit(space_locally_owned_dofs, mpi_comm);
 
-      // set time of the exact solution to initial time point
-      // (For a time independent initial value function this is not needed)
+      // Set time of the exact solution to initial time point
+      // (For a time independent initial value function this is not necessary)
       exact_solution.set_time(0);
       // Interpolate the initial value into the FE space
       dealii::VectorTools::interpolate(*slab_its.dof->spatial(),
                                        exact_solution,
                                        tmp);
-      // transfer locally owned initial value to locally relevant vector
+      // Communicate locally owned initial value to locally relevant vector
       slab_initial_value = tmp;
     }
 
-  // same as for the sequential case
+  // For the interpolation of boundary values we pass the relevant index set.
   slab_constraints = std::make_shared<dealii::AffineConstraints<double>>();
-  auto zero        = dealii::Functions::ZeroFunction<2>();
   idealii::slab::VectorTools::interpolate_boundary_values(
-    space_locally_relevant_dofs, *slab_its.dof, 0, zero, slab_constraints);
-
+    space_locally_relevant_dofs,
+    *slab_its.dof,
+    0,
+    exact_solution,
+    slab_constraints);
   slab_constraints->close();
 
   dealii::DynamicSparsityPattern dsp(slab_its.dof->n_dofs_spacetime());
   idealii::slab::DoFTools::make_upwind_sparsity_pattern(*slab_its.dof, dsp);
 
   // To save memory we distribute the sparsity pattern to only hold the locally
-  // needed set of space-time degrees of freedom
+  // needed set of space-time degrees of freedom.
   dealii::SparsityTools::distribute_sparsity_pattern(
     dsp, slab_locally_owned_dofs, mpi_comm, slab_locally_relevant_dofs);
 
-  // reinit the system matrix and vectors to hold only local information
   slab_system_matrix.reinit(slab_locally_owned_dofs,
                             slab_locally_owned_dofs,
                             dsp);
@@ -346,6 +414,11 @@ Step3::setup_system_on_slab()
   slab_system_rhs.reinit(slab_locally_owned_dofs, mpi_comm);
 }
 
+////////////////////////////////////////////
+// @<H3> Step3::assemble_system_on_slab
+////////////////////////////////////////////
+// We only can calculate the contributions of processor local cells.
+// Otherwise the assembly is the same as in step-1
 void
 Step3::assemble_system_on_slab()
 {
@@ -381,8 +454,6 @@ Step3::assemble_system_on_slab()
   for (const auto &cell_space :
        slab_its.dof->spatial()->active_cell_iterators())
     {
-      // We only can calculate the contributions of processor local cells
-      // Otherwise the assembly is the same as in step-1
       if (cell_space->is_locally_owned())
         {
           fe_values_spacetime.reinit_space(cell_space);
@@ -413,14 +484,14 @@ Step3::assemble_system_on_slab()
                     {
                       for (unsigned int j = 0; j < dofs_per_spacetime_cell; ++j)
                         {
-                          // (dt u, v)
+                          // :math:`(\partial_t u,v)`
                           cell_matrix(i + n * dofs_per_spacetime_cell,
                                       j + n * dofs_per_spacetime_cell) +=
                             fe_values_spacetime.shape_value(i, q) *
                             fe_values_spacetime.shape_dt(j, q) *
                             fe_values_spacetime.JxW(q);
 
-                          // (grad u, grad v)
+                          // :math:`(\nabla u, \nabla v)`
                           cell_matrix(i + n * dofs_per_spacetime_cell,
                                       j + n * dofs_per_spacetime_cell) +=
                             fe_values_spacetime.shape_space_grad(i, q) *
@@ -437,21 +508,20 @@ Step3::assemble_system_on_slab()
 
                 } // quad
 
-              // Jump terms and initial values just have a spatial loop
               for (unsigned int q = 0; q < n_quad_space; ++q)
                 {
                   for (unsigned int i = 0; i < dofs_per_spacetime_cell; ++i)
                     {
                       for (unsigned int j = 0; j < dofs_per_spacetime_cell; ++j)
                         {
-                          // (v^+, u^+)
+                          // :math:`(u^+, v^+)`
                           cell_matrix(i + n * dofs_per_spacetime_cell,
                                       j + n * dofs_per_spacetime_cell) +=
                             fe_jump_values_spacetime.shape_value_plus(i, q) *
                             fe_jump_values_spacetime.shape_value_plus(j, q) *
                             fe_jump_values_spacetime.JxW(q);
 
-                          // -(v^-, u^+)
+                          // :math:`-(u^-, v^+)`
                           if (n > 0)
                             {
                               cell_matrix(i + n * dofs_per_spacetime_cell,
@@ -464,12 +534,12 @@ Step3::assemble_system_on_slab()
                                 fe_jump_values_spacetime.JxW(q);
                             }
                         } // dofs j
+                      // :math:`-(u_0,v^+)`
                       if (n == 0)
                         {
                           cell_rhs(i) +=
                             fe_jump_values_spacetime.shape_value_plus(i, q) *
-                            initial_values[q] // value of previous solution at
-                                              // t0
+                            initial_values[q] // value of previous solution
                             * fe_jump_values_spacetime.JxW(q);
                         }
                     } // dofs i
@@ -491,31 +561,66 @@ Step3::assemble_system_on_slab()
   slab_system_rhs.compress(dealii::VectorOperation::add);
 }
 
+////////////////////////////////////////////
+// @<H3> Step3::solve_system_on_slab
+////////////////////////////////////////////
+//
 void
 Step3::solve_system_on_slab()
 {
-  // The interface needs a solver control that is more or less irrelevant
+  // The interface needs a solver control that is practically irrelevant
   // as we use a direct solver without convergence criterion
   dealii::SolverControl sc(10000, 1.0e-14, false, false);
-  // When Trilinos is compiled with MUMPS we prefer it.
-  // If not installed switch to Amesos_Klu
+  // Amesos_Klu is always installed with Trilinos Amesos.
+  // Note that both SuperLU_dist and MUMPS might have a better performance.
   dealii::TrilinosWrappers::SolverDirect::AdditionalData ad(false,
-                                                            "Amesos_Mumps");
+                                                            "Amesos_Klu");
   dealii::TrilinosWrappers::SolverDirect                 solver(sc, ad);
-  // In this interface the factorize is called initialize
+  // In this interface the factorization step is called initialize
   solver.initialize(slab_system_matrix);
-  // And vmult is called solve
   solver.solve(slab_owned_tmp, slab_system_rhs);
   slab_constraints->distribute(slab_owned_tmp);
   // The solver can only write into a vector with locally owned dofs
-  // so we need to communicate between the processors
+  // so we need to communicate that result between the processors
   *slab_its.solution = slab_owned_tmp;
 }
 
+////////////////////////////////////////////
+// @<H3> Step3::process_results_on_slab
+////////////////////////////////////////////
+// Here, we add the local contribution to
+// :math:`(u-u_{kh},u-u_{kh})_{L^2(Q)}=||u-u_{kh}||_{L^2(Q)}^2`.
+void
+Step3::process_results_on_slab()
+{
+  idealii::spacetime::QGauss<2> quad(fe.spatial()->degree + 2,
+                                     fe.temporal()->degree + 2);
+  L2_sqr_error +=
+    idealii::slab::VectorTools::calculate_L2L2_squared_error_on_slab<2>(
+      *slab_its.dof, *slab_its.solution, exact_solution, quad
+
+    );
+}
+////////////////////////////////////////////
+// @<H3> Step3::output_results_on_slab
+////////////////////////////////////////////
+//
 void
 Step3::output_results_on_slab()
 {
   auto n_dofs = slab_its.dof->n_dofs_time();
+
+  // To distinguish output between the different support types we append the
+  // name to the output filename
+  std::string support_type;
+  if (fe.type() == DGFE::support_type::Lobatto)
+    support_type = "Lobatto";
+  else if (fe.type() == DGFE::support_type::Legendre)
+    support_type = "Legendre";
+  else if (fe.type() == DGFE::support_type::RadauLeft)
+    support_type = "RadauLeft";
+  else
+    support_type = "RadauRight";
 
   dealii::TrilinosWrappers::MPI::Vector tmp = *slab_its.solution;
   for (unsigned i = 0; i < n_dofs; i++)
@@ -533,21 +638,75 @@ Step3::output_results_on_slab()
       data_out.add_data_vector(local_solution, "Solution");
       data_out.build_patches();
       std::ostringstream filename;
-      filename << "solution2_dG(" << fe.temporal()->degree << ")_t_"
-               << slab * n_dofs + i << ".vtu";
+      filename << "solution_" << support_type << "_cG(" << fe.spatial()->degree
+               << ")dG(" << fe.temporal()->degree << ")_t_" << slab * n_dofs + i
+               << ".vtu";
       // instead of a vtk we use the parallel write function
       data_out.write_vtu_in_parallel(filename.str().c_str(), mpi_comm);
     }
 }
+
+////////////////////////////////////////////
+// @<H2> The main function
+////////////////////////////////////////////
+// We want to be able to do paramter studies without having to recompile the
+// whole program. An option would be the ParameterHandler class of deal.II,
+// but passing command line arguments makes the study easier to automate.
 int
 main(int argc, char *argv[])
 {
   // With MPI we need to begin with an InitFinalize call.
-  dealii::Utilities::MPI::MPI_InitFinalize mpi(argc, argv, MPIX_THREADS);
-  // spatial finite element order
-  unsigned int s = 1;
-  // temporal finite element order
-  unsigned int r = 0;
-  Step3        problem(s, r);
+  dealii::Utilities::MPI::MPI_InitFinalize mpi(argc, argv, 1);
+
+  // Trilinos Teuchos offers a nice interface to specify and parse command line
+  // arguments.
+  // Single options are added using one of the various ``setOption`` methods.
+  Teuchos::CommandLineProcessor clp;
+  clp.setDocString("This example program demonstrates solving the heat "
+                   "equation with Trilinos + MPI");
+  bool write_vtu = true;
+  clp.setOption("write-vtu",
+                "no-vtu",
+                &write_vtu,
+                "Write results into vtu files?");
+  // Finite element orders for cG(s)dG(r) element.
+  int s = 1;
+  int r = 0;
+  clp.setOption("s", &s, "spatial FE degree");
+  clp.setOption("r", &r, "temporal FE degree");
+  // Number of temporal elements
+  int M = 100;
+  clp.setOption("M", &M, "Number of temporal elements");
+  // Number of spatial refinements resulting in :math:`h = 0.5^(n_{\text{ref})`
+  int n_ref_space = 6;
+  clp.setOption("n-ref-space", &n_ref_space, "Number of spatial refinements");
+  // Which temporal support type do we want to use?
+  DGFE::support_type       st          = DGFE::support_type::Lobatto;
+  const DGFE::support_type st_values[] = {DGFE::support_type::Lobatto,
+                                          DGFE::support_type::Legendre,
+                                          DGFE::support_type::RadauLeft,
+                                          DGFE::support_type::RadauRight};
+  const char *st_names[] = {"Lobatto", "Legendre", "RadauLeft", "RadauRight"};
+  clp.setOption("support-type",
+                &st,
+                4,
+                st_values,
+                st_names,
+                "Location of temporal FE support points");
+
+  clp.throwExceptions(false);
+
+  Teuchos::CommandLineProcessor::EParseCommandLineReturn parse_return =
+    clp.parse(argc, argv);
+  if (parse_return == Teuchos::CommandLineProcessor::PARSE_HELP_PRINTED)
+    {
+      return 0; // don't fail if the program was called with ``--help``.
+    }
+  if (parse_return != Teuchos::CommandLineProcessor::PARSE_SUCCESSFUL)
+    {
+      return 1; // Error!
+    }
+
+  Step3 problem(s, r, M, n_ref_space, st, write_vtu);
   problem.run();
 }

@@ -15,6 +15,8 @@
 
 #include <ideal.II/numerics/vector_tools.hh>
 
+#include <deal.II/dofs/dof_tools.h>
+
 namespace idealii::slab::VectorTools
 {
   template <int dim, typename Number>
@@ -175,7 +177,6 @@ namespace idealii::slab::VectorTools
     dealii::Function<dim, double> &exact_solution,
     spacetime::Quadrature<dim>    &quad)
   {
-    //Note: Possibly not working correctly?
     double              slab_norm_sqr = 0.;
     dealii::FEValues<1> fev_time(dof_handler.temporal()->get_fe(),
                                  *quad.temporal(),
@@ -224,6 +225,84 @@ namespace idealii::slab::VectorTools
               dealii::VectorTools::L2_norm);
 
             slab_norm_sqr += difference_per_cell.norm_sqr() * fev_time.JxW(q);
+          }
+      }
+    return slab_norm_sqr;
+  }
+
+  template <int dim>
+  double
+  calculate_L2L2_squared_error_on_slab(
+    slab::DoFHandler<dim>                 &dof_handler,
+    dealii::TrilinosWrappers::MPI::Vector &spacetime_vector,
+    dealii::Function<dim, double>         &exact_solution,
+    spacetime::Quadrature<dim>            &quad)
+  {
+    double              slab_norm_sqr = 0.;
+    dealii::FEValues<1> fev_time(dof_handler.temporal()->get_fe(),
+                                 *quad.temporal(),
+                                 dealii::update_values |
+                                   dealii::update_JxW_values |
+                                   dealii::update_quadrature_points);
+    MPI_Comm            comm = spacetime_vector.get_mpi_communicator();
+    dealii::IndexSet    space_owned_dofs =
+      dof_handler.spatial()->locally_owned_dofs();
+    dealii::IndexSet space_relevant_dofs;
+    dealii::DoFTools::extract_locally_relevant_dofs(*dof_handler.spatial(),
+                                                    space_relevant_dofs);
+
+    dealii::TrilinosWrappers::MPI::Vector owned_space_vec;
+    dealii::TrilinosWrappers::MPI::Vector relevant_space_vec;
+    owned_space_vec.reinit(space_owned_dofs, comm);
+    relevant_space_vec.reinit(space_owned_dofs, space_relevant_dofs, comm);
+
+
+    dealii::Vector<double> difference_per_cell;
+    difference_per_cell.reinit(dof_handler.n_dofs_space());
+
+    std::vector<dealii::Point<1, double>> q_points;
+    double                                t      = 0;
+    unsigned int                          offset = 0;
+    unsigned int n_dofs_space                    = dof_handler.n_dofs_space();
+    for (auto cell_time : dof_handler.temporal()->active_cell_iterators())
+      {
+        offset =
+          cell_time->index() * dof_handler.dofs_per_cell_time() * n_dofs_space;
+
+        fev_time.reinit(cell_time);
+        for (unsigned int q = 0; q < fev_time.n_quadrature_points; q++)
+          {
+            t = fev_time.quadrature_point(q)[0];
+            exact_solution.set_time(t);
+            // calculate spatial vector at t
+            owned_space_vec = 0;
+            for (unsigned int ii = 0; ii < dof_handler.dofs_per_cell_time();
+                 ii++)
+              {
+                double factor = fev_time.shape_value(ii, q);
+                for (unsigned int j = 0; j < space_owned_dofs.n_elements(); ++j)
+                  {
+                    unsigned int i = space_owned_dofs.nth_index_in_set(j);
+                    owned_space_vec[i] +=
+                      spacetime_vector[i + ii * n_dofs_space + offset] * factor;
+                  }
+              }
+
+            relevant_space_vec = owned_space_vec;
+            // calculate L2 norm at current temporal QP
+            difference_per_cell = 0;
+            dealii::VectorTools::integrate_difference(
+              *dof_handler.spatial(),
+              relevant_space_vec,
+              exact_solution,
+              difference_per_cell,
+              *quad.spatial(),
+              dealii::VectorTools::L2_norm);
+
+            slab_norm_sqr +=
+              dealii::Utilities::MPI::sum(difference_per_cell.norm_sqr(),
+                                          comm) *
+              fev_time.JxW(q);
           }
       }
     return slab_norm_sqr;

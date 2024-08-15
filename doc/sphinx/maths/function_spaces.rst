@@ -28,6 +28,8 @@ Basic notation
 
 
 
+.. _tp_hilbert_spaces:
+
 Tensor product Hilbert spaces
 =============================
 

@@ -117,6 +117,13 @@ namespace idealii::slab
   }
 
   template <int dim>
+  unsigned int
+  DoFHandler<dim>::dofs_per_cell_space()
+  {
+    return _spatial_dof->get_fe().dofs_per_cell;
+  }
+
+  template <int dim>
   typename spacetime::DG_FiniteElement<dim>::support_type
   DoFHandler<dim>::fe_support_type()
   {
