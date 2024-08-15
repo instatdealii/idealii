@@ -22,6 +22,7 @@
         <script src="../_static/documentation_options.js?v=5929fcd5"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
         <script src="../_static/dark_mode_js/default_dark.js?v=fd565c74"></script>
         <script src="../_static/dark_mode_js/theme_switcher.js?v=358d3910"></script>
     <script src="../_static/js/theme.js"></script>
@@ -64,6 +65,13 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Example overview</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#tutorials-listed-by-number-chronological">Tutorials listed by number (chronological)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tutorial-overview-by-number">Tutorial overview by number</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#step-1-heat-equation">step-1: Heat equation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-2-stokes-equation">step-2: Stokes equation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-3-heat-equation-with-trilinos-mpi-distributed-linear-algebra">step-3: Heat equation with Trilinos+MPI distributed linear algebra</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-4-navier-stokes-equation-with-distributed-linear-algebra">step-4: Navier-Stokes equation with distributed linear algebra</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="step-1.html">Example 1: Solving the heat equation</a></li>
@@ -124,6 +132,43 @@ we will link to the respective tutorial steps in their introduction.</p>
 <li><p><a class="reference internal" href="step-3.html"><span class="doc">Example 3: Solving the heat equation in parallel</span></a></p></li>
 <li><p><a class="reference internal" href="step-4.html"><span class="doc">Example 4: Solving the Navier-Stokes equations in parallel</span></a></p></li>
 </ul>
+</section>
+<section id="tutorial-overview-by-number">
+<h2>Tutorial overview by number<a class="headerlink" href="#tutorial-overview-by-number" title="Link to this heading"></a></h2>
+<section id="step-1-heat-equation">
+<h3>step-1: Heat equation<a class="headerlink" href="#step-1-heat-equation" title="Link to this heading"></a></h3>
+<p>This step serves as an introduction to tensor-product
+space-time finite elements and the basic structure of the library.
+It is recommended to know the <em>deal.II</em> tutorial examples listed above</p>
+</section>
+<section id="step-2-stokes-equation">
+<h3>step-2: Stokes equation<a class="headerlink" href="#step-2-stokes-equation" title="Link to this heading"></a></h3>
+<p>This step discusses the handling of coupled problems with vector-valued
+components.
+It also explains how time-dependent nonhomogeneous Dirichlet boundary
+conditions are set in <em>ideal.II</em>.</p>
+<p>We recommend to know the <em>deal.II</em> tutorial
+<a class="reference external" href="https://dealii.org/current/doxygen/deal.II/step_22.html">step-22</a>
+which solves the stationary version of the Stokes equation.</p>
+</section>
+<section id="step-3-heat-equation-with-trilinos-mpi-distributed-linear-algebra">
+<h3>step-3: Heat equation with Trilinos+MPI distributed linear algebra<a class="headerlink" href="#step-3-heat-equation-with-trilinos-mpi-distributed-linear-algebra" title="Link to this heading"></a></h3>
+<p>This step shows how to parallelize your <em>ideal.II</em> code (step-1),
+especially the handling of the indices for distributed degrees of freedom.
+Additionally, we vary the support points for the temporal discontinuous
+Galerkin elements and the changes needed to arrive at a correct result again.
+To compare these support point choices we calculate the space-time
+<span class="math notranslate nohighlight">\(L^2\)</span>-error for various refinement levels and finite element degrees.</p>
+<p>We recommend familiarity with an MPI parallel <em>deal.II</em> tutorial,
+e.g. <cite>step-40 &lt;https://dealii.org/current/doxygen/deal.II/step_40.html&gt;</cite>.</p>
+</section>
+<section id="step-4-navier-stokes-equation-with-distributed-linear-algebra">
+<h3>step-4: Navier-Stokes equation with distributed linear algebra<a class="headerlink" href="#step-4-navier-stokes-equation-with-distributed-linear-algebra" title="Link to this heading"></a></h3>
+<p>This step extends step-2 by making it parallel and handling the nonlinear
+convection term added by the Navier-Stokes equations.
+It discusses Newton linearization of a nonlinear PDE
+and introduces calculation of point and boundary functionals.</p>
+</section>
 </section>
 </section>
 
