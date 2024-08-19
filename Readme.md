@@ -72,14 +72,17 @@ If you write a paper using results obtained with the help of ideal.II, please ci
 
 1. Jan Philipp Thiele, 
    ideal.II: a Galerkin space-time extension to the finite element library deal.II,
-   2023, in preparation
+   preprint(2024), arXiv 2408.08840
    
 ~~~~~
-      @article{idealII,
-               title = {\texttt{ideal.II}: a Galerkin space-time extension to the finite element library deal.II},
-               author = {Jan Philipp Thiele},
-               year = {2023,\textit{in preparation}}
-      }
+    @misc{idealII,
+	    archiveprefix = {arXiv},
+	    author = {Thiele, Jan Philipp},
+	    eprint = {2408.08840},
+    	primaryclass = {math.NA},
+	    title = {ideal.{II}: a Galerkin Space-Time Extension to the Finite Element Library deal.{II}},
+	    year = {preprint(2024), \url{https://arxiv.org/abs/2408.08840}}
+    }
 ~~~~~
    
 2. Please also cite deal.II as explained [here](https://dealii.org/publications.html)
