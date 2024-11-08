@@ -1,0 +1,65 @@
+{
+  "name": "ideal.II ",
+  "@context": "https://w3id.org/codemeta/3.0",
+  "applicationCategory": "Scientific",
+  "author": [
+    {
+      "affiliation": {
+        "name": "WIAS Berlin",
+        "type": "Organization"
+      },
+      "familyName": "Thiele",
+      "id": "_:author_1",
+      "givenName": "Jan Philipp",
+      "type": "Person"
+    },
+    {
+      "affiliation": {
+        "name": "Leibniz University Hannover",
+        "type": "Organization"
+      },
+      "familyName": "Kinnewig",
+      "id": "_:author_2",
+      "givenName": "Sebastian",
+      "type": "Person"
+    },
+    {
+      "affiliation": {
+        "name": "Colorado State University",
+        "type": "Organization"
+      },
+      "email": "bangerth@colostate.edu",
+      "familyName": "Bangerth",
+      "id": "_:author_3",
+      "givenName": "Wolfgang",
+      "type": "Person"
+    }
+  ],
+  "codeRepository": "https://github.com/instatdealii/idealii",
+  "dateCreated": "2022-08-26",
+  "dateModified": "2024-08-15",
+  "datePublished": "2024-08-15",
+  "description": "An extension to the finite element library deal.II (www.dealii.org) for tensor-product space-time finite elements",
+  "developmentStatus": "active",
+  "downloadUrl": "https://github.com/instatdealii/idealii/releases/tag/v1.0.0",
+  "identifier": "https://doi.org/10.5281/zenodo.13328389",
+  "issueTracker": "https://github.com/instatdealii/idealii/issues",
+  "keywords": [
+    "Space time finite elements",
+    "finite elements",
+    "MPI"
+  ],
+  "license": "https://spdx.org/licenses/LGPL-3.0",
+  "programmingLanguage": [
+    "C++",
+    "CMake",
+    "Hack"
+  ],
+  "schema:releaseNotes": "# Initial version\r\n\r\n- Four example steps showing usage of the library\r\n  - step-1: Heat equation as a prototypical example\r\n  - step-2: Stokes equation as an example for coupled problems\r\n  - step-3: Heat equation (again) to show usage of MPI parallel linear algebra\r\n  - step-4: Navier-Stokes equation as an example of a nonlinear coupled problem\r\n- Doxygen API documentation of the libraries classes and functions\r\n- Sphinx based main documentation \r\n  - Explanation of the underlying mathematics (still WIP)\r\n  - Documentation of all examples including an introduction, commented source code and discussion of results\r\n   ",
+  "softwareRequirements": [
+    "www.github.com/dealii/dealii",
+    ""
+  ],
+  "version": "v1.0.0",
+  "type": "SoftwareSourceCode"
+}
