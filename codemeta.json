@@ -1,5 +1,5 @@
 {
-  "name": "ideal.II ",
+  "name": "ideal.II: a Galerkin Space-Time Extension to the Finite Element Library deal.II",
   "@context": "https://w3id.org/codemeta/3.0",
   "applicationCategory": "Scientific",
   "author": [
@@ -12,14 +12,16 @@
       "id": "_:author_1",
       "givenName": "Jan Philipp",
       "type": "Person"
-    },
+    }
+  ],
+  "contributor": [
     {
       "affiliation": {
         "name": "Leibniz University Hannover",
         "type": "Organization"
       },
       "familyName": "Kinnewig",
-      "id": "_:author_2",
+      "id": "_:contributor_1",
       "givenName": "Sebastian",
       "type": "Person"
     },
@@ -30,7 +32,7 @@
       },
       "email": "bangerth@colostate.edu",
       "familyName": "Bangerth",
-      "id": "_:author_3",
+      "id": "_:contributor_2",
       "givenName": "Wolfgang",
       "type": "Person"
     }
