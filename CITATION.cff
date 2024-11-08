@@ -1,0 +1,26 @@
+title: "ideal.II "
+authors:
+  - given-names: Jan Philipp
+    family-names: Thiele
+    affiliation: WIAS Berlin
+  - given-names: Sebastian
+    family-names: Kinnewig
+    affiliation: Leibniz University Hannover
+  - given-names: Wolfgang
+    family-names: Bangerth
+    email: bangerth@colostate.edu
+    affiliation: Colorado State University
+cff-version: 1.2.0
+message: If you use this software, please cite it using the metadata from this file.
+type: software
+doi: https://doi.org/10.5281/zenodo.13328389
+abstract: An extension to the finite element library deal.II (www.dealii.org)
+  for tensor-product space-time finite elements
+keywords:
+  - Space time finite elements
+  - finite elements
+  - MPI
+license: LGPL-3.0
+repository-code: https://github.com/instatdealii/idealii
+date-released: 2024-08-15
+version: v1.0.0
