@@ -1,15 +1,9 @@
-title: "ideal.II "
+title: "ideal.II: a Galerkin Space-Time Extension to the Finite Element Library
+  deal.II"
 authors:
   - given-names: Jan Philipp
     family-names: Thiele
     affiliation: WIAS Berlin
-  - given-names: Sebastian
-    family-names: Kinnewig
-    affiliation: Leibniz University Hannover
-  - given-names: Wolfgang
-    family-names: Bangerth
-    email: bangerth@colostate.edu
-    affiliation: Colorado State University
 cff-version: 1.2.0
 message: If you use this software, please cite it using the metadata from this file.
 type: software
