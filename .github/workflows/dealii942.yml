@@ -14,7 +14,7 @@ jobs:
       image: dealii/dealii:v9.4.2-jammy
       options: --user root
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: configure
       run: cmake -S. -Bbuild -DCMAKE_INSTALL_PREFIX=install
     - name: build
