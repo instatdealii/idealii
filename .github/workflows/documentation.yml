@@ -4,8 +4,13 @@ on:
   push:
     branches: [ "main" ]
     
+permissions:
+  contents: read
+
 jobs:
   build-doc:
+    permissions:
+      contents: write  # for peaceiris/actions-gh-pages to push pages branch
     runs-on: ubuntu-latest
 
     steps:
