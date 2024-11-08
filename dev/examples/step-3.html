@@ -9,7 +9,7 @@
   <title>Example 3: Solving the heat equation in parallel &mdash; ideal.II  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b20cc3f5" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/maths_admonition.css?v=597dd67d" />
       <link rel="stylesheet" type="text/css" href="../_static/dark_mode_css/general.css?v=c0a7eb24" />
       <link rel="stylesheet" type="text/css" href="../_static/dark_mode_css/dark.css?v=70edf1c7" />
@@ -18,7 +18,7 @@
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../_static/documentation_options.js?v=5929fcd5"></script>
-      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       <script src="../_static/dark_mode_js/default_dark.js?v=fd565c74"></script>
@@ -1094,7 +1094,8 @@ This is due to the fact that the overall <span class="math notranslate nohighlig
 spatial and a temporal part. Since we do not refine the temporal mesh,
 the temporal error dominates for dG(0) and the overall error converges to that
 part.</p>
-<img alt="../_images/h_convergence_step-3.svg" src="../_images/h_convergence_step-3.svg" /></section>
+<img alt="../_images/h_convergence_step-3.svg" src="../_images/h_convergence_step-3.svg" />
+</section>
 <section id="k-refinement">
 <h4><a class="toc-backref" href="#id27" role="doc-backlink">k-refinement</a><a class="headerlink" href="#k-refinement" title="Link to this heading"></a></h4>
 <p>For the (temporal) k-refinement, all runs start with 10 temporal elements.
@@ -1109,7 +1110,8 @@ clearly, as the dG(1) and dG(2) curve for bilinear elements converge to the same
 value. As the dG(0) curve is still above that error we don’t yet see a stagnation.
 Additionally, we see that the curve for the biquadratic elements also stagnates,
 but to a lower value.</p>
-<img alt="../_images/k_convergence_step-3.svg" src="../_images/k_convergence_step-3.svg" /></section>
+<img alt="../_images/k_convergence_step-3.svg" src="../_images/k_convergence_step-3.svg" />
+</section>
 <section id="kh-refinement">
 <h4><a class="toc-backref" href="#id28" role="doc-backlink">kh-refinement</a><a class="headerlink" href="#kh-refinement" title="Link to this heading"></a></h4>
 <p>For the uniform (space-time) kh-refinement we again start at 4 spatial
@@ -1125,7 +1127,8 @@ between cG(1)dG(1) and cG(1)dG(2) is around 1%  on the same space-time mesh.</p>
 important for achieving the optimal convergence.
 Luckily, due to the construction of the tensor product elements it is also easy
 to match the orders.</p>
-<img alt="../_images/kh_convergence_step-3.svg" src="../_images/kh_convergence_step-3.svg" /></section>
+<img alt="../_images/kh_convergence_step-3.svg" src="../_images/kh_convergence_step-3.svg" />
+</section>
 <section id="comparison-of-support-types">
 <h4><a class="toc-backref" href="#id29" role="doc-backlink">Comparison of support types</a><a class="headerlink" href="#comparison-of-support-types" title="Link to this heading"></a></h4>
 <p>Finally, we have run the k-refinement studies for the different choices
