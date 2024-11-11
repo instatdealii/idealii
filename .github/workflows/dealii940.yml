@@ -17,6 +17,11 @@ jobs:
       image: dealii/dealii:v9.4.0-focal
       options: --user root
     steps:
+    - name: Harden Runner
+      uses: step-security/harden-runner@91182cccc01eb5e619899d80e4e971d6181294a7 # v2.10.1
+      with:
+        egress-policy: audit
+
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
     - name: configure
       run: cmake -S. -Bbuild -DCMAKE_INSTALL_PREFIX=install
