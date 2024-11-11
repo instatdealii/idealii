@@ -1,5 +1,5 @@
 breathe==4.35.0
-docutils==0.20.1
+docutils==0.21.2
 pathspec==0.12.1
 Pygments==2.18.0
 python-dateutil==2.9.0.post0
