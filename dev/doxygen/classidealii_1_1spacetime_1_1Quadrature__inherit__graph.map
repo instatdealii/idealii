@@ -1,6 +1,9 @@
 <map id="idealii::spacetime::Quadrature&lt; dim &gt;" name="idealii::spacetime::Quadrature&lt; dim &gt;">
-<area shape="rect" id="node1" title="The base class for quadrature formulae in space and time." alt="" coords="5,71,164,112"/>
-<area shape="rect" id="node2" href="$classidealii_1_1spacetime_1_1QGauss.html" title="A Gauss&#45;Legende quadrature formula in space and time." alt="" coords="240,5,379,47"/>
-<area shape="rect" id="node3" href="$classidealii_1_1spacetime_1_1QGaussLeftBox.html" title="A Gauss&#45;Legende quadrature formula in space and left box rule in time." alt="" coords="217,71,401,112"/>
-<area shape="rect" id="node4" href="$classidealii_1_1spacetime_1_1QGaussRightBox.html" title="A Gauss&#45;Legende quadrature formula in space and right box rule in time." alt="" coords="212,136,407,177"/>
+<area shape="rect" id="Node000001" title="The base class for quadrature formulae in space and time." alt="" coords="5,69,164,109"/>
+<area shape="rect" id="Node000002" href="$classidealii_1_1spacetime_1_1QGauss.html" title="A Gauss&#45;Legende quadrature formula in space and time." alt="" coords="240,5,379,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="168,63,239,42,240,48,169,68"/>
+<area shape="rect" id="Node000003" href="$classidealii_1_1spacetime_1_1QGaussLeftBox.html" title="A Gauss&#45;Legende quadrature formula in space and left box rule in time." alt="" coords="217,69,401,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="178,87,217,87,217,92,178,92"/>
+<area shape="rect" id="Node000004" href="$classidealii_1_1spacetime_1_1QGaussRightBox.html" title="A Gauss&#45;Legende quadrature formula in space and right box rule in time." alt="" coords="212,133,407,173"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="170,111,239,131,238,136,168,116"/>
 </map>
