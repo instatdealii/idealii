@@ -1231,7 +1231,7 @@ or until we have reached the maxmimum number of Newton steps.</p>
 we assemble a new system matrix with the most current iterate.</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">newton_residual</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">old_newton_residual</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">newton_rebuild_parameter</span><span class="p">)</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">          </span><span class="n">solver</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">          </span><span class="n">solver</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">;</span>
 <span class="w">          </span><span class="n">solver</span><span class="w"> </span><span class="o">=</span>
 <span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">dealii</span><span class="o">::</span><span class="n">TrilinosWrappers</span><span class="o">::</span><span class="n">SolverDirect</span><span class="o">&gt;</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="n">ad</span><span class="p">);</span>
 <span class="w">          </span><span class="n">assemble_system_on_slab</span><span class="p">();</span>
@@ -2439,7 +2439,7 @@ FEATFLOW level 2 results.
 
 <span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">newton_residual</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">old_newton_residual</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">newton_rebuild_parameter</span><span class="p">)</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">          </span><span class="n">solver</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">          </span><span class="n">solver</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">;</span>
 <span class="w">          </span><span class="n">solver</span><span class="w"> </span><span class="o">=</span>
 <span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">dealii</span><span class="o">::</span><span class="n">TrilinosWrappers</span><span class="o">::</span><span class="n">SolverDirect</span><span class="o">&gt;</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span><span class="w"> </span><span class="n">ad</span><span class="p">);</span>
 <span class="w">          </span><span class="n">assemble_system_on_slab</span><span class="p">();</span>
