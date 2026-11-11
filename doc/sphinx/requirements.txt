@@ -1,7 +1,7 @@
 breathe==4.36.0
 docutils==0.21.2
 pathspec==1.0.3
-Pygments==2.19.2
+Pygments==2.20.0
 python-dateutil==2.9.0.post0
 Sphinx==8.2.3
 sphinx-autobuild==2025.8.25
