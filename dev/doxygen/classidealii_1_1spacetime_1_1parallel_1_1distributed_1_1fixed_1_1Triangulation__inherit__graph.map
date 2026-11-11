@@ -1,5 +1,5 @@
 <map id="idealii::spacetime::parallel::distributed::fixed::Triangulation&lt; dim &gt;" name="idealii::spacetime::parallel::distributed::fixed::Triangulation&lt; dim &gt;">
-<area shape="rect" id="Node000001" title="The spacetime triangulation object with a fixed MPI parallel dibstributed spatial mesh across time." alt="" coords="5,108,213,163"/>
-<area shape="rect" id="Node000002" href="$classidealii_1_1spacetime_1_1parallel_1_1distributed_1_1Triangulation.html" title="The spacetime triangulation object with MPI parallel distributed spatial meshes." alt="" coords="25,5,194,60"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="112,74,112,108,107,108,107,74"/>
+<area shape="rect" id="Node000001" title="The spacetime triangulation object with a fixed MPI parallel dibstributed spatial mesh across time." alt="" coords="5,115,213,177"/>
+<area shape="rect" id="Node000002" href="$classidealii_1_1spacetime_1_1parallel_1_1distributed_1_1Triangulation.html" title="The spacetime triangulation object with MPI parallel distributed spatial meshes." alt="" coords="25,5,193,67"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="111,80,112,115,106,114,107,85"/>
 </map>

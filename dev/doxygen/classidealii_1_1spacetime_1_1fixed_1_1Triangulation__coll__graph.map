@@ -1,5 +1,5 @@
 <map id="idealii::spacetime::fixed::Triangulation&lt; dim &gt;" name="idealii::spacetime::fixed::Triangulation&lt; dim &gt;">
-<area shape="rect" id="Node000001" title="The spacetime triangulation object with a fixed spatial mesh across time." alt="" coords="13,93,167,148"/>
-<area shape="rect" id="Node000002" href="$classidealii_1_1spacetime_1_1Triangulation.html" title="The spacetime triangulation object." alt="" coords="5,5,175,45"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="93,59,93,93,87,93,87,59"/>
+<area shape="rect" id="Node000001" title="The spacetime triangulation object with a fixed spatial mesh across time." alt="" coords="13,98,166,160"/>
+<area shape="rect" id="Node000002" href="$classidealii_1_1spacetime_1_1Triangulation.html" title="The spacetime triangulation object." alt="" coords="5,5,174,50"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="91,63,92,98,87,97,88,68"/>
 </map>

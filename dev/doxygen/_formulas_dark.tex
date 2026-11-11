@@ -1,10 +1,12 @@
 \documentclass{article}
+\usepackage{iftex}
 \usepackage{ifthen}
 \usepackage{epsfig}
 \usepackage[utf8]{inputenc}
 \usepackage{xcolor}
 \color{white}
 \pagecolor{black}
+\ifPDFTeX
 \usepackage{newunicodechar}
   \makeatletter
     \def\doxynewunicodechar#1#2{%
@@ -25,15 +27,14 @@
   \doxynewunicodechar{²}{${}^{2}$}% Superscript two
   \doxynewunicodechar{³}{${}^{3}$}% Superscript three
 
+\fi
 \pagestyle{empty}
 \begin{document}
-\[
-  \frac{P_{n-1}(x)+P_n(x)}{1+x}
+\[  \frac{P_{n-1}(x)+P_n(x)}{1+x}
 \]
 \pagebreak
 
-\[
-  w_0=\frac{2}{n^2}\quad\text{and}
+\[  w_0=\frac{2}{n^2}\quad\text{and}
   \quad w_i=\frac{1-x_i}{n^2(P_{n-1}(x_i))^2}\text{ for }i>0
 \]
 \pagebreak
